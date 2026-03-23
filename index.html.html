@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EF Seminar — Brain HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0c10; --bg2: #0f1218; --bg3: #141820;
+    --panel: #1a1f2e; --panel2: #1f2535; --border: #2a3045;
+    --accent: #00c8ff; --accent2: #7b5cff; --accent3: #ff6b35;
+    --text: #e8eaf0; --text2: #8a91a8; --text3: #525a72;
+    --success: #00e5a0; --warn: #ffd166;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  .scanline { position: fixed; top:0;left:0;right:0;bottom:0; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); pointer-events:none; z-index:1000; }
+  .container { max-width: 1140px; margin: 0 auto; padding: 20px 20px; }
+
+  /* HEADER */
+  .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+  .header-left { display:flex; align-items:center; gap:12px; }
+  .brain-icon { width:42px;height:42px; background:linear-gradient(135deg,var(--accent2),var(--accent)); border-radius:10px; display:flex;align-items:center;justify-content:center; font-size:20px; box-shadow:0 0 18px rgba(123,92,255,0.4); flex-shrink:0; }
+  .title-group h1 { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); text-shadow:0 0 16px rgba(0,200,255,0.5); }
+  .title-group p { font-size:10px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; }
+  .clock-block { text-align:right; }
+  #live-clock { font-family:'Share Tech Mono',monospace; font-size:26px; color:var(--accent); text-shadow:0 0 10px rgba(0,200,255,0.5); letter-spacing:2px; }
+  #live-date { font-size:10px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; margin-top:2px; }
+
+  /* PANEL BASE */
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; position:relative; overflow:hidden; }
+  .panel-label { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .panel-label .dot { width:6px;height:6px; border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ROW 1: quote + countdown */
+  .row1 { display:grid; grid-template-columns:1fr 260px; gap:14px; margin-bottom:14px; }
+
+  /* QUOTE */
+  .quote-panel { border-top:2px solid var(--accent2); }
+  .quote-panel .panel-label { color:var(--accent2); }
+  .quote-panel .dot { background:var(--accent2); box-shadow:0 0 6px var(--accent2); }
+  .quote-text { font-size:16px; font-weight:300; line-height:1.5; font-style:italic; margin-bottom:10px; color:var(--text); }
+  .quote-meta { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  .quote-skills { display:flex; gap:6px; flex-wrap:wrap; }
+  .skill-tag { font-size:9px; padding:2px 9px; border-radius:20px; border:1px solid; font-family:'Share Tech Mono',monospace; letter-spacing:1px; text-transform:uppercase; }
+  .skill-tag.purple { color:#b39dff; border-color:#7b5cff; background:rgba(123,92,255,0.1); }
+  .skill-tag.cyan { color:var(--accent); border-color:var(--accent); background:rgba(0,200,255,0.08); }
+  .skill-tag.orange { color:#ffaa70; border-color:var(--accent3); background:rgba(255,107,53,0.1); }
+  .skill-tag.green { color:var(--success); border-color:var(--success); background:rgba(0,229,160,0.08); }
+  .quote-num { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--text3); }
+  .quote-nav { display:flex; gap:7px; margin-top:12px; flex-wrap:wrap; }
+  .btn-sm { padding:5px 14px; border-radius:6px; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:12px; font-weight:600; letter-spacing:1px; transition:all 0.2s; border:1px solid; }
+  .btn-ghost { background:var(--panel2); border-color:var(--border); color:var(--text2); }
+  .btn-ghost:hover { background:var(--border); color:var(--text); border-color:var(--accent2); }
+  .btn-purple { background:rgba(123,92,255,0.15); border-color:var(--accent2); color:#c4b5ff; }
+  .btn-purple:hover { background:rgba(123,92,255,0.3); }
+  .discussion-box { margin-top:12px; padding:12px 14px; background:var(--bg3); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; display:none; }
+  .discussion-box.visible { display:block; animation:slideIn 0.3s ease; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+  .discussion-box p { font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:5px; }
+  .discussion-box p:last-child { margin-bottom:0; }
+  .discussion-box p::before { content:'▸ '; color:var(--accent2); }
+
+  /* COUNTDOWN */
+  .countdown-panel { border-top:2px solid var(--warn); display:flex; flex-direction:column; justify-content:center; }
+  .countdown-panel .panel-label { color:var(--warn); }
+  .countdown-panel .dot { background:var(--warn); box-shadow:0 0 6px var(--warn); }
+  .countdown-big { font-family:'Rajdhani',sans-serif; font-size:64px; font-weight:700; color:var(--warn); text-align:center; line-height:1; text-shadow:0 0 20px rgba(255,209,102,0.4); margin:8px 0 4px; }
+  .countdown-label { text-align:center; font-size:11px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; }
+  .countdown-sub { text-align:center; font-size:10px; color:var(--text3); font-family:'Share Tech Mono',monospace; margin-top:6px; }
+  .progress-bar { height:6px; background:var(--bg3); border-radius:3px; margin-top:12px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent2),var(--warn)); border-radius:3px; transition:width 1s; }
+
+  /* ROW 2: brain fact + teaser + holiday */
+  .row2 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px; }
+
+  /* BRAIN FACT */
+  .brain-panel { border-top:2px solid var(--accent); }
+  .brain-panel .panel-label { color:var(--accent); }
+  .brain-panel .dot { background:var(--accent); box-shadow:0 0 6px var(--accent); }
+  .brain-fact-text { font-size:13px; line-height:1.6; color:var(--text); margin-bottom:10px; min-height:60px; }
+  .brain-fact-tag { font-size:9px; padding:2px 9px; border-radius:20px; border:1px solid var(--accent); color:var(--accent); background:rgba(0,200,255,0.08); font-family:'Share Tech Mono',monospace; letter-spacing:1px; text-transform:uppercase; display:inline-block; margin-bottom:10px; }
+
+  /* TEASER */
+  .teaser-panel { border-top:2px solid var(--accent3); }
+  .teaser-panel .panel-label { color:var(--accent3); }
+  .teaser-panel .dot { background:var(--accent3); }
+  .teaser-q { font-size:13px; line-height:1.5; color:var(--text); margin-bottom:10px; min-height:48px; }
+  .answer-zone { background:var(--bg3); border:1px dashed var(--border); border-radius:7px; padding:9px 12px; margin-bottom:10px; min-height:36px; font-size:13px; color:var(--text3); }
+  .answer-zone.revealed { border-style:solid; border-color:var(--accent3); color:#ffaa70; font-weight:600; background:rgba(255,107,53,0.08); }
+  .btn-orange { background:rgba(255,107,53,0.15); border-color:var(--accent3); color:#ffaa70; }
+  .btn-orange:hover { background:rgba(255,107,53,0.3); }
+
+  /* HOLIDAY */
+  .holiday-panel { border-top:2px solid var(--success); }
+  .holiday-panel .panel-label { color:var(--success); }
+  .holiday-panel .dot { background:var(--success); box-shadow:0 0 6px var(--success); }
+  .holiday-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:var(--success); line-height:1.2; margin-bottom:6px; }
+  .holiday-desc { font-size:12px; color:var(--text2); line-height:1.5; }
+  .holiday-weekend { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
+  .holiday-weekend-label { font-size:9px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; margin-bottom:4px; }
+  .holiday-weekend-name { font-size:12px; color:var(--text2); }
+
+  /* ROW 3: micro lesson + brain games */
+  .row3 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+
+  /* MICRO LESSON */
+  .lesson-panel { border-top:2px solid var(--accent2); }
+  .lesson-panel .panel-label { color:var(--accent2); }
+  .lesson-panel .dot { background:var(--accent2); box-shadow:0 0 6px var(--accent2); }
+  .lesson-link { display:flex; align-items:center; gap:10px; padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+  .lesson-link:hover { border-color:var(--accent2); background:rgba(123,92,255,0.08); transform:translateY(-1px); }
+  .lesson-icon { font-size:24px; flex-shrink:0; }
+  .lesson-text h3 { font-size:15px; font-weight:700; color:var(--text); font-family:'Rajdhani',sans-serif; letter-spacing:1px; }
+  .lesson-text p { font-size:11px; color:var(--text3); font-family:'Share Tech Mono',monospace; margin-top:2px; }
+  .lesson-arrow { margin-left:auto; color:var(--accent2); font-size:18px; flex-shrink:0; }
+
+  /* BRAIN GAMES */
+  .games-panel { border-top:2px solid var(--accent3); }
+  .games-panel .panel-label { color:var(--accent3); }
+  .games-panel .dot { background:var(--accent3); }
+  .games-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .game-card { padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s; }
+  .game-card:hover { border-color:var(--accent3); background:rgba(255,107,53,0.08); transform:translateY(-1px); }
+  .game-name { font-size:12px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .game-desc { font-size:10px; color:var(--text3); font-family:'Share Tech Mono',monospace; }
+  .game-modal { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.85); z-index:500; align-items:center; justify-content:center; }
+  .game-modal.open { display:flex; }
+  .game-modal-inner { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:28px; max-width:540px; width:90%; max-height:80vh; overflow-y:auto; }
+  .game-modal-title { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:var(--accent3); margin-bottom:6px; }
+  .game-modal-sub { font-size:11px; color:var(--text3); font-family:'Share Tech Mono',monospace; margin-bottom:16px; }
+  .game-modal-content { font-size:14px; color:var(--text2); line-height:1.7; }
+  .game-modal-content .puzzle-img { width:100%; border-radius:8px; background:var(--bg3); border:1px solid var(--border); padding:16px; text-align:center; margin:12px 0; font-size:13px; color:var(--text3); min-height:100px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; }
+  .reveal-btn { margin-top:14px; width:100%; padding:10px; background:rgba(255,107,53,0.15); border:1px solid var(--accent3); color:#ffaa70; border-radius:8px; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
+  .reveal-btn:hover { background:rgba(255,107,53,0.3); }
+  .answer-reveal { display:none; margin-top:12px; padding:12px; background:rgba(255,107,53,0.08); border:1px solid var(--accent3); border-radius:8px; color:#ffaa70; font-weight:600; font-size:14px; }
+  .answer-reveal.show { display:block; }
+  .btn-close { margin-top:14px; padding:8px 20px; background:var(--panel2); border:1px solid var(--border); color:var(--text2); border-radius:7px; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
+  .btn-close:hover { background:var(--border); color:var(--text); }
+
+  /* STATUS BAR */
+  .status-bar { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; background:var(--panel); border:1px solid var(--border); border-radius:8px; }
+  .status-item { display:flex; align-items:center; gap:6px; font-size:10px; color:var(--text3); font-family:'Share Tech Mono',monospace; }
+  .status-dot { width:5px;height:5px; border-radius:50%; background:var(--success); box-shadow:0 0 5px var(--success); animation:pulse 2s infinite; }
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="brain-icon">🧠</div>
+      <div class="title-group">
+        <h1>Brain HQ</h1>
+        <p>EF Seminar // High School</p>
+      </div>
+    </div>
+    <div class="clock-block">
+      <div id="live-clock">--:--:--</div>
+      <div id="live-date">Loading...</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: QUOTE + COUNTDOWN -->
+  <div class="row1">
+    <div class="panel quote-panel">
+      <div class="panel-label"><span class="dot"></span>EF Quote of the Day</div>
+      <div class="quote-text" id="quote-text">Loading...</div>
+      <div class="quote-meta">
+        <div class="quote-skills" id="quote-skills"></div>
+        <div class="quote-num" id="quote-num">#1 / 200</div>
+      </div>
+      <div class="quote-nav">
+        <button class="btn-sm btn-ghost" onclick="prevQuote()">◀ Prev</button>
+        <button class="btn-sm btn-ghost" onclick="nextQuote()">Next ▶</button>
+        <button class="btn-sm btn-purple" onclick="toggleDiscussion()">💬 Discussion Starters</button>
+      </div>
+      <div class="discussion-box" id="discussion-box"></div>
+    </div>
+
+    <div class="panel countdown-panel">
+      <div class="panel-label"><span class="dot"></span>Days Until Summer</div>
+      <div class="countdown-big" id="countdown-num">--</div>
+      <div class="countdown-label">school days left</div>
+      <div class="countdown-sub" id="countdown-date">Last day: May 20, 2026</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: BRAIN FACT + TEASER + HOLIDAY -->
+  <div class="row2">
+    <div class="panel brain-panel">
+      <div class="panel-label"><span class="dot"></span>Brain Fact</div>
+      <div class="brain-fact-tag" id="brain-tag">Frontal Lobe</div>
+      <div class="brain-fact-text" id="brain-text">Loading...</div>
+      <div style="display:flex;gap:7px;">
+        <button class="btn-sm btn-ghost" onclick="prevFact()">◀</button>
+        <button class="btn-sm btn-ghost" onclick="nextFact()">Next ▶</button>
+      </div>
+    </div>
+
+    <div class="panel teaser-panel">
+      <div class="panel-label"><span class="dot"></span>Brain Teaser</div>
+      <div class="teaser-q" id="teaser-q">Loading...</div>
+      <div class="answer-zone" id="teaser-a">Think first...</div>
+      <div style="display:flex;gap:7px;">
+        <button class="btn-sm btn-orange" onclick="revealAnswer()">Reveal Answer</button>
+        <button class="btn-sm btn-ghost" onclick="nextTeaser()">New ▶</button>
+      </div>
+    </div>
+
+    <div class="panel holiday-panel">
+      <div class="panel-label"><span class="dot"></span>Weird Holiday of the Day</div>
+      <div class="holiday-name" id="holiday-name">Loading...</div>
+      <div class="holiday-desc" id="holiday-desc"></div>
+      <div class="holiday-weekend" id="holiday-weekend" style="display:none;">
+        <div class="holiday-weekend-label">Weekend holidays</div>
+        <div class="holiday-weekend-name" id="holiday-weekend-name"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: MICRO LESSON + BRAIN GAMES -->
+  <div class="row3">
+    <div class="panel lesson-panel">
+      <div class="panel-label"><span class="dot"></span>Today's Micro Lesson</div>
+      <a href="#" id="micro-lesson-link" class="lesson-link">
+        <div class="lesson-icon">⚡</div>
+        <div class="lesson-text">
+          <h3>Running Your Life</h3>
+          <p>Micro-lesson menu — pick today's topic</p>
+        </div>
+        <div class="lesson-arrow">→</div>
+      </a>
+      <p style="font-size:10px;color:var(--text3);margin-top:10px;font-family:'Share Tech Mono',monospace;">[ Paste your lesson menu URL into the href above ]</p>
+    </div>
+
+    <div class="panel games-panel">
+      <div class="panel-label"><span class="dot"></span>Brain Games — Visual Only</div>
+      <div class="games-grid">
+        <div class="game-card" onclick="openGame('triangles')">
+          <div class="game-name">How Many Triangles?</div>
+          <div class="game-desc">Puzzle Play</div>
+        </div>
+        <div class="game-card" onclick="openGame('squares')">
+          <div class="game-name">How Many Squares?</div>
+          <div class="game-desc">Puzzle Play</div>
+        </div>
+        <div class="game-card" onclick="openGame('cups')">
+          <div class="game-name">Which Cup Fills First?</div>
+          <div class="game-desc">Puzzle Play</div>
+        </div>
+        <div class="game-card" onclick="openGame('circles')">
+          <div class="game-name">Circles With Dots</div>
+          <div class="game-desc">Puzzle Play</div>
+        </div>
+        <div class="game-card" onclick="openGame('memory')">
+          <div class="game-name">Picture Memory</div>
+          <div class="game-desc">Working Memory</div>
+        </div>
+        <div class="game-card" onclick="openGame('maze')">
+          <div class="game-name">Maze Master</div>
+          <div class="game-desc">Flexibility + Planning</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="status-item"><div class="status-dot"></div>System Online</div>
+    <div class="status-item">🧠 EF Seminar — High School Boys</div>
+    <div class="status-item">Brain HQ v2</div>
+  </div>
+</div>
+
+<!-- GAME MODAL -->
+<div class="game-modal" id="game-modal" onclick="closeGameIfOutside(event)">
+  <div class="game-modal-inner" id="game-modal-inner">
+    <div class="game-modal-title" id="modal-title"></div>
+    <div class="game-modal-sub" id="modal-sub"></div>
+    <div class="game-modal-content" id="modal-content"></div>
+    <button class="reveal-btn" id="modal-reveal-btn" onclick="revealGameAnswer()">Reveal Answer</button>
+    <div class="answer-reveal" id="modal-answer"></div>
+    <br>
+    <button class="btn-close" onclick="closeGame()">Close</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// QUOTES — 35 hand-selected from the 200
+// ============================================================
+const quotes = [
+  {text:"You are enough and a work in progress all at the same time.",skills:["Confidence","Self-Awareness"],disc:["What does it mean to believe you are enough as you are?","What does it mean to be a work in progress?","How can you be both at the same time?"]},
+  {text:"Think of executive functioning skills like the roots to a tree. They are the foundation for everything else.",skills:["EF Skills"],disc:["What are some everyday tasks you do?","How can strong EF skills help you do those tasks?","How do you think you can strengthen your EF roots?"]},
+  {text:"Your brain is a muscle — it's important to train it.",skills:["EF Skills","Growth Mindset"],disc:["What does it mean that your brain is a muscle?","Why is it important to train your brain?","What are some ways you can train your brain today?"]},
+  {text:"What an empowering thought to know that you are the one in charge of your choices.",skills:["Decision-Making","Choices"],disc:["What are some choices you made today?","Why is it important to remember that you are in charge of your choices?"]},
+  {text:"The biggest accomplishments start with just one small step.",skills:["Task Initiation","Goals"],disc:["How can starting with one small step help you get started?","How can it make a task less overwhelming?","What is one small step you can start with today?"]},
+  {text:"Your habits today help build your future for tomorrow.",skills:["Healthy Habits","Planning"],disc:["What are some healthy habits for success?","How can your habits help you build your future?","What is one positive habit you can work on today?"]},
+  {text:"Routines are like a launchpad. They get you started so you don't have to spend precious energy deciding how and when to begin.",skills:["Routines","Task Initiation"],disc:["What are routines?","How can routines help you?","How do routines make it easier to start tasks?"]},
+  {text:"Plan with intention today to reach your goals tomorrow.",skills:["Planning","Goal-Setting"],disc:["What are some of your goals?","Why is it important to plan with intention?"]},
+  {text:"A calm mind is a more focused mind.",skills:["Attention","Self-Regulation"],disc:["How can being calm help you think more clearly?","What strategies help you relax your mind?"]},
+  {text:"Challenges are chances to learn and grow.",skills:["Perseverance","Growth Mindset"],disc:["Why is it important to see challenges as chances to grow?","When did a challenge lead you to learn something new?"]},
+  {text:"You weren't born with executive functioning skills, but you're actively building them right now.",skills:["EF Skills"],disc:["What EF skills have you already used today?","What skill do you want to work on the most?"]},
+  {text:"You can do anything, but not everything. Choose how you spend your time wisely.",skills:["Time Management"],disc:["What does it mean to spend your time wisely?","What is one way you spent your time wisely this week?"]},
+  {text:"Goals give you direction. Follow them like a compass.",skills:["Goals","Planning"],disc:["What is a goal you have for the future?","How can you remember your goals throughout the day?"]},
+  {text:"The most important part of reaching any goal is the beginning. Just start.",skills:["Task Initiation","Motivation"],disc:["Why can it be hard to get started sometimes?","What strategies can help you get going?"]},
+  {text:"Believing you can is the first step to success.",skills:["Confidence","Growth Mindset"],disc:["Why is believing you can the first step?","When faced with a challenge, how can you remind yourself of this?"]},
+  {text:"When it comes to success, there is no elevator. You have to take the stairs.",skills:["Perseverance","Self-Control"],disc:["What does it mean to be successful?","What does taking the stairs look like in real life?"]},
+  {text:"Practice makes progress.",skills:["Perseverance","Healthy Habits"],disc:["Why progress and not perfect?","What are some skills you practice?"]},
+  {text:"Procrastination is like quicksand. The more you struggle, the deeper you sink.",skills:["Time Management","Strategies"],disc:["Why do people procrastinate?","What strategies help you get unstuck?","What have you been putting off that you could start today?"]},
+  {text:"Every expert was once a beginner.",skills:["Growth Mindset","Perseverance"],disc:["Why is it important to remember that everyone starts as a beginner?","What are you a beginner at right now?"]},
+  {text:"Self-control is making choices for your future self.",skills:["Self-Control","Choices"],disc:["How can thinking about your future self impact choices today?","What choice today would your future self thank you for?"]},
+  {text:"Multitasking is a myth. Choose one task at a time to focus on with intention.",skills:["Attention","Strategies"],disc:["Have you ever tried to multitask? How did it go?","Why is one task at a time better?"]},
+  {text:"Small steps are still progress.",skills:["Task Initiation","Self-Compassion"],disc:["How can small steps lead to big goals?","What small step can you take today?"]},
+  {text:"Be honest with yourself. If an approach isn't working, admit it and try a new way.",skills:["Strategies","Flexibility"],disc:["How can you tell if an approach isn't working?","What do you do when you need to change your approach?"]},
+  {text:"Don't dwell on the problem. Focus on the solution.",skills:["Problem-Solving","Planning"],disc:["What does it feel like to get stuck on a problem?","What strategies help you shift to solution mode?"]},
+  {text:"You are the architect of your future. Make sure you have your plans.",skills:["Planning","Goal-Setting"],disc:["What do you hope for your future?","How are you designing it right now?"]},
+  {text:"Self-control is like a dimmer switch, not an on/off button. It takes practice to find the right level.",skills:["Self-Control","Flexibility"],disc:["What situations require you to use self-control?","Why is it hard to find the right level sometimes?"]},
+  {text:"Do something today that your future self will thank you for.",skills:["Self-Control","Planning"],disc:["What actions could your future self thank you for?","How can you show kindness to your future self today?"]},
+  {text:"It's not what happens to you, but how you react that matters most.",skills:["Self-Regulation","Flexibility"],disc:["Why is your reaction the most important thing?","What are some healthy ways you can cope with tough situations?"]},
+  {text:"Every problem has a solution. Most have many.",skills:["Problem-Solving","Flexibility"],disc:["What strategies do you use to solve problems?","What does it mean that most problems have many solutions?"]},
+  {text:"When you stumble, get back up again. That's resilience in action.",skills:["Resilience"],disc:["What does resilience look like in real life?","When was a time you stumbled but got back up?"]},
+  {text:"Failing to prepare is preparing to fail.",skills:["Planning","Metacognition"],disc:["What happens when you don't prepare?","What simple steps can you take to plan ahead?"]},
+  {text:"Your working memory is a mental whiteboard. It doesn't have unlimited space. That's where strategies come in.",skills:["Working Memory","Strategies"],disc:["How do you use your working memory to remember things?","What strategies help you when your mental whiteboard gets full?"]},
+  {text:"You always have the power to make a new choice.",skills:["Choices","Self-Control"],disc:["What small choices have you made today?","How can you remind yourself that you can always choose differently?"]},
+  {text:"The best time to start is right now.",skills:["Task Initiation"],disc:["Why might someone not start right away?","How can self-talk help you get going?"]},
+  {text:"You get to decide what you want to be.",skills:["Choices","Self-Awareness"],disc:["What words do you want to describe who you are?","How can you figure out what you want to be?"]},
+];
+
+// ============================================================
+// BRAIN FACTS
+// ============================================================
+const brainFacts = [
+  {tag:"Frontal Lobe",text:"The frontal lobe is the largest lobe in your brain — and it's basically your brain's CEO. It handles planning, decision-making, emotions, behavior, focus, and problem-solving all at once."},
+  {tag:"Frontal Lobe",text:"Your frontal lobe has 6 big jobs: managing feelings and emotions, controlling behavior, planning ahead, staying focused, making decisions, and solving problems. That's a heavy workload."},
+  {tag:"Prefrontal Cortex",text:"The prefrontal cortex is the front-most part of your frontal lobe — think of it as 'The Boss.' It's responsible for keeping your impulses in check and thinking before you act."},
+  {tag:"Prefrontal Cortex",text:"Here's the wild part: your prefrontal cortex — The Boss — isn't fully developed until you're about 25. That's not an excuse, it's just science. And it means you CAN train it to work better right now."},
+  {tag:"Prefrontal Cortex",text:"When you stop and think before reacting, that's your prefrontal cortex doing its job. Every time you use it, you're literally strengthening it — like a rep at the gym."},
+  {tag:"Amygdala",text:"The amygdala is your brain's alarm system. It's always scanning for danger and threats — even social ones like disrespect, embarrassment, or conflict. When it fires, it fires FAST."},
+  {tag:"Amygdala",text:"When the amygdala — The Alarm — detects a threat, it can override The Boss (prefrontal cortex) in milliseconds. That's the 'hijack.' Your emotional brain takes the wheel before your thinking brain even knows what happened."},
+  {tag:"Amygdala",text:"The amygdala can't tell the difference between a tiger chasing you and your teacher calling you out in class. Both feel like survival threats. That's why small things can feel like a huge deal in the moment."},
+  {tag:"Boss vs. Alarm",text:"The Boss (prefrontal cortex) and the Alarm (amygdala) are constantly competing for control. Stress, anger, hunger, and lack of sleep all make the Alarm louder and the Boss quieter."},
+  {tag:"Boss vs. Alarm",text:"Getting your Boss back online after a hijack takes time — usually 20–30 minutes for the stress hormones to clear. That's why 'calm down first, talk about it later' actually has science behind it."},
+  {tag:"Boss vs. Alarm",text:"Things that strengthen The Boss: sleep, exercise, deep breathing, taking a pause before reacting. Things that weaken it: stress, no sleep, hunger, anger. You have more control over this than you think."},
+  {tag:"Temporal Lobe",text:"Your temporal lobe sits on the side of your brain, right around your ears. Its main jobs are processing what you hear, understanding language, and storing long-term memories."},
+  {tag:"Temporal Lobe",text:"Ever wonder why you can remember every lyric to a song you haven't heard in years but can't remember what you studied last night? That's your temporal lobe — music and emotion get stored differently than plain facts."},
+  {tag:"Temporal Lobe",text:"The temporal lobe doesn't just store neutral memories — it stores emotional ones too. If something made you feel strong emotions when it happened, your brain is more likely to hold onto it. Good or bad."},
+  {tag:"Temporal Lobe",text:"Language processing happens in the temporal lobe — specifically a region called Wernicke's Area. When you understand what someone is saying to you, that's this area doing its job."},
+  {tag:"Parietal Lobe",text:"The parietal lobe sits at the top and back of your skull. It's your brain's sensory processing center — it handles touch, pain, temperature, and pressure signals from your whole body."},
+  {tag:"Parietal Lobe",text:"Your parietal lobe helps you understand where you are in space — that's why you can catch a ball, navigate a room in the dark, or know without looking exactly where your hand is. That's called proprioception."},
+  {tag:"Parietal Lobe",text:"The parietal lobe also helps integrate information — it takes what your eyes, ears, and body are sensing and combines it into one coherent picture of what's happening around you."},
+  {tag:"Teen Brain",text:"Between ages 12–25, your brain goes through its biggest remodel since infancy. Old neural pathways get pruned, new ones get built. This is why the teenage years feel so intense — your brain is literally under construction."},
+  {tag:"Teen Brain",text:"The teenage brain is wired to seek novelty, take risks, and feel emotions more intensely than adults. That's not a flaw — evolutionarily, it pushed young humans to explore and take chances. The problem is, the risk-assessment systems aren't fully online yet."},
+  {tag:"Brain Science",text:"Your brain uses about 20% of your body's total energy, even though it only makes up about 2% of your body weight. Thinking is literally hard work."},
+  {tag:"Brain Science",text:"Sleep is when your brain cleans itself — literally. During deep sleep, waste products (including things linked to brain diseases) get flushed out. Skipping sleep doesn't just make you tired, it affects your memory, focus, and emotional control."},
+  {tag:"Brain Science",text:"Exercise increases blood flow to the prefrontal cortex — The Boss. Even a 20-minute walk can improve focus and reduce stress. Your brain and your body are on the same team."},
+];
+
+// ============================================================
+// TEASERS (visual/no writing)
+// ============================================================
+const teasers = [
+  {q:"Which month has 28 days?",a:"All of them. Every month has at least 28 days."},
+  {q:"If you speak, you will break me. What am I?",a:"Silence."},
+  {q:"What actually gets wetter as it dries?",a:"A towel."},
+  {q:"A farmer had 10 sheep. All but six died. How many sheep did he have left?",a:"Six."},
+  {q:"This starts with 'P' and ends with 'E' but has thousands of letters. What is it?",a:"Post office."},
+  {q:"Everyone has this and cannot lose it. What is it?",a:"A shadow."},
+  {q:"What weighs more: a pound of feathers or a pound of bricks?",a:"They weigh exactly the same. Both are a pound."},
+  {q:"A man rode into town on Thursday. He stayed for two days and left on Wednesday. How is that possible?",a:"His horse's name is Thursday."},
+  {q:"What must you break before you use it?",a:"An egg."},
+  {q:"What has many keys but cannot open a single door?",a:"A piano."},
+  {q:"What travels around the whole world but stays in one spot?",a:"A stamp."},
+  {q:"What occurs once in a minute, twice in a moment, and not once in a thousand years?",a:"The letter M."},
+  {q:"What has one eye but cannot see?",a:"A needle."},
+  {q:"What has lots of words but never speaks?",a:"A book."},
+  {q:"I have cities, but no houses live there. I have mountains, but no trees grow there. I have water, but no fish swim there. What am I?",a:"A map."},
+  {q:"The more you take, the more you leave behind. What am I?",a:"Footsteps."},
+  {q:"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",a:"An echo."},
+  {q:"What has hands but can't clap?",a:"A clock."},
+  {q:"What goes up but never comes back down?",a:"Your age."},
+  {q:"I have a head and a tail, but no body. What am I?",a:"A coin."},
+];
+
+// ============================================================
+// WEIRD HOLIDAYS — every school day Mar 23 – May 20
+// Monday/Friday include weekend holidays
+// ============================================================
+const holidays = {
+  "2026-03-23": {name:"National Puppy Day 🐶",desc:"A day dedicated to celebrating puppies and encouraging adoption. Also: Near Miss Day — in 1989, an asteroid barely missed Earth.",weekend:null},
+  "2026-03-24": {name:"National Cheesesteak Day 🥩",desc:"The Philadelphia cheesesteak gets its own national holiday. The debate over whiz vs. provolone continues.",weekend:null},
+  "2026-03-25": {name:"International Waffle Day 🧇",desc:"Celebrated since the 1600s in Sweden. Also: Tolkien Reading Day — fans read passages from The Lord of the Rings.",weekend:null},
+  "2026-03-26": {name:"Make Up Your Own Holiday Day 🎉",desc:"Today is literally whatever you want it to be. Create your own holiday. Also: Live Long and Prosper Day (Star Trek).",weekend:null},
+  "2026-03-27": {name:"International Scribble Day ✏️",desc:"A day that celebrates drawing, doodling, and scribbling. No artistic talent required — that's the whole point.",weekend:"National Spinach Day (Mar 26) + Something on a Stick Day (Mar 28)"},
+  "2026-03-30": {name:"I Am in Control Day 💪",desc:"A day to remind yourself that you — not your circumstances — are in control of your choices. Very on-brand for this class.",weekend:"Smoke and Mirrors Day (Mar 29) + Turkey Neck Soup Day (Mar 29)"},
+  "2026-03-31": {name:"National Crayon Day 🖍️",desc:"Crayola has made over 100 billion crayons since 1903. The average child wears down 730 crayons by age 10.",weekend:null},
+  "2026-04-01": {name:"April Fools' Day 🃏",desc:"One of the oldest recorded holidays — dates back to the 1500s. No one actually knows how it started.",weekend:null},
+  "2026-04-02": {name:"National Peanut Butter and Jelly Day 🥜",desc:"The average American kid eats 1,500 PB&J sandwiches before graduating high school. The math is unsettling.",weekend:null},
+  "2026-04-06": {name:"National Burrito Day 🌯",desc:"The word 'burrito' means 'little donkey' in Spanish. Nobody knows exactly why. Easter Monday bonus: candy everywhere.",weekend:"Easter Sunday (Apr 5) — chocolate for breakfast is socially acceptable exactly once a year"},
+  "2026-04-07": {name:"National Beer Day 🍺",desc:"Marks the day in 1933 when Americans could legally buy beer again after Prohibition. Also: No Housework Day (a classic).",weekend:null},
+  "2026-04-08": {name:"Draw a Picture of a Bird Day 🐦",desc:"Started in 1943 by a 7-year-old girl in memory of her uncle. The tradition spread worldwide from a single kid's idea.",weekend:null},
+  "2026-04-09": {name:"Name Yourself Day 🏷️",desc:"A day where you get to go by any name you want. Pick your alter ego. Also: National Unicorn Day.",weekend:null},
+  "2026-04-10": {name:"National Siblings Day 👫",desc:"A day to appreciate your siblings. Or argue with them. Statistically, probably both.",weekend:"Name Yourself Day (Apr 9) + National Unicorn Day (Apr 9)"},
+  "2026-04-13": {name:"Scrabble Day 🔡",desc:"Birthday of Alfred Mosher Butts, who invented Scrabble in 1938. He was rejected by every game company before self-publishing it.",weekend:"National Siblings Day weekend vibes"},
+  "2026-04-14": {name:"National Gardening Day 🌱",desc:"Plants actually communicate with each other through underground fungal networks. Trees warn neighboring trees about pests.",weekend:null},
+  "2026-04-15": {name:"Tax Day 💸",desc:"The day your future self will definitely care about. Understanding taxes = actual adulting. Also: World Art Day.",weekend:null},
+  "2026-04-16": {name:"National Stress Awareness Day 😤",desc:"Officially recognized since 1992. Stress literally shrinks your prefrontal cortex over time. Your Boss hates chronic stress.",weekend:null},
+  "2026-04-17": {name:"National Haiku Poetry Day 📜",desc:"Five syllables. Then seven. Then five again. That's it. Also: Blah Blah Blah Day — a day dedicated to actually following through.",weekend:"Stress Awareness Day vibes continue into the weekend"},
+  "2026-04-20": {name:"Look-Alike Day 👯",desc:"A day celebrating people who look like someone famous or like each other. Doppelgänger science is real — statistically everyone has one.",weekend:"National Haiku Day (Apr 17) and Blah Blah Blah Day follow-up"},
+  "2026-04-21": {name:"National Kindergarten Day 🎒",desc:"Celebrates the birthday of Friedrich Fröbel, who invented kindergarten in 1837. You've come a long way.",weekend:null},
+  "2026-04-22": {name:"Earth Day 🌍",desc:"Over 1 billion people in 193 countries participate. Started in 1970 by a U.S. Senator after he saw the devastation of a 1969 oil spill.",weekend:null},
+  "2026-04-23": {name:"World Book Day 📚",desc:"Shakespeare was born AND died on April 23 (different years). Also: Talk Like Shakespeare Day — thou art welcome to try.",weekend:null},
+  "2026-04-24": {name:"National Pigs-in-a-Blanket Day 🌭",desc:"Tiny hot dogs wrapped in dough. A food so specific it has its own national holiday. Also: Bring Your Daughter to Work Day.",weekend:"Earth Day weekend cleanup events"},
+  "2026-04-27": {name:"Tell a Story Day 📖",desc:"One of the oldest human activities — storytelling predates writing by tens of thousands of years.",weekend:"National Pigs-in-a-Blanket Day (Apr 24) was the real winner last week"},
+  "2026-04-28": {name:"National Superhero Day 🦸",desc:"Created by Marvel employees in 1995. The debate over best superhero is constitutionally protected.",weekend:null},
+  "2026-04-29": {name:"International Dance Day 💃",desc:"Established by UNESCO to promote dance as an art form. Also: Zipper Day — the modern zipper was patented in 1913.",weekend:null},
+  "2026-04-30": {name:"National Honesty Day 🤥",desc:"Created to balance out April Fools' Day at the start of the month. The creator said truth deserved its own holiday too.",weekend:null},
+  "2026-05-01": {name:"May Day / International Workers' Day 🔨",desc:"Celebrated worldwide as a day honoring workers' rights. Also: Save the Rhino Day and Batman Day (yes, really).",weekend:"National Honesty Day carried into the weekend"},
+  "2026-05-04": {name:"Star Wars Day 🚀",desc:"'May the Fourth be with you.' This is not a drill. Also: Bird Day — because birds are actually the closest living relatives to dinosaurs.",weekend:"May Day / International Workers Day (May 1) + Batman Day (May 1)"},
+  "2026-05-05": {name:"Cinco de Mayo 🌮",desc:"Commemorates Mexico's victory over France in 1862. More widely celebrated in the U.S. than in Mexico itself.",weekend:null},
+  "2026-05-06": {name:"National Nurses Day 🏥",desc:"Honors Florence Nightingale's birthday. Also: No Diet Day — a day to take a break from diet culture.",weekend:null},
+  "2026-05-07": {name:"National Space Day 🌌",desc:"The first Friday in May. Celebrates space exploration and astronomy. The nearest star (besides the sun) is 4.2 light years away.",weekend:null},
+  "2026-05-08": {name:"National Have a Coke Day 🥤",desc:"Coca-Cola was invented in 1886 by a pharmacist. It originally contained trace amounts of cocaine. History is wild.",weekend:"National Space Day (May 7) — look up at the stars this weekend"},
+  "2026-05-11": {name:"Eat What You Want Day 🍔",desc:"Officially one day a year to eat whatever you want guilt-free. Nutritionists are mixed on this one.",weekend:"Mother's Day (May 10) — hopefully someone made brunch"},
+  "2026-05-12": {name:"National Limerick Day 🎭",desc:"Celebrates the birthday of Edward Lear, who popularized the limerick. There once was a student in class...",weekend:null},
+  "2026-05-13": {name:"Frog Jumping Day 🐸",desc:"Inspired by Mark Twain's famous story 'The Celebrated Jumping Frog of Calaveras County.' Frog racing exists as an actual sport.",weekend:null},
+  "2026-05-14": {name:"National Underground America Day 🕳️",desc:"A day celebrating underground structures — caves, tunnels, bunkers. Humans have been building underground for 12,000 years.",weekend:null},
+  "2026-05-15": {name:"National Nylon Stockings Day 🧦",desc:"Nylon was first sold on May 15, 1940 — 72,000 pairs sold in hours. Also: International Day of Families.",weekend:"Frog Jumping Day (May 13) energy still going"},
+  "2026-05-18": {name:"No Dirty Dishes Day 🍽️",desc:"A day to either wash everything or use paper plates. No middle ground. Also: International Museum Day.",weekend:"National Nylon Day (May 15) and Armed Forces Day (May 16)"},
+  "2026-05-19": {name:"May Ray Day ☀️",desc:"A day created to celebrate sunshine and the coming of summer. You're almost there.",weekend:null},
+  "2026-05-20": {name:"🎉 LAST DAY OF SCHOOL 🎉",desc:"You made it. That's it. That's the holiday.",weekend:null},
+};
+
+// ============================================================
+// GAMES
+// ============================================================
+const games = {
+  triangles:{title:"How Many Triangles?",sub:"Puzzle Play — flexibility + working memory",content:"Look at a large triangle divided into rows of smaller triangles. Count ALL the triangles — small, medium, and large.",answer:"27 total: 16 small triangles + 7 medium triangles + 3 large triangles + 1 whole triangle = 27"},
+  squares:{title:"How Many Squares?",sub:"Puzzle Play — working memory",content:"Look at a 6x6 grid. Count EVERY square you can find — including all the different sizes (1x1, 2x2, 3x3...)",answer:"91 squares total: 36 (1×1) + 25 (2×2) + 16 (3×3) + 9 (4×4) + 4 (5×5) + 1 (6×6) = 91"},
+  cups:{title:"Which Cup Fills First?",sub:"Puzzle Play — flexibility + reasoning",content:"A bottle pours water through a series of tubes and blocked pathways into several cups labeled A, B, C, D, and E. Some paths are blocked. Which cup fills first?",answer:"Cup D fills first. Trace the path: the tube leading to A, B, C, and E are all blocked somewhere along the way. Only the path to D is clear."},
+  circles:{title:"How Many Circles Have a Black Dot?",sub:"Puzzle Play — attention",content:"Look at a cluster of overlapping circles. Some have a black dot inside them, some don't. Count only the circles that contain a black dot.",answer:"9 circles have a black dot inside them."},
+  memory:{title:"Picture Memory Challenge",sub:"Working Memory — Level 1",content:"Read this list of 5 items out loud. Then cover them and try to recall all 5 in any order:\n\n🕶️ Sunglasses\n🪑 Chair\n🎸 Guitar\n🍎 Apple\n🌙 Moon",answer:"Sunglasses, Chair, Guitar, Apple, Moon — how many did you get?"},
+  maze:{title:"Maze Master",sub:"Flexibility + Planning",content:"Starting from the top-right corner of a maze, trace your way through to the bottom exit. The rule: you can only move RIGHT or DOWN — no backtracking.\n\nTip: look at the whole maze first before you start. Planning ahead beats rushing every time.",answer:"The key is to look for dead ends before you start moving — working backwards from the exit often reveals the path faster than working forward from the start."},
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let quoteIdx = 0;
+let factIdx = 0;
+let teaserIdx = 0;
+let discussionVisible = false;
+const skillColors = ['purple','cyan','orange','green','purple','cyan'];
+
+// ============================================================
+// QUOTE
+// ============================================================
+function renderQuote(){
+  const q = quotes[quoteIdx];
+  document.getElementById('quote-text').textContent = '"' + q.text + '"';
+  document.getElementById('quote-num').textContent = '#'+(quoteIdx+1)+' / '+quotes.length;
+  const el = document.getElementById('quote-skills');
+  el.innerHTML='';
+  q.skills.forEach((s,i)=>{
+    const t=document.createElement('span');
+    t.className='skill-tag '+skillColors[i%skillColors.length];
+    t.textContent=s; el.appendChild(t);
+  });
+  document.getElementById('discussion-box').classList.remove('visible');
+  discussionVisible=false;
+}
+function nextQuote(){ quoteIdx=(quoteIdx+1)%quotes.length; renderQuote(); }
+function prevQuote(){ quoteIdx=(quoteIdx-1+quotes.length)%quotes.length; renderQuote(); }
+function toggleDiscussion(){
+  discussionVisible=!discussionVisible;
+  const box=document.getElementById('discussion-box');
+  if(discussionVisible){
+    box.innerHTML=quotes[quoteIdx].disc.map(d=>`<p>${d}</p>`).join('');
+    box.classList.add('visible');
+  } else { box.classList.remove('visible'); }
+}
+
+// ============================================================
+// BRAIN FACTS
+// ============================================================
+function renderFact(){
+  const f=brainFacts[factIdx];
+  document.getElementById('brain-tag').textContent=f.tag;
+  document.getElementById('brain-text').textContent=f.text;
+}
+function nextFact(){ factIdx=(factIdx+1)%brainFacts.length; renderFact(); }
+function prevFact(){ factIdx=(factIdx-1+brainFacts.length)%brainFacts.length; renderFact(); }
+
+// ============================================================
+// TEASER
+// ============================================================
+function renderTeaser(){
+  const t=teasers[teaserIdx];
+  document.getElementById('teaser-q').textContent=t.q;
+  const a=document.getElementById('teaser-a');
+  a.textContent='Think first...'; a.classList.remove('revealed');
+}
+function revealAnswer(){
+  const a=document.getElementById('teaser-a');
+  a.textContent=teasers[teaserIdx].a; a.classList.add('revealed');
+}
+function nextTeaser(){ teaserIdx=(teaserIdx+1)%teasers.length; renderTeaser(); }
+
+// ============================================================
+// HOLIDAY
+// ============================================================
+function renderHoliday(){
+  const today=new Date();
+  const key=today.toISOString().split('T')[0];
+  const h=holidays[key];
+  if(h){
+    document.getElementById('holiday-name').textContent=h.name;
+    document.getElementById('holiday-desc').textContent=h.desc;
+    const wknd=document.getElementById('holiday-weekend');
+    if(h.weekend){
+      document.getElementById('holiday-weekend-name').textContent=h.weekend;
+      wknd.style.display='block';
+    } else { wknd.style.display='none'; }
+  } else {
+    document.getElementById('holiday-name').textContent='No weird holiday today!';
+    document.getElementById('holiday-desc').textContent='Even the holiday calendar takes a day off sometimes.';
+  }
+}
+
+// ============================================================
+// COUNTDOWN
+// ============================================================
+function renderCountdown(){
+  const lastDay=new Date('2026-05-20');
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  // Count school days (Mon-Fri, minus Apr 3)
+  let count=0;
+  const d=new Date(today);
+  const skip='2026-04-03';
+  while(d<=lastDay){
+    const dow=d.getDay();
+    const ds=d.toISOString().split('T')[0];
+    if(dow>=1&&dow<=5&&ds!==skip) count++;
+    d.setDate(d.getDate()+1);
+  }
+  document.getElementById('countdown-num').textContent=count>0?count:'🎉';
+  // Progress bar: total school days was approx 40
+  const totalDays=42;
+  const pct=Math.min(100,Math.round(((totalDays-count)/totalDays)*100));
+  document.getElementById('progress-fill').style.width=pct+'%';
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function updateClock(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const s=String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('live-clock').textContent=h+':'+m+':'+s;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('live-date').textContent=days[now.getDay()]+' '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+}
+
+// ============================================================
+// GAMES
+// ============================================================
+function openGame(id){
+  const g=games[id];
+  document.getElementById('modal-title').textContent=g.title;
+  document.getElementById('modal-sub').textContent=g.sub;
+  document.getElementById('modal-content').textContent=g.content;
+  document.getElementById('modal-answer').textContent=g.answer;
+  document.getElementById('modal-answer').classList.remove('show');
+  document.getElementById('game-modal').classList.add('open');
+}
+function revealGameAnswer(){
+  document.getElementById('modal-answer').classList.add('show');
+}
+function closeGame(){
+  document.getElementById('game-modal').classList.remove('open');
+}
+function closeGameIfOutside(e){
+  if(e.target===document.getElementById('game-modal')) closeGame();
+}
+
+// ============================================================
+// SET DAY-BASED DEFAULTS
+// ============================================================
+const today=new Date();
+const dayOfYear=Math.floor((today-new Date(today.getFullYear(),0,0))/86400000);
+quoteIdx=(dayOfYear-1)%quotes.length;
+factIdx=(dayOfYear-1)%brainFacts.length;
+teaserIdx=(dayOfYear-1)%teasers.length;
+
+// ============================================================
+// INIT
+// ============================================================
+renderQuote();
+renderFact();
+renderTeaser();
+renderHoliday();
+renderCountdown();
+updateClock();
+setInterval(updateClock,1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Did the Week Go? — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #7ec8e3;
+    --accent-dark: #3a9abf;
+    --accent-dim: #e8f6fb;
+    --accent-mid: #b8e2f0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* subtle paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* BACK NAV */
+  .back-nav { margin-bottom: 20px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+
+  /* LESSON HEADER */
+  .lesson-header { margin-bottom: 24px; }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+
+  /* HOOK CARD */
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(58,154,191,0.25); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+
+  /* CONTENT CARD */
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+
+  /* TOOL CARD */
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* COUNTDOWN DISPLAY */
+  .countdown-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; }
+  .countdown-num { font-family: 'Nunito', sans-serif; font-size: 72px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .countdown-info { }
+  .countdown-total { font-size: 13px; color: var(--text3); }
+  .countdown-label { font-size: 16px; font-weight: 700; color: var(--text); }
+  .countdown-bar-wrap { margin-bottom: 24px; }
+  .countdown-bar-bg { height: 10px; background: var(--accent-dim); border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
+  .countdown-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 5px; transition: width 0.4s ease; width: 0%; }
+  .countdown-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
+
+  /* CATEGORY SECTIONS */
+  .cat-section { margin-bottom: 20px; }
+  .cat-section-title { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .cat-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ITEM ROW */
+  .item-row { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; }
+  .item-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .item-hours { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: var(--accent-dark); }
+  .btn-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .opt-btn { padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+  .opt-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .opt-btn.selected { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .opt-btn.skip { border-color: #ddd; color: var(--text3); font-style: italic; }
+  .opt-btn.skip.selected { border-color: #aaa; background: #f0f0f0; color: #666; }
+
+  /* Manual input */
+  .manual-input-wrap { margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+  .manual-input { width: 70px; padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); background: var(--card); text-align: center; }
+  .manual-input:focus { outline: none; border-color: var(--accent); }
+  .manual-label { font-size: 12px; color: var(--text3); }
+
+  /* APPLY CARD */
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+
+  /* DIVIDER */
+  .section-divider { height: 1px; background: var(--border); margin: 4px 0 20px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="back-nav">
+    <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  </nav>
+
+  <div class="lesson-header">
+    <div class="cat-badge">⏰ Time + Organization</div>
+    <h1 class="lesson-title">Where did the <span>week go?</span></h1>
+  </div>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">You have 168 hours in a week. Where do they actually go?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Most people feel like they have no time — but they have never actually counted. Your week has exactly 168 hours. Sleep, school, work, eating, screens — it all adds up before you make a single choice about what to do with your day. Fill in your actual week below and see what is left over.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Build your week</div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-wrap">
+      <div class="countdown-num" id="hours-left">168</div>
+      <div class="countdown-info">
+        <div class="countdown-total">hours in a week</div>
+        <div class="countdown-label" id="countdown-label">hours remaining</div>
+      </div>
+    </div>
+    <div class="countdown-bar-wrap">
+      <div class="countdown-bar-bg">
+        <div class="countdown-bar-fill" id="bar-fill"></div>
+      </div>
+      <div class="countdown-bar-label">
+        <span>0 hrs used</span>
+        <span id="bar-used-label">0 / 168</span>
+      </div>
+    </div>
+
+    <!-- SLEEP -->
+    <div class="cat-section">
+      <div class="cat-section-title">😴 Sleep</div>
+      <div class="item-row">
+        <div class="item-name">Sleep <span class="item-hours" id="val-sleep">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn" onclick="setVal('sleep', 42, this)">6 hrs/night</button>
+          <button class="opt-btn" onclick="setVal('sleep', 49, this)">7 hrs/night</button>
+          <button class="opt-btn" onclick="setVal('sleep', 56, this)">8 hrs/night</button>
+          <button class="opt-btn" onclick="setVal('sleep', 63, this)">9 hrs/night</button>
+        </div>
+        <div class="manual-input-wrap">
+          <input type="number" class="manual-input" placeholder="hrs" min="0" max="168" oninput="setManual('sleep', this.value, 7, 'hrs/night')" />
+          <span class="manual-label">hrs/night (type your own)</span>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Naps <span class="item-hours" id="val-naps">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn skip selected" onclick="setNaps('skip', this)">Don't nap</button>
+        </div>
+        <div class="btn-group" id="nap-min-group" style="margin-top:6px;">
+          <button class="opt-btn" onclick="setNaps('min', 20, this)">20 min</button>
+          <button class="opt-btn" onclick="setNaps('min', 40, this)">40 min</button>
+          <button class="opt-btn" onclick="setNaps('min', 60, this)">1 hr</button>
+          <button class="opt-btn" onclick="setNaps('min', 120, this)">2 hrs</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">How often:</div>
+        <div class="btn-group" id="nap-day-group">
+          <button class="opt-btn" onclick="setNaps('day', 1.5, this)">1-2× a week</button>
+          <button class="opt-btn" onclick="setNaps('day', 3.5, this)">3-4× a week</button>
+          <button class="opt-btn" onclick="setNaps('day', 5.5, this)">5-6× a week</button>
+          <button class="opt-btn" onclick="setNaps('day', 7, this)">Daily</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHOOL -->
+    <div class="cat-section">
+      <div class="cat-section-title">🏫 School</div>
+      <div class="item-row">
+        <div class="item-name">School / Classes <span class="item-hours" id="val-school">—</span></div>
+        <div class="btn-group" id="school-day-group">
+          <button class="opt-btn skip selected" onclick="setSchool('day', 0, this)">Not in school</button>
+          <button class="opt-btn" onclick="setSchool('day', 2, this)">2 days/wk</button>
+          <button class="opt-btn" onclick="setSchool('day', 3, this)">3 days/wk</button>
+          <button class="opt-btn" onclick="setSchool('day', 4, this)">4 days/wk</button>
+          <button class="opt-btn" onclick="setSchool('day', 5, this)">5 days/wk</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">Half day or full day:</div>
+        <div class="btn-group" id="school-hr-group">
+          <button class="opt-btn" onclick="setSchool('hr', 4, this)">Half day (~4 hrs)</button>
+          <button class="opt-btn" onclick="setSchool('hr', 7, this)">Full day (~7 hrs)</button>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Homework <span class="item-hours" id="val-homework">—</span></div>
+        <div class="btn-group" id="hw-min-group">
+          <button class="opt-btn" onclick="setHW('min', 15, this)">15 min</button>
+          <button class="opt-btn" onclick="setHW('min', 30, this)">30 min</button>
+          <button class="opt-btn" onclick="setHW('min', 45, this)">45 min</button>
+          <button class="opt-btn" onclick="setHW('min', 60, this)">1 hr</button>
+          <button class="opt-btn" onclick="setHW('min', 90, this)">1.5 hrs</button>
+          <button class="opt-btn" onclick="setHW('min', 120, this)">2 hrs</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">Days per week:</div>
+        <div class="btn-group" id="hw-day-group">
+          <button class="opt-btn" onclick="setHW('day', 1.5, this)">1-2 days</button>
+          <button class="opt-btn" onclick="setHW('day', 3.5, this)">3-4 days</button>
+          <button class="opt-btn" onclick="setHW('day', 5.5, this)">5-6 days</button>
+          <button class="opt-btn" onclick="setHW('day', 7, this)">Daily</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORK -->
+    <div class="cat-section">
+      <div class="cat-section-title">💼 Work / Job</div>
+      <div class="item-row">
+        <div class="item-name">Work <span class="item-hours" id="val-work">—</span></div>
+        <div class="btn-group" id="work-hr-group">
+          <button class="opt-btn" onclick="setWork('hr', 4, this)">4 hrs/shift</button>
+          <button class="opt-btn" onclick="setWork('hr', 6, this)">6 hrs/shift</button>
+          <button class="opt-btn" onclick="setWork('hr', 8, this)">8 hrs/shift</button>
+          <button class="opt-btn" onclick="setWork('hr', 10, this)">10 hrs/shift</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">Shifts per week:</div>
+        <div class="btn-group" id="work-day-group">
+          <button class="opt-btn skip selected" onclick="setWork('day', 0, this)">Don't work</button>
+          <button class="opt-btn" onclick="setWork('day', 1, this)">1 day</button>
+          <button class="opt-btn" onclick="setWork('day', 2, this)">2 days</button>
+          <button class="opt-btn" onclick="setWork('day', 3, this)">3 days</button>
+          <button class="opt-btn" onclick="setWork('day', 4, this)">4 days</button>
+          <button class="opt-btn" onclick="setWork('day', 5, this)">5 days</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EATING -->
+    <div class="cat-section">
+      <div class="cat-section-title">🍽️ Eating</div>
+      <div class="item-row">
+        <div class="item-name">Breakfast <span class="item-hours" id="val-breakfast">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn skip selected" onclick="setVal('breakfast', 0, this)">Don't eat breakfast</button>
+          <button class="opt-btn" onclick="setVal('breakfast', 0.58, this)">5 min grab-and-go</button>
+          <button class="opt-btn" onclick="setVal('breakfast', 1.17, this)">10-15 min</button>
+          <button class="opt-btn" onclick="setVal('breakfast', 2.33, this)">20-30 min</button>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Lunch <span class="item-hours" id="val-lunch">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn skip selected" onclick="setVal('lunch', 0, this)">Don't eat lunch</button>
+          <button class="opt-btn" onclick="setVal('lunch', 1.17, this)">10-15 min</button>
+          <button class="opt-btn" onclick="setVal('lunch', 2.33, this)">20-30 min</button>
+          <button class="opt-btn" onclick="setVal('lunch', 3.5, this)">30 min</button>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Dinner <span class="item-hours" id="val-dinner">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn skip selected" onclick="setVal('dinner', 0, this)">Don't eat dinner</button>
+          <button class="opt-btn" onclick="setVal('dinner', 1.17, this)">10-15 min</button>
+          <button class="opt-btn" onclick="setVal('dinner', 2.33, this)">20-30 min</button>
+          <button class="opt-btn" onclick="setVal('dinner', 3.5, this)">30-45 min</button>
+          <button class="opt-btn" onclick="setVal('dinner', 5.25, this)">45-60 min family dinner</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HYGIENE -->
+    <div class="cat-section">
+      <div class="cat-section-title">🚿 Getting Ready</div>
+      <div class="item-row">
+        <div class="item-name">Shower <span class="item-hours" id="val-shower">—</span></div>
+        <div class="btn-group" id="shower-min-group">
+          <button class="opt-btn" onclick="setShower('min', 5, this)">5 min</button>
+          <button class="opt-btn" onclick="setShower('min', 10, this)">10 min</button>
+          <button class="opt-btn" onclick="setShower('min', 15, this)">15 min</button>
+          <button class="opt-btn" onclick="setShower('min', 20, this)">20 min</button>
+          <button class="opt-btn" onclick="setShower('min', 30, this)">30 min</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">How often:</div>
+        <div class="btn-group" id="shower-day-group">
+          <button class="opt-btn" onclick="setShower('day', 7, this)">Every day</button>
+          <button class="opt-btn" onclick="setShower('day', 3.5, this)">Every other day</button>
+          <button class="opt-btn" onclick="setShower('day', 2.33, this)">Every 2 days</button>
+          <button class="opt-btn" onclick="setShower('day', 1.5, this)">1-2× a week</button>
+          <button class="opt-btn" onclick="setShower('day', 14, this)">2× a day</button>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Getting dressed <span class="item-hours" id="val-dressed">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn" onclick="setVal('dressed', 1.17, this)">Under 2 min</button>
+          <button class="opt-btn" onclick="setVal('dressed', 2.33, this)">5 min</button>
+          <button class="opt-btn" onclick="setVal('dressed', 4.67, this)">10 min</button>
+          <button class="opt-btn" onclick="setVal('dressed', 7, this)">15+ min (outfit decisions)</button>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Brushing teeth <span class="item-hours" id="val-teeth">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn" onclick="setVal('teeth', 1.17, this)">30 sec (barely counts)</button>
+          <button class="opt-btn" onclick="setVal('teeth', 2.33, this)">2 min once a day</button>
+          <button class="opt-btn" onclick="setVal('teeth', 4.67, this)">2 min twice a day</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREENS -->
+    <div class="cat-section">
+      <div class="cat-section-title">📱 Screens</div>
+      <div class="item-row">
+        <div class="item-name">Phone / Social Media / Texting <span class="item-hours" id="val-phone">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn" onclick="setVal('phone', 7, this)">1 hr/day</button>
+          <button class="opt-btn" onclick="setVal('phone', 14, this)">2 hrs/day</button>
+          <button class="opt-btn" onclick="setVal('phone', 21, this)">3 hrs/day</button>
+          <button class="opt-btn" onclick="setVal('phone', 28, this)">4 hrs/day</button>
+          <button class="opt-btn" onclick="setVal('phone', 35, this)">5+ hrs/day</button>
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="item-name">Video games (not on your phone) <span class="item-hours" id="val-games">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn skip selected" onclick="setVal('games', 0, this)">Don't play</button>
+          <button class="opt-btn" onclick="setVal('games', 7, this)">1 hr/day</button>
+          <button class="opt-btn" onclick="setVal('games', 14, this)">2 hrs/day</button>
+          <button class="opt-btn" onclick="setVal('games', 21, this)">3 hrs/day</button>
+          <button class="opt-btn" onclick="setVal('games', 28, this)">4 hrs/day</button>
+          <button class="opt-btn" onclick="setVal('games', 35, this)">5+ hrs/day</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPORTS -->
+    <div class="cat-section">
+      <div class="cat-section-title">🏃 Sports / Working Out</div>
+      <div class="item-row">
+        <div class="item-name">Sports / Working out <span class="item-hours" id="val-sports">—</span></div>
+        <div class="btn-group" id="sports-min-group">
+          <button class="opt-btn skip selected" onclick="setSports('min', 0, this)">Don't do this</button>
+          <button class="opt-btn" onclick="setSports('min', 30, this)">30 min</button>
+          <button class="opt-btn" onclick="setSports('min', 60, this)">1 hr</button>
+          <button class="opt-btn" onclick="setSports('min', 90, this)">1.5 hrs</button>
+          <button class="opt-btn" onclick="setSports('min', 120, this)">2 hrs</button>
+          <button class="opt-btn" onclick="setSports('min', 180, this)">3+ hrs</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">Days per week:</div>
+        <div class="btn-group" id="sports-day-group">
+          <button class="opt-btn" onclick="setSports('day', 1, this)">1 day</button>
+          <button class="opt-btn" onclick="setSports('day', 2, this)">2 days</button>
+          <button class="opt-btn" onclick="setSports('day', 3, this)">3 days</button>
+          <button class="opt-btn" onclick="setSports('day', 4, this)">4 days</button>
+          <button class="opt-btn" onclick="setSports('day', 5, this)">5 days</button>
+          <button class="opt-btn" onclick="setSports('day', 6, this)">6 days</button>
+          <button class="opt-btn" onclick="setSports('day', 7, this)">Daily</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER (the honest section) -->
+    <div class="cat-section">
+      <div class="cat-section-title">🤷 Other (be honest)</div>
+
+      <div class="item-row">
+        <div class="item-name">Bathroom breaks <span class="item-hours" id="val-bathroom">—</span></div>
+        <div class="btn-group">
+          <button class="opt-btn" onclick="setVal('bathroom', 1.75, this)">🚽 In and out — ~15 min/day</button>
+          <button class="opt-btn" onclick="setVal('bathroom', 3.5, this)">🚽🚽 Average — ~30 min/day</button>
+          <button class="opt-btn" onclick="setVal('bathroom', 5.25, this)">📱🚽 You bring your phone — ~45 min/day</button>
+          <button class="opt-btn" onclick="setVal('bathroom', 7, this)">📖🚽 You basically live in there — 1+ hr/day</button>
+        </div>
+      </div>
+
+      <div class="item-row">
+        <div class="item-name">Dissociating / zoning out <span class="item-hours" id="val-dissociate">—</span></div>
+        <div class="btn-group" id="dis-min-group">
+          <button class="opt-btn" onclick="setDis('min', 15, this)">15 min/time</button>
+          <button class="opt-btn" onclick="setDis('min', 30, this)">30 min/time</button>
+          <button class="opt-btn" onclick="setDis('min', 45, this)">45 min/time</button>
+          <button class="opt-btn" onclick="setDis('min', 60, this)">1 hr/time</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">Times per day:</div>
+        <div class="btn-group" id="dis-day-group">
+          <button class="opt-btn" onclick="setDis('day', 1, this)">1× a day</button>
+          <button class="opt-btn" onclick="setDis('day', 2, this)">2× a day</button>
+          <button class="opt-btn" onclick="setDis('day', 3, this)">3× a day</button>
+          <button class="opt-btn" onclick="setDis('day', 4, this)">4× a day</button>
+          <button class="opt-btn" onclick="setDis('day', 5, this)">5+ × a day</button>
+        </div>
+      </div>
+
+      <div class="item-row">
+        <div class="item-name">Laying in bed not sleeping <span style="font-size:11px;color:var(--text3);font-weight:400;">(NOT ON YOUR PHONE)</span> <span class="item-hours" id="val-bed">—</span></div>
+        <div class="btn-group" id="bed-min-group">
+          <button class="opt-btn" onclick="setBed('min', 10, this)">10 min</button>
+          <button class="opt-btn" onclick="setBed('min', 20, this)">20 min</button>
+          <button class="opt-btn" onclick="setBed('min', 30, this)">30 min</button>
+          <button class="opt-btn" onclick="setBed('min', 45, this)">45 min</button>
+          <button class="opt-btn" onclick="setBed('min', 60, this)">1 hr</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin:6px 0 6px;">Days per week:</div>
+        <div class="btn-group" id="bed-day-group">
+          <button class="opt-btn" onclick="setBed('day', 1.5, this)">1-2 days</button>
+          <button class="opt-btn" onclick="setBed('day', 3.5, this)">3-4 days</button>
+          <button class="opt-btn" onclick="setBed('day', 5.5, this)">5-6 days</button>
+          <button class="opt-btn" onclick="setBed('day', 7, this)">Every day</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end tool-card -->
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Look at the hours remaining. Is that more or less than you expected? What is taking more time than you thought — and what would you change if you could?</div>
+  </div>
+
+</div><!-- end page -->
+
+<script>
+const vals = {
+  sleep:0, naps:0, school:0, homework:0, work:0,
+  breakfast:0, lunch:0, dinner:0,
+  shower:0, dressed:0, teeth:0,
+  phone:0, games:0, sports:0,
+  bathroom:0, dissociate:0, bed:0
+};
+
+// Multi-part selectors
+const hw = { min:0, day:0 };
+const nap = { min:0, day:0, skip:true };
+const school = { hr:7, day:0 };
+const work = { hr:4, day:0 };
+const shower = { min:10, day:0 };
+const sports = { min:0, day:0 };
+const dis = { min:0, day:0 };
+const bed = { min:0, day:0 };
+
+function update() {
+  const total = Object.values(vals).reduce((a,b) => a+b, 0);
+  const left = Math.max(0, 168 - total);
+  const used = Math.min(168, total);
+  const pct = Math.round((used / 168) * 100);
+
+  document.getElementById('hours-left').textContent = left.toFixed(1);
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('bar-used-label').textContent = used.toFixed(1) + ' / 168';
+
+  const label = document.getElementById('countdown-label');
+  if (left <= 0) {
+    label.textContent = 'fully accounted for';
+    document.getElementById('hours-left').style.color = '#e07070';
+  } else if (left < 10) {
+    label.textContent = 'hours remaining — almost out';
+    document.getElementById('hours-left').style.color = '#e0a050';
+  } else {
+    label.textContent = 'hours remaining';
+    document.getElementById('hours-left').style.color = 'var(--accent-dark)';
+  }
+
+  // Update individual displays
+  const map = {
+    sleep:'val-sleep', naps:'val-naps', school:'val-school', homework:'val-homework',
+    work:'val-work', breakfast:'val-breakfast', lunch:'val-lunch', dinner:'val-dinner',
+    shower:'val-shower', dressed:'val-dressed', teeth:'val-teeth',
+    phone:'val-phone', games:'val-games', sports:'val-sports',
+    bathroom:'val-bathroom', dissociate:'val-dissociate', bed:'val-bed'
+  };
+  for (const [key, id] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = vals[key] > 0 ? vals[key].toFixed(1) + ' hrs' : '—';
+  }
+}
+
+function clearGroup(groupId) {
+  document.querySelectorAll('#' + groupId + ' .opt-btn').forEach(b => b.classList.remove('selected'));
+}
+
+function setSchool(part, val, btn) {
+  school[part] = val;
+  const groupId = part === 'hr' ? 'school-hr-group' : 'school-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.school = school.hr * school.day;
+  update();
+}
+
+function setNaps(part, val, btn) {
+  if (part === 'skip') {
+    nap.skip = true; nap.min = 0; nap.day = 0;
+    vals.naps = 0;
+    clearGroup('nap-min-group');
+    clearGroup('nap-day-group');
+    document.querySelector('.opt-btn.skip').classList.add('selected');
+    update(); return;
+  }
+  nap.skip = false;
+  document.querySelector('.opt-btn.skip').classList.remove('selected');
+  nap[part] = val;
+  const groupId = part === 'min' ? 'nap-min-group' : 'nap-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.naps = (nap.min / 60) * nap.day;
+  update();
+}
+
+function setVal(key, val, btn) {
+  vals[key] = val;
+  const group = btn.closest('.btn-group');
+  group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  update();
+}
+
+function setManual(key, val, daysPerWeek, unit) {
+  const hrs = parseFloat(val);
+  if (!isNaN(hrs) && hrs >= 0) {
+    vals[key] = hrs * daysPerWeek;
+    // Clear preset buttons
+    const input = document.querySelector(`input[oninput*="${key}"]`);
+    if (input) {
+      const group = input.closest('.item-row').querySelector('.btn-group');
+      if (group) group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    }
+    update();
+  }
+}
+
+function setHW(part, val, btn) {
+  hw[part] = val;
+  const groupId = part === 'min' ? 'hw-min-group' : 'hw-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.homework = (hw.min / 60) * hw.day;
+  update();
+}
+
+function setWork(part, val, btn) {
+  work[part] = val;
+  const groupId = part === 'hr' ? 'work-hr-group' : 'work-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.work = work.hr * work.day;
+  update();
+}
+
+function setShower(part, val, btn) {
+  shower[part] = val;
+  const groupId = part === 'min' ? 'shower-min-group' : 'shower-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.shower = (shower.min / 60) * shower.day;
+  update();
+}
+
+function setSports(part, val, btn) {
+  sports[part] = val;
+  const groupId = part === 'min' ? 'sports-min-group' : 'sports-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.sports = (sports.min / 60) * sports.day;
+  update();
+}
+
+function setDis(part, val, btn) {
+  dis[part] = val;
+  const groupId = part === 'min' ? 'dis-min-group' : 'dis-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.dissociate = (dis.min / 60) * dis.day * 7;
+  update();
+}
+
+function setBed(part, val, btn) {
+  bed[part] = val;
+  const groupId = part === 'min' ? 'bed-min-group' : 'bed-day-group';
+  clearGroup(groupId);
+  btn.classList.add('selected');
+  vals.bed = (bed.min / 60) * bed.day;
+  update();
+}
+
+update();
+</script>
+</body>
+</html>

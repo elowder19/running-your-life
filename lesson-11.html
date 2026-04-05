@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When Things Go Wrong — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #e8a045;
+    --accent-dark: #c47820;
+    --accent-dim: #fdf5e8;
+    --accent-mid: #f0d0a0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(196,120,32,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* STA BAR */
+  .sta-bar { display: flex; gap: 6px; margin-bottom: 20px; }
+  .sta-pill { flex: 1; padding: 8px 10px; border-radius: 8px; text-align: center; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+  .sta-pill.stop { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-mid); }
+  .sta-pill.think { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-mid); }
+  .sta-pill.act { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+
+  /* ROUND */
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  .context-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; background: var(--accent-dim); color: var(--accent-dark); border: 1px solid var(--accent-mid); }
+  .scenario-stmt { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 20px); font-weight: 800; color: var(--text); line-height: 1.5; margin-bottom: 8px; background: var(--bg); border-radius: 10px; padding: 16px 18px; border-left: 3px solid var(--accent-mid); }
+  .feeling-line { font-size: 13px; color: var(--text3); font-style: italic; margin-bottom: 20px; padding: 0 4px; }
+  .pick-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .opt-btn { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--text2); text-align: left; transition: all 0.15s; line-height: 1.5; }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+  .opt-btn.plain { color: var(--text); font-weight: 500; }
+  .opt-btn.amyg { border-color: var(--red); background: var(--red-dim); color: var(--red); opacity: 0.6; }
+  .opt-btn.mid { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); opacity: 0.7; }
+  .opt-btn.pfc { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+  .opt-btn.selected-amyg { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .opt-btn.selected-mid { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+  .opt-btn.selected-pfc { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* REVEAL */
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .brain-labels { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .brain-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
+  .brain-pill.amyg { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-mid); }
+  .brain-pill.mid { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-mid); }
+  .brain-pill.pfc { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+  .reveal-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .sta-breakdown { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+  .sta-row { display: flex; gap: 12px; align-items: flex-start; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  .sta-row:last-child { border-bottom: none; }
+  .sta-tag { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900; letter-spacing: 0.5px; min-width: 50px; padding-top: 1px; flex-shrink: 0; }
+  .sta-tag.stop { color: var(--red); }
+  .sta-tag.think { color: var(--amber); }
+  .sta-tag.act { color: var(--green); }
+  .sta-row-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  /* SCORE */
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">💼 Work + Real Life</div>
+  <h1 class="lesson-title">When things <span>go wrong</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Have you ever reacted to something and immediately knew — even before it was over — that you just made it worse?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">That is not a character flaw. That is your amygdala getting there before your prefrontal cortex had a chance to run the numbers. Your amygdala processes a threat in milliseconds — it does not wait for context, it does not calculate consequences, it just fires. Your prefrontal cortex is slower. By the time it is online, the amygdala has already launched the response. The skill is not never getting triggered. The skill is buying your prefrontal cortex enough time to catch up. Stop. Think. Act.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Which response does your prefrontal cortex pick?</div>
+
+    <div class="sta-bar">
+      <div class="sta-pill stop">STOP</div>
+      <div class="sta-pill think">THINK</div>
+      <div class="sta-pill act">ACT</div>
+    </div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Scenario 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="context-badge" id="ctx-badge"></div>
+      <div class="scenario-stmt" id="scenario-stmt"></div>
+      <div class="feeling-line" id="feeling-line"></div>
+      <div class="pick-label">Which response are you most likely to pick in the moment — be honest:</div>
+      <div class="options" id="options-list"></div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="brain-labels">
+          <div class="brain-pill amyg">A — Amygdala fired</div>
+          <div class="brain-pill mid">B — Halfway there</div>
+          <div class="brain-pill pfc">C — Prefrontal cortex caught up</div>
+        </div>
+        <div class="reveal-explain" id="reveal-explain"></div>
+        <div class="sta-breakdown" id="sta-breakdown"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">times your honest answer was the prefrontal cortex response</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think of the last time your amygdala got there first. What was the situation? What would the prefrontal cortex move have been? What would have been different?</div>
+  </div>
+</div>
+
+<script>
+const rounds = [
+  {
+    context: "Work",
+    situation: "Your manager calls you out in front of the whole shift for something you did not realize you were doing wrong. Everyone heard it.",
+    feeling: "How it feels: Embarrassed. Blindsided. Kind of pissed.",
+    options: [
+      "You clap back or walk off the floor. Now it is a bigger problem than the original one.",
+      "You go quiet and stew, do the bare minimum for the rest of the shift, maybe say something to a coworker.",
+      "You stay quiet in the moment, finish the shift, then ask your manager privately if you can talk about what happened."
+    ],
+    explain: "Option A feels satisfying for about 30 seconds. Then you have an incident report, fewer hours, and a manager who now watches everything you do. Your amygdala fired before your prefrontal cortex could calculate that cost. Option C is harder in the moment — but it is the one where you still have a job and your dignity tomorrow.",
+    sta: { stop: "Pause before you respond. The embarrassment is real. Do not add to it.", think: "What is the actual goal here — to feel right in this moment, or to still have good hours next week?", act: "Stay quiet on the floor. Handle it privately after." }
+  },
+  {
+    context: "Work",
+    situation: "\"Sure, I can take your Wednesday night shift so you can attend your child's Kindergarten Promotion,\" you heard yourself saying to your coworker who isn't even that nice to you. Your name is now officially on the schedule. You completely forgot. It is Wednesday.",
+    feeling: "How it feels: Panicked. Annoyed at yourself. Annoyed at them.",
+    options: [
+      "You call in sick. Someone else can deal with it.",
+      "You show up late, visibly unhappy, and make sure everyone knows you are doing them a favor.",
+      "You show up on time, do your job, and sort out how to avoid this situation in the future."
+    ],
+    explain: "Calling in sick when you are not sick creates a record and puts your manager in a bind — that follows you. Showing up miserable is technically showing up but it poisons your reputation anyway. The prefrontal cortex move is the boring one: show up, do the job, set a phone alarm next time.",
+    sta: { stop: "You made a commitment. The feelings are valid. Do not act on them at the expense of your job.", think: "What actually happens if I call in? What actually happens if I just show up?", act: "Show up. Do the job. Set a reminder next time the moment you agree to anything." }
+  },
+  {
+    context: "Work",
+    situation: "You show up for your shift and find out your hours got cut this week. Nobody told you. You found out when you looked at the schedule.",
+    feeling: "How it feels: Disrespected. Anxious about money. Caught off guard.",
+    options: [
+      "You confront your manager on the floor in front of customers and coworkers.",
+      "You text a coworker to vent, spend the shift distracted, and do not say anything directly.",
+      "You ask your manager for 5 minutes to talk privately, stay calm, and ask directly if there is something you should know."
+    ],
+    explain: "The amygdala reads 'no one told me' as a threat — disrespect, financial danger, loss of control. All real. But confronting someone publicly puts them on the defensive and makes the conversation about your behavior instead of your hours. The prefrontal cortex move gets you information. The amygdala move gets you a story about the employee who caused a scene.",
+    sta: { stop: "Feel the reaction — do not act on it yet.", think: "What do I actually need right now? Information. How do I get it?", act: "Private conversation. Calm and direct." }
+  },
+  {
+    context: "Work",
+    situation: "Your manager gives you a direction using a tone that feels condescending or disrespectful. The words were technically fine. The tone was not.",
+    feeling: "How it feels: Like you are being talked down to. Like you are not being taken seriously.",
+    options: [
+      "You match their energy or say something under your breath.",
+      "You do what they said but make it obvious you are annoyed — slow, heavy sighing, eye rolls.",
+      "You do the task, then later find a calm moment to say: 'Hey, can I be honest? Sometimes the way things get said to me feels off. I just wanted to mention it.'"
+    ],
+    explain: "Tone is real. Being talked down to is real. Your amygdala is not wrong that something felt off — it is just wrong about the best response. Matching energy escalates. Eye rolls communicate the same message as clapping back, just slower. The prefrontal cortex move actually addresses the real problem — the tone — without creating a new one.",
+    sta: { stop: "Notice the reaction in your body. Do not let it out yet.", think: "Is the tone worth losing my composure over right now, on the floor?", act: "Do the task. Address the tone later, privately, directly." }
+  },
+  {
+    context: "Work",
+    situation: "You get blamed for something that was not entirely your fault. Someone else dropped the ball too but you are the one getting talked to.",
+    feeling: "How it feels: Unfair. Defensive. Like you are being made into the bad guy.",
+    options: [
+      "You immediately list everything the other person did wrong and make sure your manager knows it was not just you.",
+      "You accept the feedback but spend the rest of the day bitter and resentful.",
+      "You acknowledge your part, stay calm, then say: 'I want to make sure I understand what I could do differently — I also want to mention there were other factors if you have time to hear them.'"
+    ],
+    explain: "The amygdala hears 'blame' and immediately wants to deflect it. That instinct is normal. But leading with 'actually it was also their fault' makes you look defensive even when you are right. The prefrontal cortex move owns your part first — which is disarming — and then opens the door for the fuller picture. That order matters.",
+    sta: { stop: "Do not deflect immediately. Take a breath first.", think: "What part of this is actually mine? Own that. Then what else needs to be said?", act: "Acknowledge your part first. Then raise the rest calmly." }
+  },
+  {
+    context: "Family / Work",
+    situation: "You had a bad morning at home before you even left. An argument, bad news, something that put you in a hole. Now you are at school or work and something small happens.",
+    feeling: "How it feels: Already at a 7 out of 10. The small thing just pushed you to a 9.",
+    options: [
+      "You react to the small thing like it is the whole morning. The person in front of you gets the reaction that was meant for something else entirely.",
+      "You white-knuckle it and hold everything in, but you are visibly off and everyone around you can tell.",
+      "You recognize you are already activated before anything happened. You give yourself a beat — even 30 seconds — before responding to anything."
+    ],
+    explain: "The amygdala does not reset between situations. It carries charge from the morning into your shift, your class, your day. The prefrontal cortex move here is just awareness — knowing you are already at a 7 means you need less stimulus to hit 10. That knowledge is your early warning system.",
+    sta: { stop: "Name it internally: I am already activated. This small thing is not the whole problem.", think: "What am I actually reacting to right now?", act: "Give yourself 30 seconds before responding to anything new." }
+  },
+  {
+    context: "Family / Work",
+    situation: "Your car breaks down and you have no way to get to work or somewhere important. You are already going to be late or miss it entirely.",
+    feeling: "How it feels: Panicked. Helpless. Like everything is falling apart at once.",
+    options: [
+      "You spiral, shut down, or lash out at whoever is nearby. You stop problem-solving entirely.",
+      "You stress-text people, do not communicate with work or whoever is waiting, and hope it works out.",
+      "You contact whoever needs to know immediately — your job, the person waiting — before you try to solve the transportation problem. Then you work it one step at a time."
+    ],
+    explain: "The amygdala responds to feeling trapped by fighting, fleeing, or freezing. A car breakdown hits all three. The prefrontal cortex is what lets you sequence: communicate first, then solve. That order keeps the consequences from compounding.",
+    sta: { stop: "Do not spiral. Take one breath.", think: "Who needs to know right now? What is the first step?", act: "Communicate first. Then problem-solve one step at a time." }
+  },
+  {
+    context: "School",
+    situation: "A staff member redirects you in front of the group. The way it came across felt public and unnecessary.",
+    feeling: "How it feels: Called out. Embarrassed in front of people whose opinion matters to you.",
+    options: [
+      "You respond verbally, get louder, or shut completely down in a way that makes it more visible.",
+      "You comply but make it clear you are not okay — short answers, no eye contact, checking out for the rest of the session.",
+      "You comply in the moment without adding to it. Later, if it still feels wrong, you bring it up directly and calmly: 'Hey can I tell you how that landed?'"
+    ],
+    explain: "Your amygdala reads public correction as a social threat — your standing in the group feels attacked. That reaction is wired in and completely understandable. But responding in the moment almost always makes the public moment bigger, not smaller. The prefrontal cortex move keeps the incident small and gives you the option to address the real issue later, on your own terms.",
+    sta: { stop: "Do not add to the moment. Let it be small.", think: "Do I want this to be a bigger deal than it already is?", act: "Comply now. Address how it felt later, privately." }
+  },
+  {
+    context: "School",
+    situation: "Your end of day behavior percentage comes in lower than you expected. You thought you had a good day or at least a decent one.",
+    feeling: "How it feels: Deflated. Confused. Maybe like the system is working against you even when you try.",
+    options: [
+      "You argue the number, shut down, or write the whole day off — 'that percentage is wrong so forget it.'",
+      "You accept it without saying anything but carry it home and let it affect your mood for the rest of the evening.",
+      "You ask calmly which specific moments brought it down. You use that information even if you disagree with it."
+    ],
+    explain: "The amygdala experiences an unexpected low percentage as proof that trying does not work — one of the most discouraging feelings there is. But shutting down or arguing the number does not change it. Asking specifically what brought it down gives your prefrontal cortex actual data to work with. You might still disagree. But you leave with information instead of just frustration.",
+    sta: { stop: "Do not write the whole day off.", think: "What specifically brought it down? That information is actually useful.", act: "Ask one calm question. Use the answer." }
+  },
+  {
+    context: "School / Any",
+    situation: "You are already having a bad day — tired, frustrated, behind — and something small happens that feels like the last straw. Someone's tone, a small inconvenience, something that normally would not matter.",
+    feeling: "How it feels: Like everything is too much. Like you are done.",
+    options: [
+      "The small thing gets the full reaction — as if it were the whole day. Someone gets the version of you that has been building since morning.",
+      "You recognize you are overwhelmed but do not do anything about it — you just wait for something else to push you over.",
+      "You name it to yourself first: 'I am not actually this upset about this specific thing. I am already maxed out.' Then you do one small thing to interrupt the pattern."
+    ],
+    explain: "The last straw is almost never actually about the straw. The amygdala has been accumulating charge all day and the small thing just happens to be standing there when it runs out of capacity. The prefrontal cortex move is naming that before you react — 'this is not about this' — because that one sentence gives your prefrontal cortex just enough time to get involved. That is the whole skill. Just enough time.",
+    sta: { stop: "This is not about this specific thing. Name that first.", think: "What has actually been building? What does my body need right now?", act: "One small interruption — ask for a minute, change locations, drink water. Anything physical." }
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Scenario ${current + 1} of ${rounds.length}`;
+  document.getElementById('ctx-badge').textContent = r.context;
+  document.getElementById('scenario-stmt').textContent = r.situation;
+  document.getElementById('feeling-line').textContent = r.feeling;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  document.getElementById('options-list').innerHTML = r.options.map((opt, i) => `
+    <button class="opt-btn plain" onclick="pickOption(${i}, this)">${opt}</button>`).join('');
+
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickOption(idx, btn) {
+  if (voted) return;
+  voted = true;
+  if (idx === 2) score++;
+  const r = rounds[current];
+  const classes = ['amyg', 'mid', 'pfc'];
+  const labels = ['🔴 Amygdala response', '🟡 Halfway there', '🟢 Prefrontal cortex'];
+  document.querySelectorAll('.opt-btn').forEach((b, i) => {
+    b.disabled = true;
+    b.classList.remove('plain');
+    b.classList.add(classes[i]);
+    if (i === idx) b.classList.add('selected-' + classes[i]);
+    // Prepend label to text
+    b.innerHTML = '<strong style="display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">' + labels[i] + '</strong>' + r.options[i];
+  });
+  document.getElementById('reveal-explain').textContent = r.explain;
+  document.getElementById('sta-breakdown').innerHTML = `
+    <div class="sta-row"><div class="sta-tag stop">STOP</div><div class="sta-row-text">${r.sta.stop}</div></div>
+    <div class="sta-row"><div class="sta-tag think">THINK</div><div class="sta-row-text">${r.sta.think}</div></div>
+    <div class="sta-row"><div class="sta-tag act">ACT</div><div class="sta-row-text">${r.sta.act}</div></div>`;
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/10';
+  let comment;
+  if (score >= 8) comment = "Your honest instinct landed on the prefrontal cortex response most of the time. That is not luck — that is a skill you have been building.";
+  else if (score >= 5) comment = "About half the time your honest instinct was the prefrontal cortex response. The other half — the amygdala was faster. Noticing that pattern is the first step to changing it.";
+  else comment = "Your honest instinct went to the amygdala response most of the time. That is not a character flaw — that is just where you are right now. Every time you see the pattern, you are building the awareness that slows it down.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

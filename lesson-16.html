@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Did They Actually Say That? — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #5a9fd4;
+    --accent-dark: #2d6fa0;
+    --accent-dim: #e8f2fb;
+    --accent-mid: #a8cff0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(28px, 6vw, 44px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(45,111,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(16px, 3vw, 20px); font-weight: 800; line-height: 1.5; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* ROUND */
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  /* CLAIM CARD */
+  .claim-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 22px 20px; margin-bottom: 20px; }
+  .claim-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; }
+  .claim-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.45; }
+
+  /* VOTE */
+  .pick-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+  .vote-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .vote-btn { flex: 1; padding: 16px 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .vote-btn.true-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.false-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.show-true { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.show-false { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.faded { opacity: 0.3; }
+  .vote-btn:disabled { cursor: default; }
+
+  /* REVEAL */
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  .verdict-banner { border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; }
+  .verdict-banner.true { background: var(--green-dim); border: 1.5px solid var(--green-mid); }
+  .verdict-banner.false { background: var(--red-dim); border: 1.5px solid var(--red-mid); }
+  .verdict-banner.partial { background: var(--amber-dim); border: 1.5px solid var(--amber-mid); }
+  .verdict-label { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+  .verdict-label.true { color: var(--green); }
+  .verdict-label.false { color: var(--red); }
+  .verdict-label.partial { color: var(--amber); }
+  .verdict-sub { font-size: 13px; font-weight: 600; color: var(--text2); }
+
+  .context-box { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .source-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--accent-dark); text-decoration: none; background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 5px 12px; border-radius: 20px; margin-bottom: 16px; transition: all 0.12s; }
+  .source-link:hover { background: var(--accent-mid); }
+  .source-link + .source-link { margin-left: 6px; }
+
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; display: block; margin-top: 4px; }
+  .btn-next:hover { opacity: 0.85; }
+
+  /* SCORE */
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.6; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+
+  .sources-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🗳️ Informed Voter</div>
+  <h1 class="lesson-title">Did they <span>actually do that?</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Politics is not about picking a team. It is about who controls your paycheck, your rent, your healthcare, and your future. So you might want to know what they are actually doing.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Most people get their political information from people who already have an opinion about it — which means most people are getting a filtered version of reality. Every item below is verified and sourced. Some will surprise you. Some will make you angry. Some are from Republicans, some from Democrats. None of them require you to pick a side. They just require you to know what is actually going on.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">True or false — then see the receipts</div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="claim-card">
+        <div class="claim-tag">Claim</div>
+        <div class="claim-text" id="claim-text"></div>
+      </div>
+      <div class="pick-label">True or false?</div>
+      <div class="vote-btns">
+        <button class="vote-btn true-btn" onclick="vote('true', this)">✓ True</button>
+        <button class="vote-btn false-btn" onclick="vote('false', this)">✗ False</button>
+      </div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="verdict-banner" id="verdict-banner">
+          <div class="verdict-label" id="verdict-label"></div>
+          <div class="verdict-sub" id="verdict-sub"></div>
+        </div>
+        <div class="context-box" id="context-box"></div>
+        <div class="sources-wrap" id="sources-wrap"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">correct out of 10</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Pick one item from this lesson that surprised you. Look it up yourself using the source link. Then find one more thing about it that was not covered here. The goal is not to be outraged — it is to be informed. Those are different things.</div>
+  </div>
+</div>
+
+<script>
+const rounds = [
+  {
+    claim: "Members of Congress are not allowed to trade stocks based on information they learn in their jobs.",
+    correct: 'true',
+    verdictType: 'partial',
+    verdictLabel: 'Technically true — but the enforcement is nearly nonexistent.',
+    verdictSub: 'The law exists. The consequences do not.',
+    context: "The STOCK Act (2012) made insider trading illegal for members of Congress. But violating the reporting requirements carries a minimum fine of just $200. In 2021, 54 members of Congress from both parties violated the law by failing to report trades on time. No one went to jail. The only member criminally charged (Republican Rep. Stephen Buyer, 2022) was no longer in office when he was caught. The law exists on paper. The consequences have not matched it.",
+    sources: [
+      { label: 'Congress.gov — STOCK Act', url: 'https://www.congress.gov/bill/112th-congress/senate-bill/2038' },
+      { label: 'Campaign Legal Center', url: 'https://campaignlegal.org/update/congressional-stock-trading-continues-raise-conflicts-interest-concerns' },
+    ]
+  },
+  {
+    claim: "In early 2020, senators from both parties sold large amounts of stock right after a private classified briefing about COVID-19 — before the market crashed.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True.',
+    verdictSub: 'From both parties. No criminal charges were ever filed.',
+    context: "Republican Senators Richard Burr and Kelly Loeffler and Democratic Senator Dianne Feinstein were among those investigated after selling significant stock holdings days after a closed Senate briefing on COVID-19 in February 2020. The Dow Jones dropped nearly 30% in the weeks that followed. The DOJ opened investigations. No criminal charges were filed against any sitting senator. Burr did resign as Intelligence Committee chair. The investigations closed in 2021.",
+    sources: [
+      { label: 'Wikipedia — 2020 Congressional Insider Trading Scandal', url: 'https://en.wikipedia.org/wiki/2020_congressional_insider_trading_scandal' },
+      { label: 'ProPublica', url: 'https://www.propublica.org/article/senator-dumped-up-to-1-7-million-of-stock-after-reassuring-public-about-coronavirus-preparedness' },
+    ]
+  },
+  {
+    claim: "Members of Congress make $174,000 a year and have not gotten a pay raise since 2009.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — and when adjusted for inflation, that is a 31% pay cut.',
+    verdictSub: 'They have voted to block their own automatic raise every year since 2010.',
+    context: "A 1989 law created automatic cost-of-living adjustments for Congress — raises that happen unless Congress votes to block them. Since 2010, Congress has voted to block those raises every single year. Their salary has been frozen at $174,000 since 2009. According to the Congressional Research Service, if they had taken every adjustment they were entitled to, members would be making about $221,600 today. When adjusted for inflation, the real purchasing power of their salary has dropped about 31% since 2009.",
+    sources: [
+      { label: 'NPR', url: 'https://www.npr.org/2024/12/27/nx-s1-5233140/congressional-lawmakers-no-pay-bump' },
+      { label: 'Congressional Research Service', url: 'https://www.congress.gov/crs-product/97-1011' },
+    ]
+  },
+  {
+    claim: "Congress has an approval rating above 30%.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — it has been below 20% for most of the last decade.',
+    verdictSub: "Despite this, over 90% of incumbents who run for re-election win.",
+    context: "Gallup tracking shows Congress approval has regularly hovered between 13-20% for years. In 2023 it hit 13% — one of the lowest on record. Americans overwhelmingly disapprove of Congress as an institution. And yet re-election rates for individual members consistently exceed 90%. People hate Congress but keep re-electing their own representatives. This gap between institutional disapproval and individual re-election rates is one of the most consistent patterns in American politics.",
+    sources: [
+      { label: 'Gallup — Congressional Approval', url: 'https://news.gallup.com/poll/1600/congress-public.aspx' },
+    ]
+  },
+  {
+    claim: "In 2021, more than 200 Republican members of Congress voted against the bipartisan infrastructure bill — then many of them held press conferences celebrating the funding it brought to their districts.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True.',
+    verdictSub: 'Voting no and then taking credit for the money is not unique to one party.',
+    context: "206 House Republicans voted against the Infrastructure Investment and Jobs Act in 2021. After it passed and was signed into law, multiple members who voted no attended ribbon cuttings, issued press releases, and held events celebrating infrastructure projects in their districts funded by the bill. Rep. Ashley Hinson celebrated 'game-changing' lock funding. Rep. Rob Wittman celebrated $70 million for a port. Rep. Nancy Mace celebrated $26 million for an electric bus hub — after calling the bill 'socialism.' Democrats have done similar things with other legislation. This is a bipartisan pattern, not a partisan one.",
+    sources: [
+      { label: 'ABC News', url: 'https://abcnews.go.com/Politics/house-republicans-tout-infrastructure-funding-voted/story?id=82429064' },
+      { label: 'The New Republic', url: 'https://newrepublic.com/post/173963/republicans-taking-credit-infrastructure-bill-voted-against' },
+    ]
+  },
+  {
+    claim: "86% of Americans support banning members of Congress from trading individual stocks.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — one of the most bipartisan public opinion findings in recent years.',
+    verdictSub: "The bill to ban it has not passed. Both parties have blocked or stalled it.",
+    context: "A 2023 University of Maryland survey found 86% of Americans across party lines support banning members of Congress from trading individual stocks. Bills have been introduced by both Republicans and Democrats to do exactly that. None have passed. When Democrats held the House majority from 2020-2022, they did not bring the bill to a vote. Republicans have similarly stalled it. Members of both parties continue to trade actively. In 2023, Congress made an estimated $1 billion in stock trades.",
+    sources: [
+      { label: 'University of Maryland Survey', url: 'https://criticalissues.umd.edu/sites/criticalissues.umd.edu/files/CongressStockTradingReport.pdf' },
+      { label: 'Motley Fool — Congressional Trading', url: 'https://www.fool.com/research/congressional-stock-trading-who-trades-and-makes-the-most/' },
+    ]
+  },
+  {
+    claim: "In 2024, Senate Republicans voted against a bipartisan border security bill that they had spent months demanding — because Donald Trump told them to kill it.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — and multiple Republican senators confirmed this publicly.',
+    verdictSub: 'The bill was blocked before most members had even read it.',
+    context: "Senate Republicans spent months in late 2023 insisting on a border security deal as a condition of other legislation. A bipartisan bill was negotiated over months between Democratic and Republican senators. Before it was even released publicly, Trump came out against it, saying it would hurt his campaign messaging. Nearly all Republican senators — including some who had helped write it — voted to filibuster and kill the bill. The final vote was 43-50. Only one Republican senator (Lisa Murkowski of Alaska) voted to advance it.",
+    sources: [
+      { label: 'NBC News', url: 'https://www.nbcnews.com/politics/congress/senate-republicans-block-border-security-bill-campaign-border-chaos-rcna153607' },
+    ]
+  },
+  {
+    claim: "The average age of a U.S. Senator is under 55.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — the average Senate age is in the mid-60s.',
+    verdictSub: 'The 118th Congress was the oldest in American history.',
+    context: "The 118th Congress (2023-2025) had an average Senate age of approximately 65 years old. The House average was about 58. This makes it the oldest Congress in American history. The median age of an American is about 38. The gap between the age of lawmakers and the age of the people they represent is significant — and it shows up in policy debates about technology, student debt, and other issues that disproportionately affect younger people.",
+    sources: [
+      { label: 'Congressional Research Service', url: 'https://www.congress.gov/crs-product/R43869' },
+    ]
+  },
+  {
+    claim: "You have to be at least 35 years old to run for the U.S. Senate.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — the minimum age for the Senate is 30. For the House it is 25.',
+    verdictSub: 'Most people do not know this.',
+    context: "The U.S. Constitution sets minimum ages: 25 years old to run for the House of Representatives, 30 for the Senate, and 35 for President. The 35-year minimum is only for the presidency. Alexandria Ocasio-Cortez was 29 when she was elected to the House in 2018 — the youngest woman ever elected to Congress at the time. There is no maximum age to run. Anyone who is a U.S. citizen and meets the minimum age and residency requirements can run for Congress.",
+    sources: [
+      { label: 'U.S. Constitution — Article I', url: 'https://constitution.congress.gov/browse/article-1/' },
+    ]
+  },
+  {
+    claim: "Most bills introduced in Congress become law within a few months.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — most bills never pass at all.',
+    verdictSub: 'In a typical session, fewer than 5% of introduced bills become law.',
+    context: "In a typical two-year Congressional session, between 10,000 and 15,000 bills are introduced. Fewer than 5% ever become law. Most bills die in committee — they are assigned to a committee for review and never get a vote. For bills that DO eventually pass, the average time from introduction to passage is well over a year. The legislative process is deliberately slow — it was designed that way to prevent hasty laws. But it also means that urgent issues can take years to address, if they are addressed at all.",
+    sources: [
+      { label: 'Congress.gov — How Laws Are Made', url: 'https://www.congress.gov/legislative-process' },
+    ]
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('claim-text').textContent = r.claim;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = false;
+    b.className = b.classList.contains('true-btn') ? 'vote-btn true-btn' : 'vote-btn false-btn';
+  });
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function vote(pick, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const isCorrect = pick === r.correct;
+  if (isCorrect) score++;
+
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = true;
+    if (b.classList.contains('true-btn')) b.className = r.correct === 'true' ? 'vote-btn show-true' : 'vote-btn faded';
+    else b.className = r.correct === 'false' ? 'vote-btn show-false' : 'vote-btn faded';
+  });
+
+  const banner = document.getElementById('verdict-banner');
+  banner.className = 'verdict-banner ' + r.verdictType;
+  document.getElementById('verdict-label').className = 'verdict-label ' + r.verdictType;
+  document.getElementById('verdict-label').textContent = r.verdictLabel;
+  document.getElementById('verdict-sub').textContent = r.verdictSub;
+  document.getElementById('context-box').textContent = r.context;
+
+  // Sources
+  document.getElementById('sources-wrap').innerHTML = r.sources.map(s =>
+    `<a class="source-link" href="${s.url}" target="_blank" rel="noopener">🔗 ${s.label}</a>`
+  ).join('');
+
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/10';
+  let comment;
+  if (score >= 8) comment = "You already knew more than most people. Now you have the sources to back it up — which is what separates being informed from just having opinions.";
+  else if (score >= 5) comment = "Some of these surprised you — which means you were working with incomplete information before. That is not a character flaw. That is just what happens when nobody teaches you this stuff.";
+  else comment = "Most of these surprised you. That is exactly the point. You cannot make good decisions about who represents you if you do not know what they are actually doing.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

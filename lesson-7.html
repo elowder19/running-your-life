@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Gets in the Way — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #6dbf9e;
+    --accent-dark: #3a9a72;
+    --accent-dim: #e8f6f0;
+    --accent-mid: #a8dfc5;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --blue: #5a9fd4;
+    --blue-dim: #e8f2fb;
+    --blue-mid: #a8cff0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+    --purple: #9b7fe8;
+    --purple-dim: #f0ecfc;
+    --purple-mid: #c8b8f0;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(58,154,114,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* BUCKET KEY */
+  .bucket-key { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .bucket-pill { flex: 1; min-width: 120px; padding: 10px 12px; border-radius: 10px; text-align: center; border: 1.5px solid; }
+  .bucket-pill.how { background: var(--blue-dim); border-color: var(--blue-mid); }
+  .bucket-pill.how .bp-label { color: var(--blue); }
+  .bucket-pill.resources { background: var(--amber-dim); border-color: var(--amber-mid); }
+  .bucket-pill.resources .bp-label { color: var(--amber); }
+  .bucket-pill.inside { background: var(--purple-dim); border-color: var(--purple-mid); }
+  .bucket-pill.inside .bp-label { color: var(--purple); }
+  .bp-count { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 900; line-height: 1; }
+  .bp-count.how { color: var(--blue); }
+  .bp-count.resources { color: var(--amber); }
+  .bp-count.inside { color: var(--purple); }
+  .bp-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+  /* ROUND */
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  /* OBSTACLE CARD */
+  .obstacle-setup { font-size: clamp(18px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.5; margin-bottom: 8px; background: var(--bg); border-radius: 10px; padding: 16px 18px; border-left: 3px solid var(--border); font-family: 'Nunito', sans-serif; }
+  .sneaky-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
+  .bucket-q { font-size: 13px; font-weight: 600; color: var(--text3); margin-bottom: 12px; margin-top: 16px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* BUCKET BUTTONS */
+  .bucket-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .bucket-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text2); cursor: pointer; text-align: left; transition: all 0.15s; }
+  .bucket-btn:hover:not(:disabled) { background: var(--card); }
+  .bucket-btn.how:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .bucket-btn.resources:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .bucket-btn.inside:hover:not(:disabled) { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+  .bucket-btn.correct-how { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .bucket-btn.correct-resources { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .bucket-btn.correct-inside { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+  .bucket-btn.wrong-pick { border-color: #ccc; opacity: 0.5; }
+  .bucket-btn:disabled { cursor: default; }
+
+  /* REVEAL */
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .reveal-verdict { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+  .reveal-verdict.correct { color: var(--green); }
+  .reveal-verdict.wrong { color: var(--amber); }
+  .reveal-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; }
+  .the-move { font-size: 13px; font-weight: 600; color: var(--accent-dark); background: var(--accent-dim); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  /* SCORE */
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🎯 Goals + Future</div>
+  <h1 class="lesson-title">What gets <span>in the way?</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">You know what you want. So what is actually stopping you?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Not all obstacles are the same — and that matters because different obstacles need different solutions. You cannot motivate your way out of a resources problem. You cannot buy your way out of a mindset problem. And you cannot google your way through something that requires a real credential or skill. Every obstacle below fits into one of three buckets. Sort them correctly and figure out what the actual move is.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Sort the obstacle into the right bucket</div>
+
+    <div class="bucket-key">
+      <div class="bucket-pill how">
+        <div class="bp-count how" id="tally-how">0</div>
+        <div class="bp-label how">Don't know how</div>
+      </div>
+      <div class="bucket-pill resources">
+        <div class="bp-count resources" id="tally-res">0</div>
+        <div class="bp-label resources">No resources</div>
+      </div>
+      <div class="bucket-pill inside">
+        <div class="bp-count inside" id="tally-in">0</div>
+        <div class="bp-label inside">Inside me</div>
+      </div>
+    </div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 8</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="obstacle-setup" id="obs-setup"></div>
+      <div class="sneaky-badge" id="obs-sneaky" style="display:none;">⚠️ Sneaky one</div>
+      <div class="bucket-q">Which bucket does this obstacle belong in?</div>
+      <div class="bucket-btns" id="bucket-btns"></div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="reveal-verdict" id="reveal-verdict"></div>
+        <div class="reveal-explain" id="reveal-explain"></div>
+        <div class="the-move" id="the-move"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">correct out of 8</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think of one thing you want that you have not gone after yet. What is the real obstacle — do you not know how, do you not have what you need, or is it something inside you? Name the bucket. That is where the solution lives.</div>
+  </div>
+</div>
+
+<script>
+const buckets = [
+  { id:'how', label:"I don't know how", desc:"I don't have the knowledge or skills yet" },
+  { id:'resources', label:"I don't have the resources", desc:"I'm missing money, credentials, equipment, or access" },
+  { id:'inside', label:"It's inside me", desc:"Fear, avoidance, motivation, or mindset is the real block" },
+];
+
+const rounds = [
+  {
+    obstacle: "\"I want to apply for jobs but I don't know how to write a resume.\"",
+    sneaky: false,
+    correct: 'how',
+    explain: "Not having a resume is a skills gap — you have never been taught how to build one. That is not laziness or fear. It is a missing piece of knowledge that can be learned in an afternoon with the right resource.",
+    move: "The move: Search 'simple resume template for first job' and spend one hour building a basic one. One time effort that opens every door."
+  },
+  {
+    obstacle: "\"I want to move out but I don't have first month's rent or a deposit saved.\"",
+    sneaky: false,
+    correct: 'resources',
+    explain: "No money saved is a resources problem — pure and simple. You cannot will your way into having money you do not have. The solution is a savings plan, more hours, or both.",
+    move: "The move: Figure out exactly how much you need, set a weekly savings target, and treat it like a bill you pay yourself first."
+  },
+  {
+    obstacle: "\"I want to get a better job but I keep putting off applying.\"",
+    sneaky: true,
+    correct: 'inside',
+    explain: "This one feels like a time problem or a resources problem — but if you are consistently putting something off that you have the ability to do, that is almost always avoidance. Fear of rejection, fear of change, or just the discomfort of starting something new.",
+    move: "The move: Set a specific time this week — not 'when I get around to it' — and submit one application. One. The avoidance shrinks every time you act through it."
+  },
+  {
+    obstacle: "\"I want to get a better paying job but the positions I want require a high school diploma and I don't have one yet.\"",
+    sneaky: true,
+    correct: 'resources',
+    explain: "This is a sneaky one because it can feel like a mindset problem — like you just need to believe in yourself more. But a diploma is a credential. You do not have it yet. That is a resources problem, not a motivation problem. You cannot positive-think your way into a credential you have not earned.",
+    move: "The move: The diploma is the resource you are building right now. Every day you show up is a deposit toward that credential."
+  },
+  {
+    obstacle: "\"I want to learn how to invest my money but I don't know where to start.\"",
+    sneaky: false,
+    correct: 'how',
+    explain: "Investing feels complicated — and for most people, nobody ever taught them how it works. That is a knowledge gap. The information exists and is genuinely learnable. This is not fear of failure — it is just a missing skill set.",
+    move: "The move: Search 'index fund for beginners' and spend 20 minutes reading. Then open a Robinhood or Fidelity account with whatever you have. Starting small is still starting."
+  },
+  {
+    obstacle: "\"I know I should go to bed earlier but I always end up on my phone until 2am anyway.\"",
+    sneaky: false,
+    correct: 'inside',
+    explain: "You know what to do. You have done it before. The obstacle is not knowledge — you know phones affect sleep. It is not resources — your bed is right there. This is a habits and self-regulation problem. That makes it an inside obstacle.",
+    move: "The move: Put your phone charger in a different room before 11pm. Remove the decision from the moment when your willpower is already gone."
+  },
+  {
+    obstacle: "\"I want to get my driver's license but I can't afford the classes or the test fees.\"",
+    sneaky: false,
+    correct: 'resources',
+    explain: "Driver's ed and test fees cost real money that not everyone has. This is a genuine resources barrier — not a motivation problem. Someone who cannot afford the fees is not being lazy.",
+    move: "The move: Look up whether your state has a free or reduced cost driver's ed program. Some schools and nonprofits offer them. The resource barrier may be smaller than it looks."
+  },
+  {
+    obstacle: "\"I want to get in shape but I just can't seem to stick with it for more than a week.\"",
+    sneaky: true,
+    correct: 'inside',
+    explain: "This one often gets blamed on not having a gym membership (resources) or not knowing the right workout (knowledge) — but most people who cannot stick with fitness for more than a week have both of those things figured out. The real obstacle is consistency, motivation, and building a habit. That lives inside.",
+    move: "The move: The problem is not the workout — it is the habit. Start with something so small you cannot say no. Ten minutes. Same time every day. Build the routine before you build the intensity."
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+const tally = { how: 0, resources: 0, inside: 0 };
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function updateTally() {
+  document.getElementById('tally-how').textContent = tally.how;
+  document.getElementById('tally-res').textContent = tally.resources;
+  document.getElementById('tally-in').textContent = tally.inside;
+}
+
+function renderRound() {
+  const r = rounds[current];
+  voted = false;
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('obs-setup').textContent = r.obstacle;
+  const sneakyEl = document.getElementById('obs-sneaky');
+  sneakyEl.style.display = r.sneaky ? 'inline-flex' : 'none';
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  document.getElementById('bucket-btns').innerHTML = buckets.map(b => `
+    <button class="bucket-btn ${b.id}" onclick="pickBucket('${b.id}', this)">
+      <strong>${b.label}</strong><br><span style="font-size:12px;font-weight:400;">${b.desc}</span>
+    </button>`).join('');
+
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickBucket(bucketId, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const isCorrect = bucketId === r.correct;
+  if (isCorrect) score++;
+  tally[r.correct]++;
+  updateTally();
+
+  document.querySelectorAll('.bucket-btn').forEach(b => {
+    b.disabled = true;
+    const bid = b.classList[1];
+    if (bid === r.correct) b.classList.add(`correct-${r.correct}`);
+    else if (b === btn && !isCorrect) b.classList.add('wrong-pick');
+  });
+
+  const verdict = document.getElementById('reveal-verdict');
+  verdict.textContent = isCorrect ? '✓ Correct bucket.' : `Not quite — this one belongs in "${buckets.find(b=>b.id===r.correct).label}."`;
+  verdict.className = 'reveal-verdict ' + (isCorrect ? 'correct' : 'wrong');
+  document.getElementById('reveal-explain').textContent = r.explain;
+  document.getElementById('the-move').textContent = r.move;
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/8';
+  let comment;
+  if (score >= 7) comment = "You can read an obstacle clearly. That is the whole skill — knowing what kind of problem you are actually dealing with before you try to solve it.";
+  else if (score >= 5) comment = "Solid. The ones that tripped you up are usually the sneaky ones — where the obstacle looks like one thing but is actually another.";
+  else comment = "The sneaky ones are sneaky for a reason. Most people misread their obstacles — which is exactly why they keep using the wrong solution.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  tally.how = 0; tally.resources = 0; tally.inside = 0;
+  updateTally();
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

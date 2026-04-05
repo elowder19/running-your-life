@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Ask for Stuff — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #e8a045;
+    --accent-dark: #c47820;
+    --accent-dim: #fdf5e8;
+    --accent-mid: #f0d0a0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(196,120,32,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* SCENARIO TABS */
+  .scenario-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stab { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .stab:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .stab.active { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .stab.done { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+  /* SCENARIO */
+  .scenario-name { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+  .scenario-situation { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.6; margin-bottom: 20px; background: var(--bg); border-radius: 10px; padding: 14px 16px; border-left: 3px solid var(--accent-mid); }
+
+  /* STEP PROGRESS */
+  .step-bar { display: flex; gap: 6px; margin-bottom: 20px; }
+  .step-pip { flex: 1; height: 6px; border-radius: 3px; background: var(--border); transition: background 0.2s; }
+  .step-pip.done { background: var(--green); }
+  .step-pip.current { background: var(--accent-dark); }
+
+  /* STEP */
+  .step-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 6px; }
+  .step-q { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+  .step-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .step-opt { padding: 13px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text2); cursor: pointer; text-align: left; transition: all 0.15s; font-weight: 500; line-height: 1.5; }
+  .step-opt:hover:not(:disabled) { border-color: var(--accent); color: var(--text); background: var(--accent-dim); }
+  .step-opt.correct { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .step-opt.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); opacity: 0.6; }
+  .step-opt:disabled { cursor: default; }
+
+  /* ASSEMBLED MESSAGE */
+  .message-build { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; min-height: 60px; }
+  .message-build-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 8px; }
+  .message-parts { display: flex; flex-direction: column; gap: 4px; }
+  .message-part { font-size: 14px; line-height: 1.6; color: var(--text2); font-style: italic; display: none; animation: fadeUp 0.2s ease both; }
+  .message-part.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+  .message-part .part-label { font-style: normal; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-right: 6px; }
+  .message-part .part-label.opener { color: var(--accent-dark); }
+  .message-part .part-label.ask { color: var(--blue, #5a9fd4); }
+  .message-part .part-label.closer { color: var(--green); }
+
+  /* COMPLETE */
+  .scenario-complete { display: none; animation: fadeUp 0.3s ease both; }
+  .scenario-complete.visible { display: block; }
+  .complete-msg-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 8px; }
+  .complete-msg { font-size: 15px; font-style: italic; line-height: 1.75; color: var(--text); background: var(--green-dim); border: 1px solid var(--green-mid); border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+  .btn-next-scenario { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next-scenario:hover { opacity: 0.85; }
+
+  /* ALL DONE */
+  .all-done { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .all-done.visible { display: block; animation: fadeUp 0.3s ease both; }
+  .all-done-title { font-family: 'Nunito', sans-serif; font-size: 32px; font-weight: 900; color: var(--accent-dark); margin-bottom: 12px; }
+  .all-done-text { font-size: 15px; color: var(--text2); line-height: 1.75; margin-bottom: 20px; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">💼 Work + Real Life</div>
+  <h1 class="lesson-title">How to <span>ask for stuff</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Most people either don't ask for what they need — or ask in a way that makes it easy to say no.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">There is a skill to asking for things at work. Timing, framing, and tone all affect the outcome — sometimes more than the actual request. The framework is simple: a good opener sets the tone, a clear ask makes it easy to say yes, and a strong closer shows you are thinking about their side too. Run through the scenarios below and build each message piece by piece.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Build the message — three steps</div>
+    <div class="scenario-tabs" id="scenario-tabs"></div>
+    <div id="scenario-area"></div>
+    <div class="all-done" id="all-done">
+      <div class="all-done-title">All 6 done. 💼</div>
+      <div class="all-done-text">The pattern is always the same: open with respect for their time, ask clearly and directly, close by showing you are thinking about the bigger picture. That formula works for shift swaps, raises, days off, and everything in between.</div>
+      <button class="btn-restart" onclick="restartAll()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Is there something you have been wanting to ask for at work but have been putting off? Use the three-step framework — opener, ask, closer. What does your version sound like?</div>
+  </div>
+</div>
+
+<script>
+const scenarios = [
+  {
+    name: "Zach",
+    situation: "Zach needs Saturday off and wants to ask a coworker to swap shifts.",
+    steps: [
+      {
+        tag: "Step 1 — Opener", q: "How does Zach start the conversation?",
+        options: [
+          "I know this is a lot to ask but I was wondering if maybe you would be willing to possibly consider something...",
+          "Hey, I need you to take my Saturday shift.",
+          "Hey, do you have a second? I wanted to ask you something about the schedule."
+        ],
+        correct: 2, type: 'opener'
+      },
+      {
+        tag: "Step 2 — The Ask", q: "How does Zach make the actual ask?",
+        options: [
+          "I really, really need Saturday off — like I absolutely cannot work it, is there any way you could cover it?",
+          "I have something going on Saturday and can't work. Would you want to swap? I'd take one of your shifts in return.",
+          "Saturday doesn't work for me anymore so I'm going to need someone else to take it."
+        ],
+        correct: 1, type: 'ask'
+      },
+      {
+        tag: "Step 3 — Closer", q: "How does Zach close it out?",
+        options: [
+          "Let me know if that works — and if not, no worries.",
+          "You kind of owe me one anyway so it would be nice if you said yes.",
+          "Let me know whenever, no rush at all, only if you want to, totally fine if not!"
+        ],
+        correct: 0, type: 'closer'
+      }
+    ],
+    fullMessage: "Hey, do you have a second? I wanted to ask you something about the schedule. I have something going on Saturday and can't work — would you want to swap? I'd take one of your shifts in return. Let me know if that works — and if not, no worries."
+  },
+  {
+    name: "Cole",
+    situation: "Cole wants to ask his manager for more hours.",
+    steps: [
+      {
+        tag: "Step 1 — Opener", q: "How does Cole open the conversation with his manager?",
+        options: [
+          "Can I ask you something real quick? (said mid-rush, right before the lunch crowd hits)",
+          "So I've been thinking and I feel like I should probably be getting more hours than I currently am.",
+          "Hey, I wanted to ask about getting more hours — do you have a few minutes this week to talk?"
+        ],
+        correct: 2, type: 'opener'
+      },
+      {
+        tag: "Step 2 — The Ask", q: "How does Cole make the actual ask?",
+        options: [
+          "Other people on the team seem to get more hours than me and I was wondering if I could get more too.",
+          "I've really been enjoying working here and I'm looking to pick up more hours. Is there any room to add a shift or two to my schedule?",
+          "I need more money so I need more hours — can you just add me to more shifts?"
+        ],
+        correct: 1, type: 'ask'
+      },
+      {
+        tag: "Step 3 — Closer", q: "How does Cole close it?",
+        options: [
+          "Just let me know I guess, whenever you get around to it.",
+          "I'd really appreciate it, I really need this.",
+          "I'm flexible on days and times — whatever works best for the schedule."
+        ],
+        correct: 2, type: 'closer'
+      }
+    ],
+    fullMessage: "Hey, I wanted to ask about getting more hours — do you have a few minutes this week to talk? I've really been enjoying working here and I'm looking to pick up more hours — is there any room to add a shift or two to my schedule? I'm flexible on days and times — whatever works best for the schedule."
+  },
+  {
+    name: "Tyler",
+    situation: "Tyler needs a specific day off for a family commitment and needs to request it from his manager.",
+    steps: [
+      {
+        tag: "Step 1 — Opener", q: "How does Tyler open the conversation?",
+        options: [
+          "Hi, when you get a chance, I have a schedule request I wanted to run by you.",
+          "Hey, I need to request a day off.",
+          "So my family has this thing coming up and I was hoping maybe I could possibly get a day off if that's okay."
+        ],
+        correct: 0, type: 'opener'
+      },
+      {
+        tag: "Step 2 — The Ask", q: "How does Tyler make the ask?",
+        options: [
+          "June 14th doesn't work for me so I can't come in.",
+          "I might need June 14th off, like I'm not 100% sure yet but I'm pretty sure I'll need it, I think.",
+          "I won't be available on June 14th — I have a family commitment that day. Is it possible to have that day off?"
+        ],
+        correct: 2, type: 'ask'
+      },
+      {
+        tag: "Step 3 — Closer", q: "How does Tyler close it?",
+        options: [
+          "Just let me know, I mean I really need it but whatever works I guess.",
+          "I already told my family I'd be there so I kind of have to have it off.",
+          "I'm happy to pick up an extra shift another day to help cover if that's useful."
+        ],
+        correct: 2, type: 'closer'
+      }
+    ],
+    fullMessage: "Hi, when you get a chance, I have a schedule request I wanted to run by you. I won't be available on June 14th — I have a family commitment that day. Is it possible to have that day off? I'm happy to pick up an extra shift another day to help cover if that's useful."
+  },
+  {
+    name: "Devon",
+    situation: "Devon's manager gave him a project-style task with a deadline he is not going to hit.",
+    steps: [
+      {
+        tag: "Step 1 — Opener", q: "How does Devon open the conversation?",
+        options: [
+          "I've been really trying but it's been really hard and I'm not sure I'm going to make it.",
+          "Hey, I wanted to give you a heads up about the task you assigned me.",
+          "So I'm not going to be done with that thing by when you said."
+        ],
+        correct: 1, type: 'opener'
+      },
+      {
+        tag: "Step 2 — The Ask", q: "How does Devon ask for an extension?",
+        options: [
+          "I need more time — the deadline you gave me was way too short for what you asked.",
+          "I was wondering if maybe there's any flexibility at all on the deadline, like even just a little bit?",
+          "I've made solid progress but I want to make sure it's done right. Would it be possible to have until [specific date] to finish it properly?"
+        ],
+        correct: 2, type: 'ask'
+      },
+      {
+        tag: "Step 3 — Closer", q: "How does Devon close it?",
+        options: [
+          "Hopefully that's okay, sorry for the inconvenience.",
+          "I'll have it to you by then — I just wanted to be upfront rather than turn in something half-finished.",
+          "I mean I'll try to get it done faster if I can but I just can't promise anything."
+        ],
+        correct: 1, type: 'closer'
+      }
+    ],
+    fullMessage: "Hey, I wanted to give you a heads up about the task you assigned me. I've made solid progress but I want to make sure it's done right — would it be possible to have until [specific date] to finish it properly? I'll have it to you by then — I just wanted to be upfront rather than turn in something half-finished."
+  },
+  {
+    name: "Alex",
+    situation: "Alex is overwhelmed between work and school and needs to cut back his hours temporarily.",
+    steps: [
+      {
+        tag: "Step 1 — Opener", q: "How does Alex open this conversation?",
+        options: [
+          "I don't know if this is even possible but I was kind of hoping to maybe talk about my hours at some point.",
+          "Hey, I need to talk to you about something — do you have a few minutes?",
+          "I can't keep doing this many hours anymore, it's too much."
+        ],
+        correct: 1, type: 'opener'
+      },
+      {
+        tag: "Step 2 — The Ask", q: "How does Alex make the ask?",
+        options: [
+          "I was thinking maybe I could work a little less — like maybe just a few less hours if possible, I'm not sure exactly how many.",
+          "I need fewer hours because school is hard and I'm really stressed out.",
+          "I want to be upfront with you — school is getting intense this semester and I'm struggling to keep up. Would it be possible to drop down to around X hours a week temporarily, just through the end of the semester?"
+        ],
+        correct: 2, type: 'ask'
+      },
+      {
+        tag: "Step 3 — Closer", q: "How does Alex close it?",
+        options: [
+          "I want to stay on the schedule long term — I just need to get through this stretch first.",
+          "Whatever you decide is fine I guess, I just wanted to mention it.",
+          "I hope that's okay, I really don't want to cause problems."
+        ],
+        correct: 0, type: 'closer'
+      }
+    ],
+    fullMessage: "Hey, I need to talk to you about something — do you have a few minutes? I want to be upfront with you — school is getting intense this semester and I'm struggling to keep up. Would it be possible to drop down to around X hours a week temporarily, just through the end of the semester? I want to stay on the schedule long term — I just need to get through this stretch first."
+  },
+  {
+    name: "Cameron",
+    situation: "Cameron has been at his job for 8 months with no issues and wants to ask for a raise.",
+    steps: [
+      {
+        tag: "Step 1 — Opener", q: "How does Cameron open this conversation?",
+        options: [
+          "Some people I know make more than me at other places so I was wondering about my pay.",
+          "I think I deserve a raise and I wanted to talk to you about it.",
+          "Hey, when you have a few minutes, I'd love to talk about my compensation — I have some thoughts I wanted to share."
+        ],
+        correct: 2, type: 'opener'
+      },
+      {
+        tag: "Step 2 — The Ask", q: "How does Cameron make the ask?",
+        options: [
+          "I've been here 8 months, I've been reliable, taken on extra tasks when needed, and I feel like I've proved what I can do. I'd like to talk about a raise — I was thinking something in the range of X.",
+          "I just feel like I work really hard and it would be nice to feel more appreciated, you know?",
+          "I need more money — I've been here long enough that I feel like I should be making more by now."
+        ],
+        correct: 0, type: 'ask'
+      },
+      {
+        tag: "Step 3 — Closer", q: "How does Cameron close it?",
+        options: [
+          "I mean I'd hate to have to start looking elsewhere but I might have to if nothing changes.",
+          "I'm not looking to go anywhere — I just want to make sure we're on the same page about where I stand and where I'm headed here.",
+          "I just really hope you'll consider it — I would really appreciate it a lot."
+        ],
+        correct: 1, type: 'closer'
+      }
+    ],
+    fullMessage: "Hey, when you have a few minutes, I'd love to talk about my compensation — I have some thoughts I wanted to share. I've been here 8 months, I've been reliable, taken on extra tasks when needed, and I feel like I've proved what I can do — I'd like to talk about a raise, I was thinking something in the range of X. I'm not looking to go anywhere — I just want to make sure we're on the same page about where I stand and where I'm headed here."
+  }
+];
+
+let currentScenario = 0;
+let currentStep = 0;
+let scenarioDone = [];
+let chosenParts = [];
+
+function buildTabs() {
+  document.getElementById('scenario-tabs').innerHTML = scenarios.map((s, i) =>
+    `<button class="stab ${i === 0 ? 'active' : ''}" id="stab-${i}" onclick="goToScenario(${i})">${s.name}</button>`
+  ).join('');
+}
+
+function goToScenario(idx) {
+  currentScenario = idx;
+  currentStep = 0;
+  chosenParts = [];
+  document.querySelectorAll('.stab').forEach((t, i) => {
+    t.className = 'stab' + (scenarioDone[i] ? ' done' : '') + (i === idx ? ' active' : '');
+  });
+  renderScenario();
+}
+
+function renderScenario() {
+  const s = scenarios[currentScenario];
+  const area = document.getElementById('scenario-area');
+  area.innerHTML = `
+    <div class="scenario-name">${s.name}</div>
+    <div class="scenario-situation">${s.situation}</div>
+    <div class="step-bar">
+      ${s.steps.map((_, i) => `<div class="step-pip ${i < currentStep ? 'done' : i === currentStep ? 'current' : ''}" id="pip-${i}"></div>`).join('')}
+    </div>
+    <div class="message-build">
+      <div class="message-build-label">Message so far</div>
+      <div class="message-parts" id="message-parts">
+        <div class="message-part" id="msg-opener"><span class="part-label opener">OPENER</span><span id="msg-opener-text"></span></div>
+        <div class="message-part" id="msg-ask"><span class="part-label ask">ASK</span><span id="msg-ask-text"></span></div>
+        <div class="message-part" id="msg-closer"><span class="part-label closer">CLOSER</span><span id="msg-closer-text"></span></div>
+      </div>
+    </div>
+    <div id="step-area"></div>
+    <div class="scenario-complete" id="scenario-complete">
+      <div class="complete-msg-label">✓ Full message assembled</div>
+      <div class="complete-msg" id="complete-msg-text"></div>
+      <button class="btn-next-scenario" onclick="nextScenario()">${currentScenario < scenarios.length - 1 ? 'Next scenario →' : 'See finish →'}</button>
+    </div>`;
+  renderStep();
+}
+
+function renderStep() {
+  const s = scenarios[currentScenario];
+  const st = s.steps[currentStep];
+  // Update pips
+  s.steps.forEach((_, i) => {
+    const pip = document.getElementById('pip-' + i);
+    if (pip) pip.className = 'step-pip ' + (i < currentStep ? 'done' : i === currentStep ? 'current' : '');
+  });
+  document.getElementById('step-area').innerHTML = `
+    <div class="step-tag">${st.tag}</div>
+    <div class="step-q">${st.q}</div>
+    <div class="step-options">
+      ${st.options.map((opt, i) => `<button class="step-opt" onclick="pickStep(${i}, this)">${opt}</button>`).join('')}
+    </div>`;
+}
+
+function pickStep(optIdx, btn) {
+  const s = scenarios[currentScenario];
+  const st = s.steps[currentStep];
+  const isCorrect = optIdx === st.correct;
+  document.querySelectorAll('.step-opt').forEach((b, i) => {
+    b.disabled = true;
+    if (i === st.correct) b.classList.add('correct');
+    else if (i === optIdx && !isCorrect) b.classList.add('wrong');
+  });
+  // Add correct text to message build
+  const correctText = st.options[st.correct];
+  chosenParts[currentStep] = correctText;
+  const msgEl = document.getElementById('msg-' + st.type);
+  const msgTextEl = document.getElementById('msg-' + st.type + '-text');
+  if (msgEl && msgTextEl) { msgTextEl.textContent = correctText; msgEl.classList.add('visible'); }
+
+  setTimeout(() => {
+    currentStep++;
+    if (currentStep >= s.steps.length) {
+      document.getElementById('step-area').style.display = 'none';
+      document.getElementById('complete-msg-text').textContent = s.fullMessage;
+      document.getElementById('scenario-complete').classList.add('visible');
+      document.getElementById('scenario-complete').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    } else {
+      renderStep();
+      document.getElementById('step-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+  }, 500);
+}
+
+function nextScenario() {
+  scenarioDone[currentScenario] = true;
+  document.getElementById('stab-' + currentScenario).className = 'stab done';
+  if (currentScenario < scenarios.length - 1) {
+    goToScenario(currentScenario + 1);
+    document.getElementById('scenario-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  } else {
+    document.getElementById('scenario-area').style.display = 'none';
+    document.getElementById('scenario-tabs').style.display = 'none';
+    const done = document.getElementById('all-done');
+    done.classList.add('visible');
+    done.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+}
+
+function restartAll() {
+  currentScenario = 0; currentStep = 0;
+  scenarioDone = []; chosenParts = [];
+  document.getElementById('scenario-area').style.display = 'block';
+  document.getElementById('scenario-tabs').style.display = 'flex';
+  document.getElementById('all-done').classList.remove('visible');
+  buildTabs();
+  goToScenario(0);
+}
+
+buildTabs();
+goToScenario(0);
+</script>
+</body>
+</html>

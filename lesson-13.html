@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading the Room — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #c17fd4;
+    --accent-dark: #8a45a0;
+    --accent-dim: #f7eefa;
+    --accent-mid: #ddb8e8;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(138,69,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  .context-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 4px; margin-bottom: 12px; background: var(--accent-dim); color: var(--accent-dark); border: 1px solid var(--accent-mid); }
+  .scenario-stmt { font-family: 'Nunito', sans-serif; font-size: clamp(16px, 2.8vw, 19px); font-weight: 800; color: var(--text); line-height: 1.6; margin-bottom: 20px; background: var(--bg); border-radius: 10px; padding: 16px 18px; border-left: 3px solid var(--accent-mid); }
+  .pick-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .opt-btn { padding: 13px 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--text2); text-align: left; transition: all 0.15s; line-height: 1.5; }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+  .opt-btn.best { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .opt-btn.okay { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); font-weight: 600; }
+  .opt-btn.miss { border-color: var(--red); background: var(--red-dim); color: var(--red); opacity: 0.65; }
+  .opt-btn.selected-best { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .opt-btn.selected-okay { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); font-weight: 600; }
+  .opt-btn.selected-miss { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .opt-btn:disabled { cursor: default; }
+
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  .cues-box { background: var(--accent-dim); border: 1px solid var(--accent-mid); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .cues-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-dark); margin-bottom: 8px; }
+  .cue-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .cue-row:last-child { margin-bottom: 0; }
+  .cue-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+  .the-move { font-size: 14px; font-weight: 600; color: var(--accent-dark); background: var(--bg); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; line-height: 1.6; border-left: 3px solid var(--accent); }
+
+  .option-breakdown { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .ob-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; padding: 8px 12px; border-radius: 8px; }
+  .ob-row.best { background: var(--green-dim); color: var(--text2); border: 1px solid var(--green-mid); }
+  .ob-row.okay { background: var(--amber-dim); color: var(--text2); border: 1px solid var(--amber-mid); }
+  .ob-row.miss { background: var(--red-dim); color: var(--text2); border: 1px solid #f5c0c0; }
+  .ob-letter { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px; flex-shrink: 0; }
+  .ob-letter.best { color: var(--green); }
+  .ob-letter.okay { color: var(--amber); }
+  .ob-letter.miss { color: var(--red); }
+
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🧠 Street Smart</div>
+  <h1 class="lesson-title">Reading <span>the room</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Has a situation ever gone sideways and you realized too late that the signs were there the whole time?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Reading the room is not a soft skill — it is a survival skill. Every situation gives off signals before anything is said out loud. Body language, tone, energy, what is not being said. The people who stay out of trouble and get what they want are almost always the ones who noticed first. Run through the scenarios below — pick your honest response, then see what the cues were actually telling you.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Read the situation — pick your honest response</div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Scenario 1 of 7</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="context-badge" id="ctx-badge"></div>
+      <div class="scenario-stmt" id="scenario-stmt"></div>
+      <div class="pick-label">What do you do?</div>
+      <div class="options" id="options-list"></div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="cues-box">
+          <div class="cues-label">Cues you were reading</div>
+          <div id="cues-list"></div>
+        </div>
+        <div class="the-move" id="the-move"></div>
+        <div class="option-breakdown" id="option-breakdown"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">best reads out of 7</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think of a situation recently where you misread the room — or someone else did. What were the cues that got missed? What would have been different if someone caught them earlier?</div>
+  </div>
+</div>
+
+<script>
+// option types: 'best', 'okay', 'miss'
+const rounds = [
+  {
+    context: "Work",
+    situation: "Your manager has been moving fast between tasks all shift. A little while ago they snapped at a coworker over something small — nothing serious, but you noticed. Every time you glance over they are heads-down, not making eye contact with anyone. The place is slammed — middle of a lunch rush, everyone in the weeds. You have been wanting to ask about switching your shift next weekend. You decide to just go for it.",
+    options: [
+      { text: "Ask now — you need an answer and you have been waiting all shift.", type: 'miss' },
+      { text: "Send a text or leave a note so they can respond when they have time.", type: 'okay' },
+      { text: "Wait until the rush dies down, catch them in a calm moment, and ask then.", type: 'best' },
+    ],
+    cues: [
+      { icon: "🔴", text: "Moving fast without stopping → survival mode, not conversation mode" },
+      { icon: "🔴", text: "Snapped at a coworker → emotional bandwidth is already low" },
+      { icon: "🔴", text: "No eye contact with anyone → not available for interaction" },
+      { icon: "🔴", text: "Middle of a lunch rush → the worst possible moment for any non-urgent ask" },
+    ],
+    move: "Timing is half the ask. The exact same question lands completely differently when the room is calm.",
+    breakdown: [
+      { letter: 'A', type: 'miss', text: "Asking now almost guarantees a no — and possibly friction on top of it. You needed an answer, you got a bad one." },
+      { letter: 'B', type: 'okay', text: "Reasonable — it gets the question in without confronting the wrong moment. The ask might still feel off without a real conversation though." },
+      { letter: 'C', type: 'best', text: "You read the room and waited. Same ask, different timing, much better outcome." },
+    ]
+  },
+  {
+    context: "School",
+    situation: "In the last 15 minutes the teacher has redirected two other students — not harshly, but you noticed. Their voice has gotten shorter and clipped, fewer words than usual. They are not smiling or making any casual conversation, which is not typical for them. The whole room feels tense in a way that is hard to explain but easy to feel. You need to use the bathroom and have to ask.",
+    options: [
+      { text: "Ask loudly from across the room — it is just the bathroom, not a big deal.", type: 'miss' },
+      { text: "Wait for a natural pause, make eye contact, and ask quietly and directly.", type: 'best' },
+      { text: "Just get up and go — you do not need permission for the bathroom.", type: 'miss' },
+    ],
+    cues: [
+      { icon: "🔴", text: "Two redirections in 15 minutes → patience is running thin" },
+      { icon: "🔴", text: "Clipped, short voice → stress response — less bandwidth for extra input" },
+      { icon: "🔴", text: "No smiling or casual conversation → not in a relaxed headspace" },
+      { icon: "🔴", text: "Tense room energy → something has been going on that you may not have seen" },
+    ],
+    move: "You still need the bathroom. The cues tell you HOW to ask — quietly, directly, at the right moment — not whether to ask.",
+    breakdown: [
+      { letter: 'A', type: 'miss', text: "Asking loudly from across the room adds to the noise in an already tense environment. High chance of a no or a redirection of your own." },
+      { letter: 'B', type: 'best', text: "You read the energy and matched it — quiet, direct, well-timed. That is the move." },
+      { letter: 'C', type: 'miss', text: "Just leaving without asking in this particular moment, with this particular energy, is likely to go worse than you think." },
+    ]
+  },
+  {
+    context: "Social",
+    situation: "You are about to walk up to your friends with something funny you have been wanting to share. As you get closer you notice two of them are pointedly not looking at each other. The conversation dropped off right before you arrived. Someone on the edge of the group has their arms crossed and keeps glancing toward the exit. Nobody is laughing.",
+    options: [
+      { text: "Make the joke anyway — a little humor might break the tension.", type: 'miss' },
+      { text: "Stay quiet and wait to see how things unfold before you add anything.", type: 'best' },
+      { text: "Jump into the middle of whatever is going on and try to fix it.", type: 'miss' },
+    ],
+    cues: [
+      { icon: "🔴", text: "Deliberate non-eye-contact between two people → active conflict or tension" },
+      { icon: "🔴", text: "Conversation dropped when you arrived → they may have been mid-argument" },
+      { icon: "🔴", text: "Someone eyeing the exit with arms crossed → discomfort, wanting out" },
+      { icon: "🔴", text: "No laughing or joking → this is not the vibe for humor right now" },
+    ],
+    move: "Your joke might land. It also might make things worse. When you are not sure, waiting costs nothing. Jumping in costs potentially a lot.",
+    breakdown: [
+      { letter: 'A', type: 'miss', text: "Humor in a tense moment can land — but when every signal says this is serious, the odds are not in your favor." },
+      { letter: 'B', type: 'best', text: "Staying quiet and watching is underrated. You protect yourself and you leave room for things to unfold without adding fuel." },
+      { letter: 'C', type: 'miss', text: "Trying to fix something you do not fully understand yet almost always makes it bigger, not smaller." },
+    ]
+  },
+  {
+    context: "Work",
+    situation: "Your trainer has been off all shift. Earlier something went wrong — their face went red and they have not said a word to anyone since. They are moving stiff and fast, sighing loud enough to hear across the floor. You have been avoiding them. Unfortunately, they are your trainer and you have a task you genuinely cannot do without their help.",
+    options: [
+      { text: "Ask them anyway — it is work, everyone has bad days, they need to handle it.", type: 'okay' },
+      { text: "Handle the task yourself or find someone else to ask.", type: 'okay' },
+      { text: "Check in first — \"hey, you good?\" — before you make any ask of them.", type: 'best' },
+    ],
+    cues: [
+      { icon: "🔴", text: "Silent all shift → withdrawn, not engaging — something is off" },
+      { icon: "🔴", text: "Loud sighing → frustration leaking out, not fully contained" },
+      { icon: "🔴", text: "Stiff and fast movements → physical signs of stress or agitation" },
+      { icon: "🔴", text: "Face went red after a mistake, went quiet → still carrying it" },
+    ],
+    move: "Option C reads the room — you check in as a human first, then decide whether to ask. That is the difference between a coworker and just a person standing near you.",
+    breakdown: [
+      { letter: 'A', type: 'okay', text: "It is not wrong — you do need help. But walking straight into someone at their limit without acknowledging it first rarely goes smoothly." },
+      { letter: 'B', type: 'okay', text: "Reasonable if you can make it work — but you said you genuinely cannot do this task without them." },
+      { letter: 'C', type: 'best', text: "Checking in first costs you 10 seconds. It completely changes the dynamic of whatever comes next." },
+    ]
+  },
+  {
+    context: "Work / School",
+    situation: "A staff member is explaining something to you. You think you see where they are going and jump in — finish their sentence, add your take, start talking. They stop. Their expression shifts slightly — not angry, but something closes in their face. They give you a short nod and a flat \"yeah.\" The conversation moves on but something in the air changed.",
+    options: [
+      { text: "Keep going — you are already talking, stopping now would be more awkward.", type: 'miss' },
+      { text: "Stop yourself mid-sentence. \"Sorry — go ahead.\" Let them finish.", type: 'best' },
+      { text: "Finish what you are saying, then pause. \"Wait — did I just cut you off? My bad, what were you saying?\"", type: 'okay' },
+    ],
+    cues: [
+      { icon: "🟡", text: "Expression shifted and something closed in their face → they noticed they got cut off" },
+      { icon: "🟡", text: "Short nod with a flat \"yeah\" → not agreement — a polite shutdown" },
+      { icon: "🟡", text: "Something feels off → your gut is reading it correctly, trust it" },
+    ],
+    move: "Catching it in real time and stopping immediately is the cleanest move. Acknowledging it after is still better than nothing — but the relationship already absorbed a small hit by then.",
+    breakdown: [
+      { letter: 'A', type: 'miss', text: "Keeping going when you know something went wrong doubles the damage. They are already feeling dismissed." },
+      { letter: 'B', type: 'best', text: "Catching yourself and stopping immediately is the highest-level version of this skill. Real time awareness." },
+      { letter: 'C', type: 'okay', text: "Acknowledging it is better than ignoring it — but the moment has already passed. They had to sit through the rest of what you said first." },
+    ]
+  },
+  {
+    context: "Work",
+    situation: "Your coworker talks. A lot. You have been standing here for four minutes and have said approximately eleven words. They are mid-story about something that happened last weekend and show no signs of stopping. You have tried making winding-down sounds — \"yeah,\" \"totally,\" \"for sure\" — but they keep going. You genuinely need to get back to work. Your manager walked past twice already.",
+    options: [
+      { text: "Just start walking away mid-story and hope they figure it out.", type: 'miss' },
+      { text: "Wait for the half-second where they take a breath, make a small move toward your station, and say \"hey I have to get back — catch you later.\"", type: 'best' },
+      { text: "Stand there and keep nodding until they finish. You do not want to be rude.", type: 'miss' },
+    ],
+    cues: [
+      { icon: "🔴", text: "Four minutes of one-sided conversation → they are not reading YOUR signals" },
+      { icon: "🔴", text: "\"Yeah, totally, for sure\" not working → passive exit signals are invisible to this person" },
+      { icon: "🔴", text: "Manager walked past twice → your absence from your station is being noticed" },
+      { icon: "🟡", text: "They pause to breathe → your one window to exit cleanly" },
+    ],
+    move: "Waiting for the breath and moving simultaneously is the move. You are not being rude — you are being direct, which is actually more respectful than standing there nodding while resenting every second.",
+    breakdown: [
+      { letter: 'A', type: 'miss', text: "Walking away mid-sentence is rude even if they had it coming. It burns the relationship and you still have to work with them." },
+      { letter: 'B', type: 'best', text: "You found the window, used your body and your words together, and exited cleanly. That is the skill." },
+      { letter: 'C', type: 'miss', text: "Staying out of politeness while your manager watches you not work is not actually the polite choice — it just feels that way." },
+    ]
+  },
+  {
+    context: "Work / Any",
+    situation: "Something is going on with Marcus. He was fine last week — but today he came in quiet, went straight to his station, and has barely looked up since. A couple of people tried to say something and got a flat \"yeah\" or \"I'm good\" before he looked back down. He skipped eating with anyone at break. You have worked with Marcus for three months and actually like him. You want to check in.",
+    options: [
+      { text: "Go talk to him — start a conversation and see if he opens up once you get going.", type: 'miss' },
+      { text: "Give him space — maybe today is not the day. Try checking in tomorrow instead.", type: 'best' },
+      { text: "Walk over and ask directly: \"Hey Marcus, you doing okay?\"", type: 'okay' },
+    ],
+    cues: [
+      { icon: "🔴", text: "Went straight to his station without talking → choosing isolation" },
+      { icon: "🔴", text: "Flat one-word responses to others → actively keeping people at distance" },
+      { icon: "🔴", text: "Did not eat with anyone at break → not ready for social interaction" },
+      { icon: "🔴", text: "Has not initiated with anyone → every signal says he wants to be left alone today" },
+    ],
+    move: "Giving someone space when they are clearly asking for it — even without words — is its own form of reading the room. Option C is not wrong, but even a direct check-in can feel like pressure when every signal says not today.",
+    breakdown: [
+      { letter: 'A', type: 'miss', text: "Starting a conversation and hoping he warms up ignores every signal he has been sending all day. It puts the burden on him to manage you." },
+      { letter: 'B', type: 'best', text: "Respecting someone's unspoken request for space is an underrated skill. You can check in tomorrow when he might actually want it." },
+      { letter: 'C', type: 'okay', text: "A simple direct check-in is kind — but read his response carefully. If he says \"I'm good\" and looks back down, that is your answer." },
+    ]
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Scenario ${current + 1} of ${rounds.length}`;
+  document.getElementById('ctx-badge').textContent = r.context;
+  document.getElementById('scenario-stmt').textContent = r.situation;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  document.getElementById('options-list').innerHTML = r.options.map((opt, i) => `
+    <button class="opt-btn" onclick="pickOption(${i}, this)">${opt.text}</button>`).join('');
+
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickOption(idx, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const picked = r.options[idx];
+  if (picked.type === 'best') score++;
+
+  // Reveal all options with their types
+  document.querySelectorAll('.opt-btn').forEach((b, i) => {
+    b.disabled = true;
+    b.classList.add(r.options[i].type);
+  });
+
+  // Cues
+  document.getElementById('cues-list').innerHTML = r.cues.map(c =>
+    `<div class="cue-row"><span class="cue-icon">${c.icon}</span><span>${c.text}</span></div>`).join('');
+
+  document.getElementById('the-move').textContent = r.move;
+
+  // Option breakdown
+  const letters = ['A', 'B', 'C'];
+  document.getElementById('option-breakdown').innerHTML = r.breakdown.map((b, i) => `
+    <div class="ob-row ${b.type}">
+      <span class="ob-letter ${b.type}">${b.letter}</span>
+      <span>${b.text}</span>
+    </div>`).join('');
+
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/7';
+  let comment;
+  if (score >= 6) comment = "You are reading the room before most people even notice there is a room to read. That is a real skill.";
+  else if (score >= 4) comment = "Solid. The ones you missed are usually the ones where acting feels more natural than waiting — and waiting was the right call.";
+  else comment = "Reading the room is a skill you build over time. The fact that you noticed something was off in most of these is already the first step.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

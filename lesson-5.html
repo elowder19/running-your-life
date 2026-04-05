@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Year From Now — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #6dbf9e;
+    --accent-dark: #3a9a72;
+    --accent-dim: #e8f6f0;
+    --accent-mid: #a8dfc5;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(58,154,178,0.25); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* SCENARIO TABS */
+  .scenario-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stab { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .stab:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .stab.active { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .stab.done { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+  /* SCENARIO */
+  .scenario-name { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+  .scenario-situation { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.6; margin-bottom: 6px; background: var(--bg); border-radius: 10px; padding: 14px 16px; border-left: 3px solid var(--accent-mid); }
+  .vague-goal { font-size: 14px; color: var(--text3); font-style: italic; margin-bottom: 20px; padding: 10px 14px; background: var(--bg); border-radius: 8px; border: 1px dashed var(--border); }
+
+  /* SMART LETTERS */
+  .smart-bar { display: flex; gap: 6px; margin-bottom: 20px; }
+  .smart-letter { flex: 1; text-align: center; padding: 8px 4px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); }
+  .smart-letter .letter { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--text3); }
+  .smart-letter .word { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .smart-letter.done { border-color: var(--accent-dark); background: var(--accent-dim); }
+  .smart-letter.done .letter { color: var(--accent-dark); }
+  .smart-letter.done .word { color: var(--accent-dark); }
+  .smart-letter.current { border-color: var(--amber); background: var(--amber-dim); }
+  .smart-letter.current .letter { color: var(--amber); }
+  .smart-letter.current .word { color: var(--amber); }
+
+  /* STEP */
+  .step-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 6px; }
+  .step-question { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 14px; line-height: 1.3; }
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .option-btn { padding: 12px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text2); cursor: pointer; text-align: left; transition: all 0.15s; font-weight: 500; }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--text); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .option-btn.show-correct { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .option-btn:disabled { cursor: default; }
+
+  /* ASSEMBLED GOAL */
+  .goal-reveal { display: none; animation: fadeUp 0.3s ease both; margin-top: 20px; }
+  .goal-reveal.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .goal-reveal-title { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; color: var(--green); margin-bottom: 10px; }
+  .goal-smart { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.7; }
+  .goal-vague-compare { font-size: 13px; color: var(--text3); font-style: italic; padding: 10px 14px; background: var(--bg); border-radius: 8px; border: 1px dashed var(--border); margin-bottom: 16px; }
+  .btn-next-scenario { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next-scenario:hover { opacity: 0.85; }
+
+  /* COMPLETE */
+  .complete-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .complete-wrap.visible { display: block; animation: fadeUp 0.3s ease both; }
+  .complete-title { font-family: 'Nunito', sans-serif; font-size: 36px; font-weight: 900; color: var(--accent-dark); margin-bottom: 12px; }
+  .complete-text { font-size: 15px; color: var(--text2); line-height: 1.75; margin-bottom: 20px; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🎯 Goals + Future</div>
+  <h1 class="lesson-title">One year <span>from now</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Most people can tell you exactly what they want. Almost nobody has thought about what it actually takes to get there.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">"I want to save money" is not a goal — it is a wish. A goal has five things: it is Specific, Measurable, Achievable, Relevant, and Time-bound. That is what makes it real. Without all five, you have a direction but no destination. Run through the scenarios below — for each person, help turn their vague wish into an actual SMART goal.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Turn the wish into a goal</div>
+    <div class="scenario-tabs" id="scenario-tabs"></div>
+    <div id="scenario-area"></div>
+    <div class="complete-wrap" id="complete-wrap">
+      <div class="complete-title">All 6 done. 🎯</div>
+      <div class="complete-text">Every SMART goal you just built started as a vague wish. The five letters are what made it real — specific enough to act on, measurable enough to track, and time-bound enough to actually matter.</div>
+      <button class="btn-restart" onclick="restartAll()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Pick something you actually want — not what you think you are supposed to want. Run it through the five letters. Is it Specific? Measurable? Achievable? Relevant to your actual life? Time-bound? If it passes all five, it is a real goal. If not — what needs to change?</div>
+  </div>
+</div>
+
+<script>
+const scenarios = [
+  {
+    name: "Zach",
+    situation: "Zach wants to buy a used car. He works part time making about $350/week and currently has $200 saved.",
+    vague: 'Vague wish: "I want to save money for a car."',
+    steps: [
+      { letter:"S", word:"Specific", question:"What exactly is Zach saving for?", options:["A used car that costs around $5,000", "A car — he will figure out the details later"], correct:0, chosen:"" },
+      { letter:"M", word:"Measurable", question:"How will Zach know he is making progress?", options:["He checks his savings total every payday against a $5,000 target", "He saves when he can and checks in every few weeks"], correct:0, chosen:"" },
+      { letter:"A", word:"Achievable", question:"Saving $100/week from a $200 paycheck — is that realistic?", options:["Yes — saving $100-125/week from his $350 paycheck is about 30% — a stretch but doable", "Probably not — saving that much leaves too little for everything else"], correct:0, chosen:"" },
+      { letter:"R", word:"Relevant", question:"Why does having a car matter to Zach right now specifically?", options:["It means he can take more shifts and stop depending on rides", "Cars are important for everyone eventually"], correct:0, chosen:"" },
+      { letter:"T", word:"Time-bound", question:"When does Zach want to hit his savings goal?", options:["In about 10-11 months at $125/week saved", "Before he graduates high school — whenever that is"], correct:0, chosen:"" },
+    ],
+    smartGoal: "I will save $5,000 for a used car by setting aside $125 every payday for the next 10 months — so I can stop depending on rides and take more shifts when I want them."
+  },
+  {
+    name: "Cole",
+    situation: "Cole has been at his job for 4 months. He likes it and wants more hours but has never asked his manager.",
+    vague: 'Vague wish: "I want to work more."',
+    steps: [
+      { letter:"S", word:"Specific", question:"What exactly does Cole want to ask for?", options:["5 additional hours per week on top of his current schedule", "More availability so his manager can schedule him when needed"], correct:0, chosen:"" },
+      { letter:"M", word:"Measurable", question:"How will Cole know if he actually got what he wanted?", options:["His schedule will show 5 more hours than it does now", "His manager seems more willing to give him shifts"], correct:0, chosen:"" },
+      { letter:"A", word:"Achievable", question:"Is asking for more hours after 4 months reasonable?", options:["Yes — consistent work for 4 months is enough to make a case", "Better to wait until his manager brings it up first"], correct:0, chosen:"" },
+      { letter:"R", word:"Relevant", question:"Why do 5 more hours per week actually matter?", options:["That adds $60-80 more per week — which compounds to real money over months", "More hours means more experience for his resume"], correct:0, chosen:"" },
+      { letter:"T", word:"Time-bound", question:"When will Cole actually have this conversation?", options:["Before the end of this week, in a private moment with his manager", "Once he feels confident enough to bring it up"], correct:0, chosen:"" },
+    ],
+    smartGoal: "I will ask my manager for 5 additional hours per week before the end of this week — because 4 months of consistent work is enough to make that case, and those hours add real money to my paycheck."
+  },
+  {
+    name: "Tyler",
+    situation: "Tyler works at a fast food restaurant and wants a job that pays better. He has no resume and has never applied anywhere else.",
+    vague: 'Vague wish: "I want a better job."',
+    steps: [
+      { letter:"S", word:"Specific", question:"What kind of job is Tyler actually targeting?", options:["Retail or warehouse work paying at least $13/hr", "Anything that pays better than what he makes now"], correct:0, chosen:"" },
+      { letter:"M", word:"Measurable", question:"How does Tyler measure progress on his job search?", options:["At least 3 applications submitted per week", "Applying whenever he has time and sees something good"], correct:0, chosen:"" },
+      { letter:"A", word:"Achievable", question:"What does Tyler need to do first?", options:["Build a basic resume — without one he cannot apply anywhere serious", "Start applying and build his resume as he goes"], correct:0, chosen:"" },
+      { letter:"R", word:"Relevant", question:"Why does $13/hr vs minimum wage matter that much?", options:["That gap adds up to $80-100 more per week — thousands more over a year", "Higher pay means better coworkers and a better environment"], correct:0, chosen:"" },
+      { letter:"T", word:"Time-bound", question:"What is the timeline for making this happen?", options:["Resume built within 2 weeks, actively applying within the month", "Start applying once the resume feels ready and polished"], correct:0, chosen:"" },
+    ],
+    smartGoal: "I will build a resume within 2 weeks and apply to at least 3 retail or warehouse jobs per week until I land something paying $13/hr or more."
+  },
+  {
+    name: "Devon",
+    situation: "Devon wants to move out and get his own place when he turns 18 in about 8 months. He currently has no savings.",
+    vague: 'Vague wish: "I want to move out when I turn 18."',
+    steps: [
+      { letter:"S", word:"Specific", question:"What does Devon actually need to have ready to move out?", options:["First month rent, a security deposit, and setup costs — roughly $1,500-2,000", "Enough saved to cover the first month and figure out the rest after"], correct:0, chosen:"" },
+      { letter:"M", word:"Measurable", question:"How does Devon track whether he is on pace?", options:["He checks his savings against a $1,800 target every week", "He saves whatever he can and reassesses closer to his birthday"], correct:0, chosen:"" },
+      { letter:"A", word:"Achievable", question:"Is saving $1,800 in 8 months realistic for Devon?", options:["Saving $225/month from a part-time job is tight but doable if it is the priority", "Probably not without a second job or someone helping him"], correct:0, chosen:"" },
+      { letter:"R", word:"Relevant", question:"Why does moving out matter to Devon beyond just wanting independence?", options:["Having his own space means making his own decisions about his own life — that starts here", "Living alone will teach him responsibility faster than anything else"], correct:0, chosen:"" },
+      { letter:"T", word:"Time-bound", question:"What is the hard deadline?", options:["His 18th birthday — 8 months from now, non-negotiable", "Sometime within the year after he turns 18"], correct:0, chosen:"" },
+    ],
+    smartGoal: "I will save $1,800 over the next 8 months — about $225/month — so I have first month rent, a deposit, and setup costs ready by my 18th birthday."
+  },
+  {
+    name: "Alex",
+    situation: "Alex feels like he does not have close friends. He wants to change that but is not sure how.",
+    vague: 'Vague wish: "I want to have better friends."',
+    steps: [
+      { letter:"S", word:"Specific", question:"What specifically is Alex trying to build?", options:["At least 2 people he can genuinely count on — not just people he knows", "A bigger social circle with more people around him"], correct:0, chosen:"" },
+      { letter:"M", word:"Measurable", question:"How does Alex measure progress on friendship?", options:["He initiates one real conversation or hangout per week and tracks whether connections are growing", "He pays attention to how often people reach out to him first"], correct:0, chosen:"" },
+      { letter:"A", word:"Achievable", question:"Is building real friendships within his control?", options:["He can control how often he shows up and initiates — even if he cannot control the outcome", "Not really — you cannot force people to want to be close to you"], correct:0, chosen:"" },
+      { letter:"R", word:"Relevant", question:"Why does this goal matter to Alex right now?", options:["Having people you can count on affects how you handle hard days and how you see yourself", "Everyone needs friends — it is just part of being human"], correct:0, chosen:"" },
+      { letter:"T", word:"Time-bound", question:"What is the timeline?", options:["3 months of consistently showing up and initiating — then honestly reassess", "Give it as long as it takes — real friendships cannot be rushed"], correct:0, chosen:"" },
+    ],
+    smartGoal: "Over the next 3 months I will initiate at least one real conversation or hangout per week with people I want to know better — because having even 2 people I can count on changes how I handle hard days."
+  },
+  {
+    name: "Cameron",
+    situation: "Cameron has an interview for a job he really wants coming up next week. He has never interviewed before and is nervous.",
+    vague: 'Vague wish: "I want to do well in my interview."',
+    steps: [
+      { letter:"S", word:"Specific", question:"What does Cameron actually need to do to prepare?", options:["Research the company and prepare answers to 5 common questions out loud", "Read up on interview tips and feel confident going in"], correct:0, chosen:"" },
+      { letter:"M", word:"Measurable", question:"How does Cameron know he has genuinely prepared?", options:["He can summarize the company in 3 sentences and has said his answers out loud at least once", "He feels less nervous than he did before he started preparing"], correct:0, chosen:"" },
+      { letter:"A", word:"Achievable", question:"Can Cameron get ready in the time he has?", options:["Yes — one focused hour of real prep is enough to make a genuine difference", "Hard to say — he has never interviewed so he does not know what he does not know"], correct:0, chosen:"" },
+      { letter:"R", word:"Relevant", question:"Why does preparation matter here specifically?", options:["Interviewers can tell the difference between someone who prepared and someone who winged it", "First impressions matter and confidence comes from preparation"], correct:0, chosen:"" },
+      { letter:"T", word:"Time-bound", question:"When does Cameron do his prep?", options:["Two days before — so he has time to review again the night before", "The night before — when he is nervous enough to actually focus"], correct:0, chosen:"" },
+    ],
+    smartGoal: "I will spend one focused hour two days before my interview researching the company and practicing 5 common questions out loud — so I walk in knowing what they do and having actually said my answers before."
+  },
+];
+
+let currentScenario = 0;
+let currentStep = 0;
+let scenarioDone = [];
+let stepAnswered = [];
+
+function buildTabs() {
+  const tabs = document.getElementById('scenario-tabs');
+  tabs.innerHTML = scenarios.map((s, i) => `
+    <button class="stab ${i === 0 ? 'active' : ''}" id="tab-${i}" onclick="goToScenario(${i})">${s.name}</button>
+  `).join('');
+}
+
+function goToScenario(idx) {
+  currentScenario = idx;
+  currentStep = 0;
+  stepAnswered = new Array(scenarios[idx].steps.length).fill(null);
+  document.querySelectorAll('.stab').forEach((t, i) => {
+    t.className = 'stab' + (scenarioDone[i] ? ' done' : '') + (i === idx ? ' active' : '');
+  });
+  renderScenario();
+}
+
+function renderScenario() {
+  const s = scenarios[currentScenario];
+  const area = document.getElementById('scenario-area');
+  area.innerHTML = `
+    <div class="scenario-name">${s.name}</div>
+    <div class="scenario-situation">${s.situation}</div>
+    <div class="vague-goal">${s.vague}</div>
+    <div class="smart-bar" id="smart-bar">
+      ${s.steps.map((st, i) => `
+        <div class="smart-letter" id="smart-${i}">
+          <div class="letter">${st.letter}</div>
+          <div class="word">${st.word}</div>
+        </div>`).join('')}
+    </div>
+    <div id="step-area"></div>
+    <div class="goal-reveal" id="goal-reveal">
+      <div class="goal-reveal-title">✓ The SMART goal — built piece by piece</div>
+      <div class="goal-smart" id="goal-smart-text"></div>
+      <div class="goal-vague-compare">vs. the wish: "${s.vague.replace('Vague wish: ', '')}"</div>
+      <button class="btn-next-scenario" onclick="nextScenario()">${currentScenario < scenarios.length - 1 ? 'Next scenario →' : 'See finish →'}</button>
+    </div>`;
+  renderStep();
+}
+
+function renderStep() {
+  const s = scenarios[currentScenario];
+  const st = s.steps[currentStep];
+  const area = document.getElementById('step-area');
+
+  // Update smart bar
+  s.steps.forEach((_, i) => {
+    const el = document.getElementById('smart-' + i);
+    if (!el) return;
+    el.className = 'smart-letter' + (i < currentStep ? ' done' : i === currentStep ? ' current' : '');
+  });
+
+  area.innerHTML = `
+    <div class="step-label">${st.letter} — ${st.word}</div>
+    <div class="step-question">${st.question}</div>
+    <div class="options">
+      ${st.options.map((opt, i) => `
+        <button class="option-btn" onclick="pickStep(${i}, this)">${opt}</button>
+      `).join('')}
+    </div>`;
+
+  // Restore answered
+  stepAnswered.forEach((ans, i) => {
+    if (ans !== null && i === currentStep) revealStep(i, ans, false);
+  });
+}
+
+function pickStep(optIdx, btn) {
+  if (stepAnswered[currentStep] !== null) return;
+  stepAnswered[currentStep] = optIdx;
+  revealStep(currentStep, optIdx, true);
+}
+
+function revealStep(stepIdx, optIdx, animate) {
+  const st = scenarios[currentScenario].steps[stepIdx];
+  const isCorrect = optIdx === st.correct;
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === st.correct) b.classList.add('show-correct');
+    else if (i === optIdx && !isCorrect) b.classList.add('wrong');
+  });
+
+  if (animate) {
+    setTimeout(() => advanceStep(), 600);
+  }
+}
+
+function advanceStep() {
+  const s = scenarios[currentScenario];
+  if (currentStep < s.steps.length - 1) {
+    currentStep++;
+    renderStep();
+  } else {
+    // All steps done — show assembled goal
+    document.getElementById('goal-smart-text').textContent = s.smartGoal;
+    const reveal = document.getElementById('goal-reveal');
+    reveal.classList.add('visible');
+    reveal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function nextScenario() {
+  scenarioDone[currentScenario] = true;
+  document.getElementById(`tab-${currentScenario}`).className = 'stab done';
+  if (currentScenario < scenarios.length - 1) {
+    goToScenario(currentScenario + 1);
+    document.getElementById('scenario-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    document.getElementById('scenario-area').style.display = 'none';
+    document.getElementById('scenario-tabs').style.display = 'none';
+    const complete = document.getElementById('complete-wrap');
+    complete.classList.add('visible');
+    complete.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function restartAll() {
+  currentScenario = 0; currentStep = 0;
+  scenarioDone = []; stepAnswered = [];
+  document.getElementById('scenario-area').style.display = 'block';
+  document.getElementById('scenario-tabs').style.display = 'flex';
+  document.getElementById('complete-wrap').classList.remove('visible');
+  buildTabs();
+  goToScenario(0);
+}
+
+buildTabs();
+goToScenario(0);
+</script>
+</body>
+</html>

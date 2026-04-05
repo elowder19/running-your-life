@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Are You Always Late? — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #7ec8e3;
+    --accent-dark: #3a9abf;
+    --accent-dim: #e8f6fb;
+    --accent-mid: #b8e2f0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 0; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(58,154,191,0.25); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 4px; }
+
+  /* ROUND COUNTER */
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  /* SCENARIO */
+  .scenario-setup { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.6; margin-bottom: 12px; font-style: italic; background: var(--bg); border-radius: 10px; padding: 12px 16px; border-left: 3px solid var(--accent-mid); }
+  .scenario-question { font-family: 'Nunito', sans-serif; font-size: clamp(18px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.3; margin-bottom: 20px; }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: var(--text); text-align: left; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); }
+  .option-btn .opt-letter { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; color: var(--accent-dark); min-width: 24px; }
+  .option-btn.selected-correct { border-color: var(--green); background: var(--green-dim); }
+  .option-btn.selected-correct .opt-letter { color: var(--green); }
+  .option-btn.selected-wrong { border-color: var(--red); background: var(--red-dim); }
+  .option-btn.selected-wrong .opt-letter { color: var(--red); }
+  .option-btn.reveal-correct { border-color: var(--green); background: var(--green-dim); }
+  .option-btn.reveal-correct .opt-letter { color: var(--green); }
+  .option-btn:disabled { cursor: default; }
+
+  /* REVEAL */
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .reveal-verdict { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; margin-bottom: 10px; }
+  .reveal-verdict.correct { color: var(--green); }
+  .reveal-verdict.wrong { color: var(--amber); }
+  .reveal-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  /* SCORE */
+  .score-wrap { text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); display: none; }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+
+  <div class="cat-badge">⏰ Time + Organization</div>
+  <h1 class="lesson-title">Why are you <span>always late?</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">You were not trying to be late. So why does it keep happening?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Your brain is an optimist. Every time you estimate how long something will take, it imagines the best case scenario — the one time it went perfectly. But your average morning is not your best morning. It is messier, slower, and full of things you did not plan for. This is called the planning fallacy — and it hits hardest when you are tired, rushing, and doing things on autopilot. Run through the rounds below. For each one — pick how long you think it actually takes.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">How long does it actually take?</div>
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="scenario-setup" id="scenario-setup"></div>
+      <div class="scenario-question" id="scenario-question"></div>
+      <div class="options" id="options-list"></div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="reveal-verdict" id="reveal-verdict"></div>
+        <div class="reveal-explain" id="reveal-explain"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">correct out of 10</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Look at the pattern. Where does your morning time actually disappear? What is one thing you could do the night before that would buy you back 10-15 minutes tomorrow?</div>
+  </div>
+</div>
+
+<script>
+// correct answer index: 0=A, 1=B, 2=C
+const rounds = [
+  {
+    setup: "The alarm goes off. Snooze gets hit — just once.",
+    question: "On average, how much extra time does hitting snooze once actually cost?",
+    options: ["About 9 minutes", "25-35 minutes", "15-20 minutes"],
+    correct: 1,
+    explain: "One snooze almost never stays one snooze. The fragmented sleep between alarms makes you MORE groggy, not less — sleep inertia hits harder when you keep interrupting it. Most people end up hitting snooze 2-3 times before actually getting up."
+  },
+  {
+    setup: "Alarm is off. No more snoozing. Just lying there.",
+    question: "On average, how long does it take to actually get out of bed after the alarm goes off?",
+    options: ["Closer to 10 minutes", "1-2 minutes", "About 5 minutes"],
+    correct: 0,
+    explain: "Your brain needs time to shift from sleep mode to awake mode — that is called sleep inertia. It is not laziness, it is biology. But it still costs real time every single morning whether you plan for it or not."
+  },
+  {
+    setup: "In the shower. Half asleep. The water is warm.",
+    question: "On average, how long does a tired morning shower take?",
+    options: ["About 10 minutes", "18-22 minutes", "About 13 minutes"],
+    correct: 1,
+    explain: "When you are tired you move slower, zone out, and lose track of time. Best case shower and average tired morning shower are not the same shower. The warm water does not help speed things up."
+  },
+  {
+    setup: "You know what you want to wear. It is just... somewhere.",
+    question: "On average, how long does finding clothes and getting dressed take in the morning?",
+    options: ["12-20 minutes", "About 5 minutes", "7-8 minutes"],
+    correct: 0,
+    explain: "Looking for specific items, realizing something is dirty, changing your mind — this is where morning time disappears the most. Best case and average morning are completely different things."
+  },
+  {
+    setup: "Bag needs packing. Everything is around here somewhere.",
+    question: "On average, how long does packing your bag the morning of actually take?",
+    options: ["3-4 minutes", "8-15 minutes", "5-6 minutes"],
+    correct: 1,
+    explain: "Packing the morning of almost always takes longer than expected — and if you have to go back for something forgotten, add another 5 minutes. People who pack the night before cut this to under 2 minutes consistently."
+  },
+  {
+    setup: "Almost ready to leave. Just one quick phone check before heading out.",
+    question: "On average, how long is a 'real quick' phone check before leaving?",
+    options: ["11-14 minutes", "2-3 minutes", "About 5 minutes"],
+    correct: 0,
+    explain: "Your brain does not experience social media time the same way it experiences regular time. Two minutes feels like two minutes. Eleven minutes also feels like two minutes. That is by design — the apps are built to make you lose track."
+  },
+  {
+    setup: "Keys, phone, wallet — somewhere. Already running behind.",
+    question: "On average, how long does a panic search for missing items take?",
+    options: ["About 2 minutes", "3-4 minutes", "6-10 minutes"],
+    correct: 2,
+    explain: "Cortisol — the stress hormone — actually impairs your memory and spatial reasoning. You literally get worse at finding things when you are panicking. The more stressed you are, the harder it is to think clearly."
+  },
+  {
+    setup: "Shoes on. Bag packed. Ready to walk out the door.",
+    question: "On average, how long from 'ready' to actually leaving the house?",
+    options: ["About 1 minute", "4-7 minutes", "2-3 minutes"],
+    correct: 1,
+    explain: "One last bathroom trip. Forgotten charger. Someone asking a question. Realizing the water bottle is still on the counter. 'Ready' and 'out the door' are not the same moment — there is almost always a gap."
+  },
+  {
+    setup: "The commute is familiar. Done it hundreds of times.",
+    question: "On average, how much longer is a typical commute vs. the best case commute?",
+    options: ["1-2 minutes longer", "About the same", "5-10 minutes longer"],
+    correct: 2,
+    explain: "Traffic, slow lights, missing the bus by 2 minutes, circling for parking — the best case commute happens maybe once a month. The average commute is consistently longer. Most people plan for the best case every single day."
+  },
+  {
+    setup: "Alarm goes off. Need to be out the door and on the way.",
+    question: "On average, how long does a full morning take — from alarm to out the door?",
+    options: ["45-60 minutes", "60-90 minutes", "30-45 minutes"],
+    correct: 1,
+    explain: "Add up sleep inertia, shower, getting dressed, eating, packing, finding things, and the phone check — it is almost always 60-90 minutes when counted honestly. The gap between when most people think they need to wake up and when they actually need to is usually 30-45 minutes. Every single day."
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  const el = document.getElementById('round-dots');
+  el.innerHTML = rounds.map((_, i) => `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  const r = rounds[current];
+  voted = false;
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('scenario-setup').textContent = r.setup;
+  document.getElementById('scenario-question').textContent = r.question;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  const opts = document.getElementById('options-list');
+  const letters = ['A', 'B', 'C'];
+  opts.innerHTML = r.options.map((opt, i) => `
+    <button class="option-btn" onclick="pickOption(${i}, this)">
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${opt}</span>
+    </button>`).join('');
+
+  // Update dots
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (!dot) return;
+    dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickOption(idx, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const isCorrect = idx === r.correct;
+  if (isCorrect) score++;
+
+  // Style all buttons
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === r.correct) b.classList.add('reveal-correct');
+    else if (i === idx && !isCorrect) b.classList.add('selected-wrong');
+  });
+
+  const verdict = document.getElementById('reveal-verdict');
+  if (isCorrect) {
+    verdict.textContent = '✓ You got it — that is the real average.';
+    verdict.className = 'reveal-verdict correct';
+  } else {
+    verdict.textContent = `Not quite — the real answer was ${['A','B','C'][r.correct]}.`;
+    verdict.className = 'reveal-verdict wrong';
+  }
+
+  document.getElementById('reveal-explain').textContent = r.explain;
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/10';
+  let comment;
+  if (score >= 8) comment = "You already know your brain is lying to you about time — now you can plan around it.";
+  else if (score >= 5) comment = "You caught some of the patterns. The ones you missed are probably the ones hitting you hardest in real life.";
+  else comment = "Your brain is a serious optimist. That is not a bad thing — but it does mean you need to build in more buffer than you think you do.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

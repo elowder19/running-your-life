@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Working Backwards — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #7ec8e3;
+    --accent-dark: #3a9abf;
+    --accent-dim: #e8f6fb;
+    --accent-mid: #b8e2f0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(58,154,191,0.25); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* SCENARIO TABS */
+  .scenario-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stab { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .stab:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .stab.active { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .stab.done { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+  /* SCENARIO CARD */
+  .scenario-header { margin-bottom: 16px; }
+  .scenario-name { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+  .scenario-situation { font-size: 15px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .deadline-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-dim); border: 1.5px solid var(--amber); color: var(--amber); padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 16px; }
+
+  /* CHECKPOINTS */
+  .checkpoints-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 12px; }
+  .checkpoint-row { margin-bottom: 10px; }
+  .checkpoint-q { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .cp-options { display: flex; flex-direction: column; gap: 6px; }
+  .cp-btn { padding: 10px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text2); cursor: pointer; text-align: left; transition: all 0.15s; }
+  .cp-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--text); }
+  .cp-btn.correct { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .cp-btn.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .cp-btn.show-correct { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 600; }
+  .cp-btn:disabled { cursor: default; }
+
+  /* PLAN */
+  .plan-wrap { display: none; animation: fadeUp 0.3s ease both; }
+  .plan-wrap.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .plan-title { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: var(--green); margin-bottom: 12px; }
+  .plan-steps { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+  .plan-step { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--card); }
+  .plan-step:last-child { border-bottom: none; }
+  .plan-step-num { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: var(--accent-dark); min-width: 28px; }
+  .plan-step-text { font-size: 14px; color: var(--text); line-height: 1.5; padding-top: 2px; }
+  .btn-next-scenario { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; margin-top: 8px; }
+  .btn-next-scenario:hover { opacity: 0.85; }
+
+  /* COMPLETE */
+  .complete-wrap { display: none; text-align: center; padding: 32px 24px; }
+  .complete-wrap.visible { display: block; animation: fadeUp 0.3s ease both; }
+  .complete-title { font-family: 'Nunito', sans-serif; font-size: 36px; font-weight: 900; color: var(--accent-dark); margin-bottom: 12px; }
+  .complete-text { font-size: 15px; color: var(--text2); line-height: 1.75; margin-bottom: 20px; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">⏰ Time + Organization</div>
+  <h1 class="lesson-title">Working <span>backwards</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Most people start at the beginning and hope they make it to the end in time. That is not a plan — that is a wish.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Working backwards means starting at the deadline and asking: what has to happen right before this? And right before that? You build the plan from the end to the beginning — which means by the time you start, you already know exactly where you are going and how long you have. Run through the scenarios below and build each plan backwards from the deadline.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Build the plan — work backwards from the deadline</div>
+
+    <div class="scenario-tabs" id="scenario-tabs"></div>
+    <div id="scenario-area"></div>
+    <div class="complete-wrap" id="complete-wrap">
+      <div class="complete-title">All 5 done. 🎯</div>
+      <div class="complete-text">Every one of those plans started at the end and worked backwards. That is the move — figure out when it has to be done, then build backwards to right now.</div>
+      <button class="btn-restart" onclick="restartAll()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think of something you have coming up — a shift, an assignment, a goal. What is the deadline? Now work backwards — what has to happen the day before? The week before? What do you need to do today?</div>
+  </div>
+</div>
+
+<script>
+const scenarios = [
+  {
+    name: "Tyler's School Project",
+    situation: "Tyler has a history project due Friday at the start of class. It is Monday. He has not started.",
+    deadline: "Friday morning — project due at the start of class",
+    checkpoints: [
+      {
+        q: "What is the last thing Tyler needs to do before turning it in?",
+        options: ["Review and print or submit it", "Start researching the topic", "Ask the teacher what format to use", "Pick a topic"],
+        correct: 0
+      },
+      {
+        q: "What needs to happen before the final review?",
+        options: ["Write and finish the project", "Tell a friend about the topic", "Buy supplies", "Wait and see how much time is left"],
+        correct: 0
+      },
+      {
+        q: "What needs to happen before he can write anything?",
+        options: ["Research and gather information", "Turn in a rough draft", "Ask for an extension", "Skip it and hope for partial credit"],
+        correct: 0
+      },
+      {
+        q: "What is the very first thing Tyler needs to do right now — today?",
+        options: ["Pick a topic and make a plan", "Start writing immediately", "Wait until Wednesday", "Ask a classmate to do it"],
+        correct: 0
+      },
+    ],
+    plan: ["Today (Monday) — Pick a topic and make a plan", "Tuesday — Research and gather information", "Wednesday/Thursday — Write and finish the project", "Thursday night — Review, print or submit", "Friday morning — Turn it in"]
+  },
+  {
+    name: "Cole's New Job",
+    situation: "Cole starts a new job next Saturday at 9am. It is Sunday. He has never been to the location before.",
+    deadline: "Saturday 9:00am — first day, do not be late",
+    checkpoints: [
+      {
+        q: "What is the last thing Cole needs to do the morning of?",
+        options: ["Leave early enough to arrive by 8:45", "Figure out how to get there", "Set his alarm", "Pick out his outfit"],
+        correct: 0
+      },
+      {
+        q: "What needs to happen the night before?",
+        options: ["Set the alarm, lay out clothes, pack anything he needs", "Look up the address for the first time", "Call in to say he might be late", "Sleep in"],
+        correct: 0
+      },
+      {
+        q: "What should Cole do earlier in the week?",
+        options: ["Do a practice run to find the location and check travel time", "Wait until Friday to figure out directions", "Ask someone else to drive him", "Nothing — he will figure it out Saturday"],
+        correct: 0
+      },
+      {
+        q: "What should Cole do today — right now?",
+        options: ["Confirm his start time, look up the address, and plan the week", "Relax — it is a week away", "Text his new boss every day", "Quit before he starts"],
+        correct: 0
+      },
+    ],
+    plan: ["Today (Sunday) — Confirm start time, look up the address, plan the week", "Mid-week — Do a practice run to the location, check travel time", "Friday night — Set alarm, lay out clothes, pack what you need", "Saturday morning — Leave early, arrive by 8:45am"]
+  },
+  {
+    name: "Zach's Savings Goal",
+    situation: "Zach wants to have $500 saved in 8 weeks to help pay for a used car. He currently has $40 saved and makes about $120/week at his job.",
+    deadline: "8 weeks from now — $500 saved",
+    checkpoints: [
+      {
+        q: "How much does Zach still need to save?",
+        options: ["$460", "$500", "$120", "$80"],
+        correct: 0
+      },
+      {
+        q: "If he has 8 weeks, roughly how much does he need to save per week?",
+        options: ["About $58/week", "About $120/week", "About $25/week", "About $100/week"],
+        correct: 0
+      },
+      {
+        q: "What does Zach need to do each week to hit that number?",
+        options: ["Set aside $60 from each paycheck before spending anything else", "Spend normally and save whatever is left", "Pick up extra shifts every week", "Skip saving this week and double up next week"],
+        correct: 0
+      },
+      {
+        q: "What should Zach do right now to make this actually happen?",
+        options: ["Set up a separate savings spot and transfer $60 from his next check", "Wait until he feels ready to save", "Spend this week's check and start fresh next week", "Lower his goal to $200"],
+        correct: 0
+      },
+    ],
+    plan: ["Right now — Set up a separate savings spot for the car fund", "Every payday — Transfer $60 before spending anything else", "Weekly check-in — Track the running total", "Week 8 — Hit $500 and start the car conversation"]
+  },
+  {
+    name: "Devon's Moving Out Plan",
+    situation: "Devon wants to move into his own place by the time he turns 18 in 6 months. He currently has no savings and makes $200/week.",
+    deadline: "6 months — move into his own place by his 18th birthday",
+    checkpoints: [
+      {
+        q: "What does Devon actually need to have ready before he can move in anywhere?",
+        options: ["First month's rent, deposit, and basic furniture/supplies", "Just first month's rent", "A signed lease — everything else can wait", "Nothing — he can figure it out when he gets there"],
+        correct: 0
+      },
+      {
+        q: "What does Devon need to do 1-2 months before the move?",
+        options: ["Start looking at apartments and figure out what he can actually afford", "Sign a lease immediately", "Stop saving and spend freely", "Ask his parents to handle the search"],
+        correct: 0
+      },
+      {
+        q: "What does Devon need to do every week for the next 6 months?",
+        options: ["Save a set amount consistently — even if it is not a lot", "Save whenever he feels like it", "Spend normally and figure out finances later", "Work more hours instead of saving"],
+        correct: 0
+      },
+      {
+        q: "What should Devon do right now — this week?",
+        options: ["Research average rent costs and figure out a realistic weekly savings target", "Start packing", "Sign up for apartments online", "Tell everyone he is moving out"],
+        correct: 0
+      },
+    ],
+    plan: ["This week — Research average rent, figure out a weekly savings target", "Every week — Save that amount consistently, no exceptions", "1-2 months out — Start looking at real apartments in his price range", "2-4 weeks out — Secure the place, sign the lease, plan the move", "Move-in day — First month, deposit, and supplies already covered"]
+  },
+  {
+    name: "Cameron's Job Interview",
+    situation: "Cameron has a job interview at a place he really wants to work — Thursday at 2pm. It is Monday. He has never interviewed before.",
+    deadline: "Thursday 2:00pm — job interview",
+    checkpoints: [
+      {
+        q: "What is the last thing Cameron needs to do before walking into the interview?",
+        options: ["Arrive 10 minutes early, calm and prepared", "Read about the company for the first time", "Pick out his outfit", "Text his friends for advice"],
+        correct: 0
+      },
+      {
+        q: "What needs to happen the night before?",
+        options: ["Lay out his clothes, know the exact location, review his answers", "Start researching the company", "Write his resume for the first time", "Wing it — he will be fine"],
+        correct: 0
+      },
+      {
+        q: "What should Cameron do Tuesday and Wednesday?",
+        options: ["Research the company, practice answers to common questions, plan his outfit", "Wait until Thursday morning to prepare", "Ask someone else to go for him", "Call and reschedule"],
+        correct: 0
+      },
+      {
+        q: "What should Cameron do today — right now?",
+        options: ["Confirm the time and location, update his resume, and make a prep plan", "Relax — it is three days away", "Show up today to introduce himself", "Decide not to go"],
+        correct: 0
+      },
+    ],
+    plan: ["Today (Monday) — Confirm time and location, update resume, make a prep plan", "Tuesday/Wednesday — Research the company, practice common interview questions, plan outfit", "Wednesday night — Lay out clothes, confirm the address, review answers one more time", "Thursday — Arrive 10 minutes early, calm and ready"]
+  },
+];
+
+let currentScenario = 0;
+let cpAnswered = [];
+let scenarioDone = [];
+
+function buildTabs() {
+  const tabs = document.getElementById('scenario-tabs');
+  tabs.innerHTML = scenarios.map((s, i) => `
+    <button class="stab ${i === 0 ? 'active' : ''}" id="tab-${i}" onclick="goToScenario(${i})">${s.name.split("'")[0]}</button>
+  `).join('');
+}
+
+function goToScenario(idx) {
+  currentScenario = idx;
+  cpAnswered = new Array(scenarios[idx].checkpoints.length).fill(null);
+  document.querySelectorAll('.stab').forEach((t, i) => {
+    t.className = 'stab' + (scenarioDone[i] ? ' done' : '') + (i === idx ? ' active' : '');
+  });
+  renderScenario();
+}
+
+function renderScenario() {
+  const s = scenarios[currentScenario];
+  const area = document.getElementById('scenario-area');
+  area.innerHTML = `
+    <div class="scenario-header">
+      <div class="scenario-name">${s.name}</div>
+      <div class="scenario-situation">${s.situation}</div>
+      <div class="deadline-badge">⏰ Deadline: ${s.deadline}</div>
+    </div>
+    <div class="checkpoints-label">Work backwards — what needs to happen before the deadline?</div>
+    <div id="checkpoints-list"></div>
+    <div class="plan-wrap" id="plan-wrap">
+      <div class="plan-title">✓ The full plan — built backwards</div>
+      <div class="plan-steps">
+        ${s.plan.map((step, i) => `
+          <div class="plan-step">
+            <div class="plan-step-num">${i + 1}</div>
+            <div class="plan-step-text">${step}</div>
+          </div>`).join('')}
+      </div>
+      <button class="btn-next-scenario" onclick="nextScenario()">${currentScenario < scenarios.length - 1 ? 'Next scenario →' : 'See finish →'}</button>
+    </div>`;
+  renderCheckpoints();
+}
+
+function renderCheckpoints() {
+  const s = scenarios[currentScenario];
+  const list = document.getElementById('checkpoints-list');
+  list.innerHTML = s.checkpoints.map((cp, i) => `
+    <div class="checkpoint-row" id="cp-row-${i}">
+      <div class="checkpoint-q">Step ${i + 1} back: ${cp.q}</div>
+      <div class="cp-options">
+        ${cp.options.map((opt, j) => `
+          <button class="cp-btn" id="cp-${i}-${j}" onclick="pickCP(${i}, ${j})">${opt}</button>
+        `).join('')}
+      </div>
+    </div>`).join('');
+
+  // Restore answered state
+  cpAnswered.forEach((ans, i) => {
+    if (ans !== null) revealCP(i, ans, false);
+  });
+}
+
+function pickCP(cpIdx, optIdx) {
+  if (cpAnswered[cpIdx] !== null) return;
+  cpAnswered[cpIdx] = optIdx;
+  revealCP(cpIdx, optIdx, true);
+}
+
+function revealCP(cpIdx, optIdx, animate) {
+  const cp = scenarios[currentScenario].checkpoints[cpIdx];
+  const isCorrect = optIdx === cp.correct;
+  cp.options.forEach((_, j) => {
+    const btn = document.getElementById(`cp-${cpIdx}-${j}`);
+    if (!btn) return;
+    btn.disabled = true;
+    if (j === cp.correct) btn.classList.add('show-correct');
+    else if (j === optIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Check if all answered
+  if (cpAnswered.every(a => a !== null)) {
+    setTimeout(() => {
+      const plan = document.getElementById('plan-wrap');
+      if (plan) {
+        plan.classList.add('visible');
+        plan.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, animate ? 400 : 0);
+  }
+}
+
+function nextScenario() {
+  scenarioDone[currentScenario] = true;
+  document.getElementById(`tab-${currentScenario}`).className = 'stab done';
+  if (currentScenario < scenarios.length - 1) {
+    goToScenario(currentScenario + 1);
+    document.getElementById('scenario-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    document.getElementById('scenario-area').style.display = 'none';
+    document.getElementById('scenario-tabs').style.display = 'none';
+    const complete = document.getElementById('complete-wrap');
+    complete.classList.add('visible');
+    complete.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function restartAll() {
+  currentScenario = 0;
+  cpAnswered = [];
+  scenarioDone = [];
+  document.getElementById('scenario-area').style.display = 'block';
+  document.getElementById('scenario-tabs').style.display = 'flex';
+  document.getElementById('complete-wrap').classList.remove('visible');
+  buildTabs();
+  goToScenario(0);
+}
+
+buildTabs();
+goToScenario(0);
+</script>
+</body>
+</html>

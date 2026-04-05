@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Phone Is Lying to You — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #c17fd4;
+    --accent-dark: #8a45a0;
+    --accent-dim: #f7eefa;
+    --accent-mid: #ddb8e8;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(28px, 6vw, 44px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(138,69,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* ROUND */
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  /* HEADLINE */
+  .headline-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px 22px; margin-bottom: 20px; text-align: center; }
+  .headline-source { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 14px; }
+  .headline-text { font-family: 'Nunito', sans-serif; font-size: clamp(18px, 4vw, 26px); font-weight: 900; color: var(--text); line-height: 1.35; }
+
+  /* STEP INDICATOR */
+  .step-indicator { display: flex; gap: 6px; margin-bottom: 16px; }
+  .step-pip { flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: background 0.2s; }
+  .step-pip.active { background: var(--accent-dark); }
+  .step-pip.done { background: var(--accent-mid); }
+
+  /* EMOTION BUTTONS */
+  .step-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+  .emotion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .emotion-btn { padding: 13px 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.15s; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .emotion-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); color: var(--accent-dark); }
+  .emotion-btn.selected { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .emotion-btn.correct-emotion { border-color: var(--green); background: var(--green-dim); color: var(--green); font-weight: 700; }
+  .emotion-btn.wrong-emotion { opacity: 0.35; }
+  .emotion-btn:disabled { cursor: default; }
+
+  /* VERDICT BUTTONS */
+  .verdict-grid { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .verdict-btn { flex: 1; min-width: 90px; padding: 13px 10px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .verdict-btn.real-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .verdict-btn.fake-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .verdict-btn.mis-btn:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .verdict-btn.show-real { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .verdict-btn.show-fake { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .verdict-btn.show-mis { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .verdict-btn.faded { opacity: 0.3; }
+  .verdict-btn:disabled { cursor: default; }
+
+  /* REVEAL */
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  .reveal-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .verdict-badge { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; padding: 5px 14px; border-radius: 20px; }
+  .verdict-badge.real { background: var(--green-dim); color: var(--green); border: 1.5px solid var(--green-mid); }
+  .verdict-badge.fake { background: var(--red-dim); color: var(--red); border: 1.5px solid var(--red-mid); }
+  .verdict-badge.misleading { background: var(--amber-dim); color: var(--amber); border: 1.5px solid var(--amber-mid); }
+  .emotion-badge { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; padding: 5px 14px; border-radius: 20px; background: var(--accent-dim); color: var(--accent-dark); border: 1.5px solid var(--accent-mid); }
+  .emotion-badge.correct { background: var(--green-dim); color: var(--green); border-color: var(--green-mid); }
+  .emotion-badge.wrong { background: var(--red-dim); color: var(--red); border-color: var(--red-mid); }
+
+  .reveal-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .tell-box { font-size: 13px; font-weight: 600; color: var(--accent-dark); background: var(--accent-dim); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; border-left: 3px solid var(--accent); line-height: 1.6; }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  /* SCORE */
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-row { display: flex; justify-content: center; gap: 24px; margin-bottom: 8px; }
+  .score-item { text-align: center; }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 64px; font-weight: 900; line-height: 1; }
+  .score-big.verdict-score { color: var(--accent-dark); }
+  .score-big.emotion-score { color: var(--amber); }
+  .score-sublabel { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .score-comment { font-size: 15px; font-weight: 600; color: var(--text); margin: 20px 0; line-height: 1.6; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🧠 Street Smart</div>
+  <h1 class="lesson-title">Your phone is <span>lying to you</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Everything you see online was put there by someone who wanted you to see it.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">There are three kinds of content online: real, fake, and misleading. Fake is the easiest to catch — it is just wrong. Misleading is the dangerous one. It is often technically true, but framed to make you feel something before you think something. And that feeling is the whole point. Every headline below was designed to trigger a specific emotion. Your job is to name the emotion first — then decide if it is real, fake, or misleading.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Two steps: feel it, then fact-check it</div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="headline-card">
+        <div class="headline-source" id="headline-source"></div>
+        <div class="headline-text" id="headline-text"></div>
+      </div>
+
+      <div class="step-indicator">
+        <div class="step-pip active" id="pip-1"></div>
+        <div class="step-pip" id="pip-2"></div>
+      </div>
+
+      <div id="step-1">
+        <div class="step-label">Step 1 — Is this designed to make you feel something positive, negative, or neutral?</div>
+        <div class="emotion-grid" id="emotion-grid"></div>
+      </div>
+
+      <div id="step-2" style="display:none;">
+        <div class="step-label">Step 2 — Is this real, fake, or misleading?</div>
+        <div class="verdict-grid">
+          <button class="verdict-btn real-btn" onclick="pickVerdict('real', this)">🟢 Real</button>
+          <button class="verdict-btn fake-btn" onclick="pickVerdict('fake', this)">🔴 Fake</button>
+          <button class="verdict-btn mis-btn" onclick="pickVerdict('misleading', this)">🟡 Misleading</button>
+        </div>
+      </div>
+
+      <div class="reveal-box" id="reveal-box">
+        <div class="reveal-badges">
+          <div class="verdict-badge" id="verdict-badge"></div>
+          <div class="emotion-badge" id="emotion-badge"></div>
+        </div>
+        <div class="reveal-explain" id="reveal-explain"></div>
+        <div class="tell-box" id="tell-box"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-row">
+        <div class="score-item">
+          <div class="score-big verdict-score" id="score-verdict">0/10</div>
+          <div class="score-sublabel">real / fake / misleading</div>
+        </div>
+        <div class="score-item">
+          <div class="score-big emotion-score" id="score-emotion">0/10</div>
+          <div class="score-sublabel">emotion identified</div>
+        </div>
+      </div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Next time something makes you angry, scared, or excited online — pause before you share it. Ask: what emotion is this designed to trigger? Who benefits if I feel that way? Can I verify this somewhere else? That three-second pause is the whole skill.</div>
+  </div>
+</div>
+
+<script>
+const emotions = [
+  { id:'negative', label:'👎 Negative' },
+  { id:'positive', label:'👍 Positive' },
+  { id:'neutral',  label:'😐 Neutral' },
+];
+
+const rounds = [
+  {
+    source: 'News headline',
+    specificEmotion: 'Fear',
+    headline: 'BREAKING: New study shows video games cause violent behavior in teenagers',
+    emotion: 'negative',
+    verdict: 'misleading',
+    verdictLabel: 'MISLEADING',
+    explain: "Studies on video games and violence have been conducted for decades with mixed and inconclusive results. The word 'cause' is doing a lot of work here — some correlation has been found in specific studies, but causation has not been established by the scientific community. 'New study' without naming the study, the researchers, or the journal is a major red flag.",
+    tell: "The tell: 'BREAKING' on a topic that has been debated for 30+ years. Real scientific consensus does not break — it builds slowly over time. Any headline that treats an ongoing scientific debate as a new discovery is misleading you."
+  },
+  {
+    source: 'Sponsored ad / clickbait',
+    specificEmotion: 'Envy',
+    headline: 'This teenager makes $47,000 a month doing ONE thing on his phone — banks HATE him',
+    emotion: 'positive',
+    verdict: 'fake',
+    verdictLabel: 'FAKE',
+    explain: "This is a classic scam ad format that has been circulating since approximately 2009. There is no teenager, there is no 'one thing,' and banks do not hate anyone making money on their phone. Clicking leads to a sales funnel — not information. The goal is to make you feel like you are missing out on something everyone else knows.",
+    tell: "The tell: 'ONE thing' + 'HATE him' + an impossible income claim always equals a scam. Real opportunities do not need to tell you that powerful institutions are trying to suppress them."
+  },
+  {
+    source: 'Social media post',
+    specificEmotion: 'Anger',
+    headline: 'Immigrants are responsible for 80% of violent crime in the US',
+    emotion: 'negative',
+    verdict: 'fake',
+    verdictLabel: 'FAKE',
+    explain: "This statistic is completely fabricated. FBI crime data and multiple independent studies consistently show that immigrants — documented and undocumented — commit crimes at lower rates than native-born citizens. The 80% figure has no credible source because it does not exist. It was invented to trigger a specific emotional response toward a specific group of people.",
+    tell: "The tell: a statistic this specific and this alarming would require a source. There is none. When a number this clean appears without any citation, it was made up. Real statistics have methodology attached."
+  },
+  {
+    source: 'News headline',
+    specificEmotion: 'Anger',
+    headline: 'Teen unemployment SURGES as economy crumbles under failed leadership',
+    emotion: 'negative',
+    verdict: 'misleading',
+    verdictLabel: 'MISLEADING',
+    explain: "Teen unemployment does fluctuate — the underlying data might be real. But 'crumbles under failed leadership' is political framing layered on top of an economic statistic. The same number could appear under any administration with the same headline. The data might be accurate. The interpretation is designed to make you angry at a specific target.",
+    tell: "The tell: a real economic headline names the statistic, the source, and the time period. This one skips all three and goes straight to blame. That ordering — emotion before evidence — is the signature of propaganda."
+  },
+  {
+    source: 'Shared Facebook post',
+    specificEmotion: 'Fear',
+    headline: 'Scientists just discovered that drinking cold water after eating causes cancer',
+    emotion: 'negative',
+    verdict: 'fake',
+    verdictLabel: 'FAKE',
+    explain: "No such discovery exists. Health scare headlines about everyday behaviors circulate constantly because fear about something you do every day is highly shareable. Cold water after eating has been studied — there is no link to cancer in any credible research. This type of content spreads because it targets something universal.",
+    tell: "The tell: 'Scientists just discovered' with no named scientists, no institution, no journal, and no study. Real medical discoveries have authors. Real findings have sources. If you cannot find where the research was published, it was not published."
+  },
+  {
+    source: 'Viral social media post',
+    specificEmotion: 'Excitement',
+    headline: 'NBA star donates his ENTIRE salary to build schools — media refuses to cover it',
+    emotion: 'positive',
+    verdict: 'misleading',
+    verdictLabel: 'MISLEADING',
+    explain: "Athletes do make large charitable donations — that part is plausible. But 'media refuses to cover it' is almost never true for a story this dramatic. If an NBA player donated their full salary it would be everywhere instantly. This framing is designed to make you feel like you found something the establishment is hiding — which primes you to distrust mainstream sources before you even check the claim.",
+    tell: "The tell: no named athlete, no named schools, no dollar amount, and a 'media is hiding this' frame. Real charitable stories have specifics. The vaguer the claim and the louder the conspiracy framing, the more suspicious you should be."
+  },
+  {
+    source: 'News headline',
+    specificEmotion: 'Shock',
+    headline: 'New law would make it illegal for anyone under 18 to own a phone — bill passes committee',
+    emotion: 'negative',
+    verdict: 'misleading',
+    verdictLabel: 'MISLEADING',
+    explain: "Bills pass committees constantly and almost never become law. 'Bill passes committee' is technically accurate but presented to make a fringe proposal sound like an imminent reality. Dozens of extreme bills pass committees every year and die immediately afterward. This headline is designed to make you feel like something terrifying is about to happen when it almost certainly is not.",
+    tell: "The tell: 'passes committee' is not the same as 'passes into law.' This headline is technically true and deliberately alarming at the same time. That gap between what is technically accurate and what you are meant to believe is the definition of misleading."
+  },
+  {
+    source: 'Viral social media post',
+    specificEmotion: 'Fear',
+    headline: 'Scientists CONFIRM that 5G towers are spreading COVID-19 through the air',
+    emotion: 'negative',
+    verdict: 'fake',
+    verdictLabel: 'FAKE',
+    explain: "Viruses cannot travel through radio waves. 5G is a wireless communication frequency — it has no biological mechanism to carry or transmit a virus. This was one of the most widely shared pieces of misinformation during the COVID pandemic and led to real-world attacks on cell towers in multiple countries.",
+    tell: "The tell: the claim requires two completely separate sciences — biology and physics — to both be entirely wrong simultaneously. When a headline breaks that many laws of reality at once, it is not a discovery. It is fiction."
+  },
+  {
+    source: 'Local news headline',
+    specificEmotion: 'None — just information',
+    headline: 'Local high school student wins national science competition with project on water purification',
+    emotion: 'neutral',
+    verdict: 'real',
+    verdictLabel: 'REAL',
+    explain: "Boring, specific, local, feel-good without being incredible. No political angle, no miracle claim, no enemy, no urgency. This is what real local news looks like. The absence of emotional manipulation is the green flag — real stories about real people doing real things tend to be specific and undramatic.",
+    tell: "The tell for real content: it does not need you to feel anything strong to be worth reading. If a headline does not make you angry, scared, or amazed — and it is still interesting — it is probably just reporting a fact."
+  },
+  {
+    source: 'Viral social media post',
+    specificEmotion: 'Anger',
+    headline: 'SHOCKING: Government secretly adding fluoride to water supply to control the population',
+    emotion: 'negative',
+    verdict: 'fake',
+    verdictLabel: 'FAKE',
+    explain: "Fluoride is added to public water supplies — that part is true and has been publicly documented since the 1940s as a public health measure to prevent tooth decay. It is openly disclosed by municipalities and you can look up your city's water treatment report right now. The 'secretly' and 'control the population' framing takes a real, publicly documented practice and reframes it as sinister.",
+    tell: "The tell: taking a real, publicly available fact and adding 'secretly' and 'control' to it is a classic conspiracy reframe. The fact is real. The interpretation is invented. If something has been publicly documented for 80 years, 'secretly' is not the right word."
+  },
+];
+
+let current = 0;
+let emotionScore = 0;
+let verdictScore = 0;
+let emotionPicked = null;
+let verdictPicked = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  emotionPicked = null;
+  verdictPicked = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('headline-source').textContent = r.source;
+  document.getElementById('headline-text').textContent = r.headline;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('step-1').style.display = 'block';
+  document.getElementById('step-2').style.display = 'none';
+  document.getElementById('pip-1').className = 'step-pip active';
+  document.getElementById('pip-2').className = 'step-pip';
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  // Reset verdict buttons
+  document.querySelectorAll('.verdict-btn').forEach(b => {
+    b.disabled = false;
+    b.className = b.classList.contains('real-btn') ? 'verdict-btn real-btn' : b.classList.contains('fake-btn') ? 'verdict-btn fake-btn' : 'verdict-btn mis-btn';
+  });
+
+  // Build emotion grid
+  document.getElementById('emotion-grid').innerHTML = emotions.map(e =>
+    `<button class="emotion-btn" onclick="pickEmotion('${e.id}', this)">${e.label}</button>`).join('');
+
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickEmotion(id, btn) {
+  if (emotionPicked) return;
+  emotionPicked = id;
+  const r = rounds[current];
+  const isCorrect = id === r.emotion;
+  if (isCorrect) emotionScore++;
+
+  document.querySelectorAll('.emotion-btn').forEach(b => {
+    b.disabled = true;
+    const bid = b.textContent.toLowerCase();
+    const emotionId = emotions.find(e => b.textContent === e.label)?.id;
+    if (emotionId === r.emotion) b.classList.add('correct-emotion');
+    else if (b === btn && !isCorrect) b.classList.add('wrong-emotion');
+    else b.classList.add('wrong-emotion');
+  });
+
+  // Advance to step 2
+  setTimeout(() => {
+    document.getElementById('step-1').style.display = 'none';
+    document.getElementById('step-2').style.display = 'block';
+    document.getElementById('pip-1').className = 'step-pip done';
+    document.getElementById('pip-2').className = 'step-pip active';
+  }, 600);
+}
+
+function pickVerdict(pick, btn) {
+  if (verdictPicked) return;
+  verdictPicked = true;
+  const r = rounds[current];
+  const isCorrect = pick === r.verdict;
+  if (isCorrect) verdictScore++;
+
+  document.querySelectorAll('.verdict-btn').forEach(b => {
+    b.disabled = true;
+    if (b.classList.contains('real-btn')) b.className = r.verdict === 'real' ? 'verdict-btn show-real' : 'verdict-btn faded';
+    else if (b.classList.contains('fake-btn')) b.className = r.verdict === 'fake' ? 'verdict-btn show-fake' : 'verdict-btn faded';
+    else b.className = r.verdict === 'misleading' ? 'verdict-btn show-mis' : 'verdict-btn faded';
+  });
+
+  // Verdict badge
+  const vb = document.getElementById('verdict-badge');
+  vb.textContent = r.verdictLabel;
+  vb.className = 'verdict-badge ' + r.verdict;
+
+  // Emotion badge
+  const correctEmotion = emotions.find(e => e.id === r.emotion);
+  const eb = document.getElementById('emotion-badge');
+  const emotionCorrect = emotionPicked === r.emotion;
+  const specificLabel = r.specificEmotion ? ' — ' + r.specificEmotion : '';
+  eb.textContent = (emotionCorrect ? '✓ ' : '') + correctEmotion.label + specificLabel;
+  eb.className = 'emotion-badge ' + (emotionCorrect ? 'correct' : 'wrong');
+
+  document.getElementById('reveal-explain').textContent = r.explain;
+  document.getElementById('tell-box').textContent = r.tell;
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-verdict').textContent = verdictScore + '/10';
+  document.getElementById('score-emotion').textContent = emotionScore + '/10';
+  let comment;
+  if (verdictScore >= 8 && emotionScore >= 7) comment = "You spotted what was real and what it was designed to make you feel. That combination is the whole skill — and most people never develop it.";
+  else if (verdictScore >= 6) comment = "Solid on the fact-checking. The emotion piece is where it gets subtle — misinformation works because the feeling comes before the thinking.";
+  else comment = "The misleading ones are built by professionals who study how to bypass your skepticism. Getting fooled by them does not mean you are not smart. Now you know what the tells look like.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; emotionScore = 0; verdictScore = 0;
+  emotionPicked = null; verdictPicked = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

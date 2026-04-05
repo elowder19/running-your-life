@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After High School — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #e8a045;
+    --accent-dark: #c47820;
+    --accent-dim: #fdf5e8;
+    --accent-mid: #f0d0a0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --blue: #5a9fd4;
+    --blue-dim: #e8f2fb;
+    --purple: #9b7fe8;
+    --purple-dim: #f0ecfc;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(196,120,32,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* PART TABS */
+  .part-tabs { display: flex; gap: 6px; margin-bottom: 24px; }
+  .part-tab { flex: 1; padding: 10px 8px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: var(--text3); text-align: center; cursor: pointer; transition: all 0.15s; }
+  .part-tab.active { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .part-tab.done { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+  /* PART 1 - MYTH/FACT */
+  .myth-statement { font-family: 'Nunito', sans-serif; font-size: clamp(18px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.5; margin-bottom: 20px; background: var(--bg); border-radius: 10px; padding: 16px 18px; border-left: 3px solid var(--accent-mid); }
+  .myth-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .myth-btn { flex: 1; min-width: 120px; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .myth-btn.true-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .myth-btn.myth-btn-opt:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .myth-btn.show-myth { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .myth-btn.show-partial { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .myth-btn.selected-wrong { opacity: 0.4; }
+  .myth-btn:disabled { cursor: default; }
+  .myth-verdict { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; margin-bottom: 8px; }
+  .myth-verdict.myth { color: var(--red); }
+  .myth-verdict.partial { color: var(--amber); }
+  .myth-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .round-counter { font-size: 13px; font-weight: 700; color: var(--text3); margin-bottom: 12px; }
+  .btn-part-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-part-next:hover { opacity: 0.85; }
+
+  /* PART 2 - PATH EXPLORER */
+  .path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .path-card { padding: 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); cursor: pointer; transition: all 0.15s; text-align: center; }
+  .path-card:hover { transform: translateY(-2px); }
+  .path-card.trade:hover, .path-card.trade.active-path { border-color: var(--blue); background: var(--blue-dim); }
+  .path-card.college:hover, .path-card.college.active-path { border-color: var(--green); background: var(--green-dim); }
+  .path-card.military:hover, .path-card.military.active-path { border-color: var(--accent-dark); background: var(--accent-dim); }
+  .path-card.work:hover, .path-card.work.active-path { border-color: var(--purple); background: var(--purple-dim); }
+  .path-icon { font-size: 32px; margin-bottom: 6px; }
+  .path-name { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; color: var(--text); }
+  .path-tagline { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .path-detail { display: none; animation: fadeUp 0.25s ease both; margin-bottom: 16px; }
+  .path-detail.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .path-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .path-detail-icon { font-size: 32px; }
+  .path-detail-title { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--text); }
+  .path-rows { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+  .path-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .path-row:last-child { border-bottom: none; }
+  .path-row-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); min-width: 90px; padding-top: 2px; flex-shrink: 0; }
+  .path-row-val { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .path-row-val.good { color: var(--green); font-weight: 600; }
+  .path-row-val.watch { color: var(--red); font-weight: 600; }
+
+  /* PART 3 - HONEST QUESTION */
+  .honest-q { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.4; margin-bottom: 20px; }
+  .path-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .path-pick-btn { padding: 14px 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; text-align: center; color: var(--text2); }
+  .path-pick-btn:hover, .path-pick-btn.picked { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .honest-followup { display: none; animation: fadeUp 0.25s ease both; }
+  .honest-followup.visible { display: block; }
+  .honest-followup-q { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+  .next-step-box { font-size: 14px; color: var(--text2); line-height: 1.75; background: var(--accent-dim); border-radius: 10px; padding: 14px 18px; border-left: 3px solid var(--accent-dark); }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">💼 Work + Real Life</div>
+  <h1 class="lesson-title">After <span>high school</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">What do you actually think happens the day after graduation?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">College is not the only path. Trade school, military, working full time — all of these are real options with real outcomes. And almost everything you have heard about each of them is at least partially wrong. Part 1 busts the myths. Part 2 lets you look at the real picture of each path. Part 3 asks the honest question.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Three parts — work through them all</div>
+    <div class="part-tabs">
+      <div class="part-tab active" id="tab-1" onclick="showPart(1)">Part 1 — Myth/Fact</div>
+      <div class="part-tab" id="tab-2" onclick="showPart(2)">Part 2 — Path Explorer</div>
+      <div class="part-tab" id="tab-3" onclick="showPart(3)">Part 3 — Honest Question</div>
+    </div>
+
+    <!-- PART 1 -->
+    <div id="part-1">
+      <div class="round-counter" id="myth-counter">Round 1 of 5</div>
+      <div id="myth-area">
+        <div class="myth-statement" id="myth-stmt"></div>
+        <div class="myth-btns">
+          <button class="myth-btn true-btn" onclick="voteMythFact('true', this)">✓ True</button>
+          <button class="myth-btn myth-btn-opt" onclick="voteMythFact('myth', this)">✗ Myth</button>
+        </div>
+        <div id="myth-reveal" style="display:none;">
+          <div class="myth-verdict" id="myth-verdict-text"></div>
+          <div class="myth-explain" id="myth-explain-text"></div>
+          <button class="btn-part-next" id="myth-next-btn" onclick="nextMyth()">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div id="part-2" style="display:none;">
+      <div style="font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.6;">Pick any path to see the real picture. You can explore all four.</div>
+      <div class="path-grid">
+        <div class="path-card trade" onclick="showPath('trade')">
+          <div class="path-icon">🔧</div>
+          <div class="path-name">Trade / Community College</div>
+          <div class="path-tagline">1-2 years, real skills, real pay</div>
+        </div>
+        <div class="path-card college" onclick="showPath('college')">
+          <div class="path-icon">🎓</div>
+          <div class="path-name">4-Year College</div>
+          <div class="path-tagline">Degrees, debt, and delayed income</div>
+        </div>
+        <div class="path-card military" onclick="showPath('military')">
+          <div class="path-icon">⭐</div>
+          <div class="path-name">Military</div>
+          <div class="path-tagline">Structure, benefits, and the GI Bill</div>
+        </div>
+        <div class="path-card work" onclick="showPath('work')">
+          <div class="path-icon">💼</div>
+          <div class="path-name">Full Time Work</div>
+          <div class="path-tagline">Income now, growth if intentional</div>
+        </div>
+      </div>
+      <div class="path-detail" id="path-detail"></div>
+      <button class="btn-part-next" onclick="showPart(3)">On to Part 3 →</button>
+    </div>
+
+    <!-- PART 3 -->
+    <div id="part-3" style="display:none;">
+      <div class="honest-q">Based on everything you just saw — which path are you actually leaning toward, even a little?</div>
+      <div class="path-pick-grid">
+        <button class="path-pick-btn" onclick="pickPath('Trade / Community College', this)">🔧 Trade / Community College</button>
+        <button class="path-pick-btn" onclick="pickPath('4-Year College', this)">🎓 4-Year College</button>
+        <button class="path-pick-btn" onclick="pickPath('Military', this)">⭐ Military</button>
+        <button class="path-pick-btn" onclick="pickPath('Full Time Work', this)">💼 Full Time Work</button>
+        <button class="path-pick-btn" style="grid-column:span 2;" onclick="pickPath('Not sure yet', this)">🤷 Honestly not sure yet</button>
+      </div>
+      <div class="honest-followup" id="honest-followup">
+        <div class="honest-followup-q" id="followup-q"></div>
+        <div class="next-step-box" id="next-step-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Of everything you just saw — which path surprised you the most? Which one are you actually considering, even a little? What is one thing you would need to find out to know if it is realistic for you?</div>
+  </div>
+</div>
+
+<script>
+// PART 1 — MYTHS
+const myths = [
+  {
+    statement: '"Trade school and community college are for people who aren\'t smart enough for a real degree — AND you\'ll definitely make less money. What a waste of time."',
+    verdict: 'myth', verdictLabel: 'MYTH — all of it.',
+    explain: "Electricians, plumbers, HVAC techs, and welders average $55,000-80,000 a year after a 1-2 year program. A 2-year degree or trade certification often leads to higher starting pay and less debt than a 4-year degree in a field with no jobs. Smart people pick the path that makes financial sense — not the one that sounds most impressive."
+  },
+  {
+    statement: '"Most people who start a 4-year degree finish it — and the degree you get guarantees you can pay off the debt."',
+    verdict: 'myth', verdictLabel: 'MYTH — both parts.',
+    explain: "About 40% of people who start a 4-year degree never finish — and they still owe the loans. And a degree does not guarantee anything about your ability to pay it back. What matters is whether the field you studied actually pays enough to cover $400 a month in loan payments while also covering rent, food, and everything else. A lot of degrees do not."
+  },
+  {
+    statement: '"The military is for: kids too dumb or broke to go to college, psychos that want to kill people, and people who couldn\'t figure out anything else to do with their life."',
+    verdict: 'myth', verdictLabel: 'MYTH — all three.',
+    explain: "First, you have to pass the ASVAB — a standardized aptitude test — to get in. Low scores limit your options. Higher scores open more roles. Second, most military jobs are not combat — logistics, healthcare, IT, mechanics, finance, intelligence. Third, the military pays a salary from day one, provides housing and healthcare, covers college through the GI Bill, and builds discipline, structure, and leadership skills that transfer directly into civilian careers."
+  },
+  {
+    statement: '"If you aren\'t going to college you better have a plan — and be ready to stick to it for it to work out."',
+    verdict: 'partial', verdictLabel: 'MOSTLY MYTH.',
+    explain: "Having a direction is smart. But the idea that you need a locked-in plan — and that changing it means you failed — is what keeps people stuck. Nobody\'s first plan survives contact with real life. The people who figure it out fastest are the ones who start moving and adjust as they go. Paths change all the time. The first move is just the first move."
+  },
+  {
+    statement: '"A high school diploma basically guarantees you can get a decent job."',
+    verdict: 'partial', verdictLabel: 'MYTH — but close.',
+    explain: "A diploma signals something real to employers — that you can show up, meet deadlines, handle basic reading and math, and follow through on something. But decent pay almost always requires something on top of it. And most of those next steps require the diploma first. Trade programs, certifications, community college, 4-year degrees, and military service all require a high school diploma or GED to even get started. The diploma is the floor, not the ceiling — and it unlocks the door to every path we just talked about."
+  },
+];
+
+let mythIdx = 0;
+let mythVoted = false;
+
+function renderMyth() {
+  mythVoted = false;
+  document.getElementById('myth-counter').textContent = `Round ${mythIdx + 1} of ${myths.length}`;
+  document.getElementById('myth-stmt').textContent = myths[mythIdx].statement;
+  document.getElementById('myth-reveal').style.display = 'none';
+  document.querySelectorAll('.myth-btn').forEach(b => { b.disabled = false; b.className = b.classList.contains('true-btn') ? 'myth-btn true-btn' : 'myth-btn myth-btn-opt'; });
+  document.getElementById('myth-next-btn').textContent = mythIdx < myths.length - 1 ? 'Next →' : 'On to Part 2 →';
+}
+
+function voteMythFact(vote, btn) {
+  if (mythVoted) return;
+  mythVoted = true;
+  const m = myths[mythIdx];
+  document.querySelectorAll('.myth-btn').forEach(b => {
+    b.disabled = true;
+    if (b.classList.contains('myth-btn-opt')) b.classList.add(m.verdict === 'partial' ? 'show-partial' : 'show-myth');
+    else b.classList.add('selected-wrong');
+  });
+  const verdictEl = document.getElementById('myth-verdict-text');
+  verdictEl.textContent = m.verdictLabel;
+  verdictEl.className = 'myth-verdict ' + (m.verdict === 'partial' ? 'partial' : 'myth');
+  document.getElementById('myth-explain-text').textContent = m.explain;
+  document.getElementById('myth-reveal').style.display = 'block';
+  document.getElementById('myth-reveal').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextMyth() {
+  mythIdx++;
+  if (mythIdx >= myths.length) {
+    document.getElementById('tab-1').className = 'part-tab done';
+    showPart(2);
+    return;
+  }
+  renderMyth();
+  document.getElementById('myth-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// PART 2 — PATH EXPLORER
+const paths = {
+  trade: {
+    icon:'🔧', name:'Trade / Community College',
+    rows:[
+      { label:'Time to start', val:'1-2 years for most programs', cls:'' },
+      { label:'Upfront cost', val:'$5,000-20,000 total — often covered by financial aid or employer tuition', cls:'good' },
+      { label:'Year 1 pay', val:'$35,000-45,000 depending on trade and location', cls:'' },
+      { label:'Year 5 pay', val:'$55,000-80,000+ for licensed tradespeople', cls:'good' },
+      { label:'What most miss', val:'Skilled trades are in serious shortage. Plumbers and electricians can name their price in most markets right now.', cls:'' },
+      { label:'Watch out for', val:'Some programs are predatory — research the school before you enroll.', cls:'watch' },
+      { label:'Diploma required', val:'Yes — most programs require a high school diploma or GED.', cls:'' },
+    ]
+  },
+  college: {
+    icon:'🎓', name:'4-Year College',
+    rows:[
+      { label:'Time to start', val:'4 years minimum — longer if you change majors or stop out', cls:'' },
+      { label:'Upfront cost', val:'$40,000-120,000+ total. Average student loan debt: $37,000', cls:'watch' },
+      { label:'Year 1 pay', val:'Varies wildly by major — $30,000 to $65,000', cls:'' },
+      { label:'Year 5 pay', val:'Depends entirely on your field. Some pay well. Many do not cover the debt.', cls:'' },
+      { label:'What most miss', val:'40% of people who start never finish — and still owe the loans. Research the job market for your specific major.', cls:'watch' },
+      { label:'Watch out for', val:'Choosing a major because it sounds interesting without checking whether it pays enough to cover the cost.', cls:'watch' },
+      { label:'Diploma required', val:'Yes — required for admission to any accredited college or university.', cls:'' },
+    ]
+  },
+  military: {
+    icon:'⭐', name:'Military',
+    rows:[
+      { label:'To get in', val:'Must pass the ASVAB aptitude test. Score determines which jobs are available. Higher score = more options.', cls:'' },
+      { label:'Pay from day 1', val:'Base pay starts around $23,000-26,000/year — plus free housing, food, and healthcare.', cls:'good' },
+      { label:'Education', val:'The GI Bill covers college tuition after service. Many branches offer tuition assistance while serving.', cls:'good' },
+      { label:'Skills built', val:'Discipline, structure, leadership, problem-solving under pressure. All transfer directly to civilian careers.', cls:'good' },
+      { label:'What most miss', val:'Most military jobs are not combat — logistics, IT, healthcare, mechanics, finance, intelligence.', cls:'' },
+      { label:'Watch out for', val:'Service contracts are typically 4-8 years. Understand what you are committing to before you sign.', cls:'watch' },
+      { label:'Diploma required', val:'Yes — a high school diploma or GED is required to enlist in all branches.', cls:'' },
+    ]
+  },
+  work: {
+    icon:'💼', name:'Full Time Work',
+    rows:[
+      { label:'Time to start', val:'Immediately — income from day one', cls:'good' },
+      { label:'Upfront cost', val:'None — you are earning, not spending', cls:'good' },
+      { label:'Year 1 pay', val:'$25,000-40,000 depending on industry and role', cls:'' },
+      { label:'Year 5 pay', val:'Depends entirely on how intentional you are. Same job, same pay — or promoted and significantly higher.', cls:'' },
+      { label:'What most miss', val:'Two years of full time work while peers are in college means two years of income and experience — if you use it intentionally.', cls:'' },
+      { label:'Watch out for', val:'Getting comfortable at a low-paying job without building toward something more. The path does not move on its own.', cls:'watch' },
+      { label:'Diploma required', val:'Most jobs paying above minimum wage require a high school diploma. Without it, your options narrow significantly.', cls:'' },
+    ]
+  },
+};
+
+function showPath(id) {
+  document.querySelectorAll('.path-card').forEach(c => c.classList.remove('active-path'));
+  document.querySelector('.path-card.' + id).classList.add('active-path');
+  const p = paths[id];
+  const detail = document.getElementById('path-detail');
+  detail.innerHTML = `
+    <div class="path-detail-header">
+      <div class="path-detail-icon">${p.icon}</div>
+      <div class="path-detail-title">${p.name}</div>
+    </div>
+    <div class="path-rows">
+      ${p.rows.map(r => `<div class="path-row">
+        <div class="path-row-label">${r.label}</div>
+        <div class="path-row-val ${r.cls}">${r.val}</div>
+      </div>`).join('')}
+    </div>`;
+  detail.classList.add('visible');
+  detail.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// PART 3 — HONEST QUESTION
+const nextSteps = {
+  'Trade / Community College': 'Look up trade programs in your area — HVAC, electrical, plumbing, welding, automotive. Find out what the program costs, how long it takes, and what certifications you earn. Then look up average pay for that trade in Kansas.',
+  '4-Year College': 'Before you commit to a major, look up the average starting salary for jobs in that field. Then compare it to the monthly loan payment you would owe. If the math does not work, that is information worth having before you sign.',
+  'Military': 'Look up the ASVAB practice test online — it is free. See where you score. Then look up which military jobs match your score and interests. Go in informed.',
+  'Full Time Work': 'The path only works if you are intentional about it. What skill or certification could you add in the next year that would increase your pay? Make that the goal — not just more hours at the same rate.',
+  'Not sure yet': 'Not sure is a completely valid answer right now. The worst move is doing nothing while you wait to feel certain. Pick one path from the list and spend 20 minutes this week actually researching it. Not committing — just looking.',
+};
+
+function pickPath(path, btn) {
+  document.querySelectorAll('.path-pick-btn').forEach(b => b.classList.remove('picked'));
+  btn.classList.add('picked');
+  document.getElementById('followup-q').textContent = (path === 'Not sure yet' ? "That's okay — not sure is a valid place to be. What is one path from the list you could spend 20 minutes researching this week? Not committing — just looking." : "Good. Now — what is one thing you would need to find out to know if " + path + " is realistic for you?");
+  document.getElementById('next-step-text').textContent = nextSteps[path];
+  const followup = document.getElementById('honest-followup');
+  followup.classList.add('visible');
+  followup.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// PART NAV
+function showPart(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('part-' + i).style.display = i === n ? 'block' : 'none';
+    const tab = document.getElementById('tab-' + i);
+    if (i < n) tab.className = 'part-tab done';
+    else if (i === n) tab.className = 'part-tab active';
+    else tab.className = 'part-tab';
+  });
+  if (n === 2) document.getElementById('tab-1').className = 'part-tab done';
+  if (n === 3) { document.getElementById('tab-1').className = 'part-tab done'; document.getElementById('tab-2').className = 'part-tab done'; }
+}
+
+// INIT
+renderMyth();
+</script>
+</body>
+</html>

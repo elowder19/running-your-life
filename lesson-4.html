@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Alarm System — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #7ec8e3;
+    --accent-dark: #3a9abf;
+    --accent-dim: #e8f6fb;
+    --accent-mid: #b8e2f0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --purple: #9b7fe8;
+    --purple-dim: #f0ecfc;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(58,154,191,0.25); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 4px; }
+
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  .scenario-setup { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.7; margin-bottom: 20px; background: var(--bg); border-radius: 10px; padding: 16px 18px; border-left: 3px solid var(--accent-mid); }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); text-align: left; transition: all 0.15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); }
+  .option-btn .opt-icon { font-size: 22px; flex-shrink: 0; }
+  .option-btn.selected-correct { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+  .option-btn.selected-wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .option-btn.show-correct { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+  .option-btn.show-either { border-color: var(--purple); background: var(--purple-dim); color: var(--purple); }
+  .option-btn:disabled { cursor: default; }
+
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .reveal-verdict { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; margin-bottom: 10px; }
+  .reveal-verdict.correct { color: var(--green); }
+  .reveal-verdict.wrong { color: var(--amber); }
+  .reveal-verdict.either { color: var(--purple); }
+  .reveal-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  .tally-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tally-pill { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .tally-pill.alarm { background: var(--accent-dim); color: var(--accent-dark); border: 1px solid var(--accent-mid); }
+  .tally-pill.brain { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .tally-pill.either { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple); }
+
+  .score-wrap { text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); display: none; }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">⏰ Time + Organization</div>
+  <h1 class="lesson-title">The <span>alarm system</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Your brain thinks it can remember everything. It can't.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Your brain is not a calendar. It is great at a lot of things — but passively holding onto future obligations while you go about your day is not one of them. An alarm or reminder is not a weakness or a crutch. It is a system. People who are consistently on time and on top of things are not smarter — they just set more reminders. For each scenario below, decide: does this need an alarm, or can your brain handle it?</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Set an alarm — or trust your brain?</div>
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+    <div class="tally-bar">
+      <div class="tally-pill alarm">🔔 Needs alarm: <span id="tally-alarm">0</span></div>
+      <div class="tally-pill brain">🧠 Brain's got it: <span id="tally-brain">0</span></div>
+      <div class="tally-pill either">🤷 Either works: <span id="tally-either">0</span></div>
+    </div>
+
+    <div id="game-area">
+      <div class="scenario-setup" id="scenario-setup"></div>
+      <div class="options" id="options-list"></div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="reveal-verdict" id="reveal-verdict"></div>
+        <div class="reveal-explain" id="reveal-explain"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">correct out of 10</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think about the last time you forgot something important. Was it the kind of thing that needed an alarm? What would have been different if you had set one? Pick one thing you are supposed to remember this week and set a reminder for it right now before this lesson ends.</div>
+  </div>
+</div>
+
+<script>
+// correct: 0=alarm, 1=brain, 2=either
+const rounds = [
+  {
+    setup: "The dental receptionist hands you an appointment card. \"Your next appointment is October 12th at 10:00am!\" It is currently April.",
+    options: ["🔔 Set a phone alarm / calendar reminder", "🧠 The appointment card is enough", "🤷 Either works"],
+    correct: 0,
+    type: 'alarm',
+    explain: "The card is a nice start. But do you know what day of the week October 12th falls on just by looking at it? Will you remember in four months that October 12th specifically is your dental appointment — not the 11th, not the 13th? And where is that card going to be in August — your wallet, your fridge, the bottom of a bag? A 30-second calendar entry means you will never miss a cleaning because the card got buried."
+  },
+  {
+    setup: "\"Sure, I can take your Wednesday night shift so you can attend your child's Kindergarten Promotion,\" you hear yourself saying to your coworker who isn't even that nice to you, but looks like they might cry if you say no. You don't typically work Wednesdays. Your coworker goes and lets your boss know, and your name gets officially added to the Wednesday night schedule. No turning back now.",
+    options: ["🔔 Set an alarm for Wednesday", "🧠 You said it out loud — you'll remember", "🤷 Either works"],
+    correct: 0,
+    type: 'alarm',
+    explain: "You meant every word of it. You are a good person. And your brain will absolutely convince itself over the next few days that Wednesday is a normal day off — because Wednesday has always been a normal day off. A one-time schedule change with no routine to anchor it is a classic 'I completely forgot' situation. Set the alarm the moment you agree."
+  },
+  {
+    setup: "The pharmacist hands you some very large antibiotics. \"Okay, so you need to take 3 a day for the first 2 days, then 2 a day for the remaining 8 days — 10 days total,\" she says. Three horse pills a day for two days? That's one... every... EVERY 8 hours? Then you still have to take one every 12 hours for another EIGHT DAYS? Taking these antibiotics seems more like a full time job.",
+    options: ["🔔 Set alarms for every dose", "🧠 You'll remember — it's medicine", "🤷 Either works"],
+    correct: 0,
+    type: 'alarm',
+    explain: "Which one is it again — every 8 hours or every 12? How many days have you been taking them? Missing doses on antibiotics is not just inconvenient — it can make the prescription less effective and contribute to antibiotic resistance. This is exactly what phone alarms were invented for. Set them before you leave the pharmacy."
+  },
+  {
+    setup: "Your phone is at 4%. You do not have your charger. You need a fully charged phone for work at 7am tomorrow. \"I'll charge it when I get home,\" you think.",
+    options: ["🔔 Set a reminder to charge it the moment you get home", "🧠 Your phone is at 4% — it's going to die before you even get home. Plug it in NOW.", "🤷 Either works"],
+    correct: 1,
+    type: 'brain',
+    explain: "Here is the thing — setting an alarm on a phone that is about to die is not a plan. The alarm dies with the phone. The actual move here is to charge it right now, wherever you are, before you leave. Find an outlet, borrow a charger, ask someone. An alarm cannot save you if the device is dead. Sometimes the solution is not a reminder — it is acting immediately before the window closes."
+  },
+  {
+    setup: "\"I'll start it tomorrow,\" you think. It is Sunday. The assignment is due Thursday. You are not worried — Thursday feels far away. You close your laptop.",
+    options: ["🔔 Set an alarm for a specific start time tomorrow", "🧠 You'll remember — and if not tomorrow, the day after... or the day after that...", "🤷 Either works"],
+    correct: 0,
+    type: 'alarm',
+    explain: "\"Tomorrow\" without a specific time is not a plan — it is a postponement. Your brain will keep bumping it until Thursday feels urgent, which is usually Wednesday night. An alarm for a specific time tomorrow turns a vague intention into an actual appointment with yourself. Closing the laptop is the easy part. Opening it again on purpose is the hard part."
+  },
+  {
+    setup: "\"This definitely won't take 2 hours,\" you say as you park in a 2-HOURS OR LESS PARKING ONLY spot outside a shoe store. But how sure are you? Like... $50 parking ticket sure?",
+    options: ["🔔 Set an alarm for 1 hour 45 minutes from now", "🧠 You know yourself — you'll be quick", "🤷 Either works"],
+    correct: 0,
+    type: 'alarm',
+    explain: "Time blindness is real — 45 minutes in a shoe store can feel like 20. The ticket is $50. The alarm takes 10 seconds to set. You do the math. And \"I know myself, I'll be quick\" is something people say right before they get a parking ticket."
+  },
+  {
+    setup: "You have brushed your teeth every single morning right after waking up for as long as you can remember. Your toothbrush is on the sink. The sink is the first thing you see when you walk into the bathroom.",
+    options: ["🔔 Set a daily alarm just in case", "🧠 Your routine has this covered", "🤷 Either works"],
+    correct: 1,
+    type: 'brain',
+    explain: "A locked-in daily habit with a strong environmental cue — waking up, walking into the bathroom, seeing the toothbrush — does not need an alarm. The routine IS the reminder. This is what a real habit looks like when it is fully formed. An alarm would not hurt, but your brain genuinely has this one."
+  },
+  {
+    setup: "Every Tuesday and Thursday, 4-7pm, same restaurant, bussing tables and washing dishes. You have had this exact schedule for six months. They pay you cash and send you home with a meal when you are done.",
+    options: ["🔔 Set a weekly alarm for T/Th at 3:30pm", "🧠 Six months of the same schedule — your body knows", "🤷 Either works"],
+    correct: 1,
+    type: 'brain',
+    explain: "Six months of the exact same schedule turns into something close to automatic. Your body clock knows Tuesday and Thursday evenings belong to the restaurant. The cash and the free meal do not hurt as memory aids either. An alarm would not hurt — but this is a case where your brain has genuinely built a reliable routine."
+  },
+  {
+    setup: "You know the absolute latest you can leave your house in the morning and still make it to school by 7:45am is 7:23am. If you leave any later, you are not going to make it. You know this like the back of your hand. And yet — here you are, rushing out the door every single morning at exactly 7:23am like your life depends on it.",
+    options: ["🔔 Set a 7:22am alarm — YOU'VE GOT 1 MINUTE", "🧠 You always leave at 7:23 — your brain has it", "🤷 Either works"],
+    correct: 0,
+    type: 'alarm',
+    explain: "Here is the thing — you DO know. Your brain has this information. And you are still rushing out at 7:23 every single day, which means knowing is not the same as being ready. A 7:22am alarm does not tell you something you do not know. It gives you one minute of buffer that turns a sprint into a walk. Set it."
+  },
+  {
+    setup: "You have found the most hilarious meme at exactly 11:46pm on a Monday evening. It is so hilarious you are pretty sure its hilarity spans generations. You want to send it to your friends, your older sibling, your cool uncle, and even your favorite teacher. But sending it at 11:46pm is probably not the best option for all of these people. Do you think you will remember who you wanted to send it to by morning? Will it still be as hilarious?",
+    options: ["🔔 Screenshot it and set a reminder to send it tomorrow", "🧠 It's that funny — you will definitely remember", "🤷 Either works — it's a meme, not a medical appointment"],
+    correct: 2,
+    type: 'either',
+    explain: "This is genuinely either works territory. Low stakes, same-day relevance, no real consequences if it slips your mind. If you are someone who forgets things like this — take a screenshot and set a quick reminder. If you are the kind of person who will wake up at 7am still thinking about this meme — your brain has it. The one thing worth noting: it is always funnier at 11:46pm than it is at 8am. That part is real."
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+let tally = { alarm: 0, brain: 0, either: 0 };
+
+function buildDots() {
+  const el = document.getElementById('round-dots');
+  el.innerHTML = rounds.map((_, i) => `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function updateTally() {
+  document.getElementById('tally-alarm').textContent = tally.alarm;
+  document.getElementById('tally-brain').textContent = tally.brain;
+  document.getElementById('tally-either').textContent = tally.either;
+}
+
+function renderRound() {
+  const r = rounds[current];
+  voted = false;
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('scenario-setup').textContent = r.setup;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  const opts = document.getElementById('options-list');
+  opts.innerHTML = r.options.map((opt, i) => `
+    <button class="option-btn" onclick="pickOption(${i}, this)">
+      <span>${opt}</span>
+    </button>`).join('');
+
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (!dot) return;
+    dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickOption(idx, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const isEither = r.type === 'either';
+  const isCorrect = isEither || idx === r.correct;
+  if (isCorrect) score++;
+  tally[r.type]++;
+  updateTally();
+
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (isEither) {
+      if (i === idx) b.classList.add('show-either');
+    } else {
+      if (i === r.correct) b.classList.add('show-correct');
+      else if (i === idx && !isCorrect) b.classList.add('selected-wrong');
+    }
+  });
+
+  const verdict = document.getElementById('reveal-verdict');
+  if (isEither) {
+    verdict.textContent = '🤷 Either works — and here is why.';
+    verdict.className = 'reveal-verdict either';
+  } else if (isCorrect) {
+    verdict.textContent = '✓ Correct.';
+    verdict.className = 'reveal-verdict correct';
+  } else {
+    verdict.textContent = `Not quite — here is why the answer is "${r.options[r.correct]}".`;
+    verdict.className = 'reveal-verdict wrong';
+  }
+
+  document.getElementById('reveal-explain').textContent = r.explain;
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/10';
+  let comment;
+  if (score >= 9) comment = "You already know when to trust your brain and when to trust a system. That is the whole skill.";
+  else if (score >= 6) comment = "Solid. The ones you missed are usually the ones that feel like your brain should handle it — but consistently do not.";
+  else comment = "Your brain is optimistic about what it can hold onto. That is not a flaw — it is just how brains work. Systems exist for a reason.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  tally = { alarm: 0, brain: 0, either: 0 };
+  updateTally();
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

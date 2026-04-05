@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Boss Isn't Your Friend — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #e8a045;
+    --accent-dark: #c47820;
+    --accent-dim: #fdf5e8;
+    --accent-mid: #f0d0a0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(196,120,32,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  .belief-stmt { font-family: 'Nunito', sans-serif; font-size: clamp(18px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.5; margin-bottom: 20px; background: var(--bg); border-radius: 10px; padding: 16px 18px; border-left: 3px solid var(--accent-mid); }
+
+  .vote-btns { display: flex; gap: 10px; margin-bottom: 16px; }
+  .vote-btn { flex: 1; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .vote-btn.myth-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.real-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.show-myth { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.show-real { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.faded { opacity: 0.35; }
+  .vote-btn:disabled { cursor: default; }
+
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .verdict-badge { display: inline-block; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+  .verdict-badge.myth { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-mid); }
+  .verdict-badge.real { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+  .reveal-explain { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+  .btn-next:hover { opacity: 0.85; }
+
+  .closer-wrap { display: none; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .closer-wrap.visible { display: block; animation: fadeUp 0.3s ease both; }
+  .closer-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--accent-dark); margin-bottom: 12px; }
+  .closer-text { font-size: 15px; color: var(--text2); line-height: 1.75; margin-bottom: 20px; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">💼 Work + Real Life</div>
+  <h1 class="lesson-title">Your boss <span>isn't your friend</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Are you the main character at your job? Probably not.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Most people walk into their first job with a set of beliefs about how it works — some of them accurate, most of them not. Your boss is not your enemy, but they are also not your friend. They are running a business. Understanding what they actually care about — and what your actual rights are — is the difference between someone who keeps their job and someone who keeps losing them.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Myth or reality?</div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="belief-stmt" id="belief-stmt"></div>
+      <div class="vote-btns">
+        <button class="vote-btn myth-btn" onclick="vote('myth', this)">✗ Myth</button>
+        <button class="vote-btn real-btn" onclick="vote('real', this)">✓ Reality</button>
+      </div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="verdict-badge" id="verdict-badge"></div>
+        <div class="reveal-explain" id="reveal-explain"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="closer-wrap" id="closer-wrap">
+      <div class="closer-title">That is what your boss is actually tracking.</div>
+      <div class="closer-text">Reliability. Attitude when things go wrong. Whether you show up on time and do what you said you would do. Whether you cause drama or stay out of it. Everything else is noise. The employees who understand this tend to keep their jobs, get more hours, and get promoted. The ones who do not wonder why nothing ever works out.</div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think about your current job — or a job you have had. Which of these did you already know? Which one surprised you the most? Is there anything on this list that changes how you will handle something at work?</div>
+  </div>
+</div>
+
+<script>
+const rounds = [
+  {
+    stmt: "Your boss needs to like you in order for things to go well at work.",
+    verdict: 'myth',
+    explain: "Your boss needs to respect your work — not like you as a person. Plenty of employees who their managers find annoying keep their jobs just fine because they show up on time, do the work, and do not cause problems. Likability is a bonus. Reliability is the requirement."
+  },
+  {
+    stmt: "Talking about your paycheck or hourly rate with your coworkers is against the rules and could get you fired.",
+    verdict: 'myth',
+    explain: "This is one of the most common workplace myths — and it is completely false. Discussing your pay with coworkers is a federally protected right under the National Labor Relations Act. An employer cannot legally fire you or punish you for having that conversation. They may not like it. They cannot stop it."
+  },
+  {
+    stmt: "Showing up on time is doing something extra — your boss should notice and appreciate it.",
+    verdict: 'myth',
+    explain: "Showing up on time is the bare minimum — not something that earns praise. Your boss expects it the same way they expect you to wear the right uniform or do the tasks in your job description. Consistent lateness gets noticed immediately. Consistent punctuality is just the floor, not the ceiling."
+  },
+  {
+    stmt: "What you post on social media on your own time is your business and has nothing to do with your job.",
+    verdict: 'myth',
+    explain: "In most cases, employers can and do look at public social media — and in some states they can even factor it into hiring and firing decisions. If you are publicly posting things that reflect badly on the business, you can face consequences. Your account, your rules — but your employer's name is attached to you while you work there."
+  },
+  {
+    stmt: "In Kansas, your employer can fire you for almost any reason — or no reason at all.",
+    verdict: 'real',
+    explain: "Kansas is an at-will employment state. That means your employer can terminate you at any time for almost any reason — as long as it is not an illegal reason like discrimination. You do not get a warning. You do not get a reason. This is why your reputation and reliability at work matter more than most people realize."
+  },
+  {
+    stmt: "If you call in sick, you are using a benefit you earned — so doing it regularly is fine as long as you have the time.",
+    verdict: 'myth',
+    explain: "Technically, you may have the time. But managers track patterns — not just individual callouts. Someone who calls in every other Friday, every Monday after a holiday, or every time a certain coworker is scheduled gets noticed. The time may be yours to use, but the pattern tells a story your boss is reading."
+  },
+  {
+    stmt: "Clocking out at the end of your shift but then staying and doing work tasks without pay is okay — you are just being helpful.",
+    verdict: 'myth',
+    explain: "Working off the clock is wage theft — against you. If your employer asks or allows you to work after clocking out without pay, that is illegal under federal labor law. You are entitled to be paid for every minute you work. Being helpful is great. Working for free is not the same thing."
+  },
+  {
+    stmt: "The impression you make in your first two weeks at a job follows you for a long time.",
+    verdict: 'real',
+    explain: "First impressions at a job stick — sometimes for months, sometimes for the entire time you work there. Managers form opinions quickly and those opinions shape how much flexibility, trust, and opportunity you get. Someone who starts strong is given the benefit of the doubt when they make a mistake. Someone who starts rough has to work twice as hard to change the narrative."
+  },
+  {
+    stmt: "If your manager gives you a task you think is unnecessary or wrong, the best move is to tell them why they are wrong.",
+    verdict: 'myth',
+    explain: "There is a time and a place to push back — and it is almost never in the moment, in front of others, or with an attitude. Do the task. Later, in private, you can ask questions or share your perspective calmly. Managers who feel publicly challenged become managers who make your life harder. Pick your battles and pick your timing."
+  },
+  {
+    stmt: "Your boss is tracking your reliability, your attitude, and whether you cause problems — more than almost anything else.",
+    verdict: 'real',
+    explain: "Skills can be trained. Attitude and reliability are harder to fix. The employees who get more hours, better shifts, and first consideration for promotions are almost always the ones who show up when they say they will, handle problems without drama, and do not make their manager's job harder. That is the whole game."
+  },
+];
+
+let current = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('belief-stmt').textContent = rounds[current].stmt;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'Finish →';
+  document.querySelectorAll('.vote-btn').forEach(b => { b.disabled = false; b.className = b.classList.contains('myth-btn') ? 'vote-btn myth-btn' : 'vote-btn real-btn'; });
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function vote(pick, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const isCorrect = pick === r.verdict;
+
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = true;
+    const isMythBtn = b.classList.contains('myth-btn');
+    if (isMythBtn && r.verdict === 'myth') b.classList.add('show-myth');
+    else if (!isMythBtn && r.verdict === 'real') b.classList.add('show-real');
+    else b.classList.add('faded');
+  });
+
+  const badge = document.getElementById('verdict-badge');
+  badge.textContent = r.verdict === 'myth' ? 'MYTH' : 'REALITY';
+  badge.className = 'verdict-badge ' + r.verdict;
+  document.getElementById('reveal-explain').textContent = r.explain;
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) {
+    document.getElementById('game-area').style.display = 'none';
+    const closer = document.getElementById('closer-wrap');
+    closer.classList.add('visible');
+    closer.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    return;
+  }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('closer-wrap').classList.remove('visible');
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

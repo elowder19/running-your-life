@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When Someone Is Using You — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #c17fd4;
+    --accent-dark: #8a45a0;
+    --accent-dim: #f7eefa;
+    --accent-mid: #ddb8e8;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+    --bubble-them: #e8e8e8;
+    --bubble-you: #8a45a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(138,69,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  /* TEXT MESSAGE THREAD */
+  .thread-name { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 12px; }
+  .thread { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .time-divider { text-align: center; font-size: 11px; color: var(--text3); margin: 4px 0; font-style: italic; }
+  .msg-row { display: flex; flex-direction: column; }
+  .msg-row.them { align-items: flex-start; }
+  .msg-row.you { align-items: flex-end; }
+  .msg-sender { font-size: 10px; font-weight: 700; color: var(--text3); margin-bottom: 3px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .msg-bubble { max-width: 78%; padding: 9px 13px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+  .msg-row.them .msg-bubble { background: var(--bubble-them); color: var(--text); border-bottom-left-radius: 4px; }
+  .msg-row.you .msg-bubble { background: var(--bubble-you); color: #fff; border-bottom-right-radius: 4px; }
+  .msg-row.narrator .msg-bubble { background: transparent; color: var(--text3); font-style: italic; font-size: 13px; border: 1px dashed var(--border); border-radius: 8px; max-width: 100%; text-align: center; }
+  .msg-row.narrator { align-items: center; }
+
+  /* OPTIONS */
+  .pick-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .opt-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: var(--text2); text-align: left; transition: all 0.15s; }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+  .opt-btn.real { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+  .opt-btn.watch { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+  .opt-btn.using { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* REVEAL */
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  .pattern-box { background: var(--accent-dim); border: 1px solid var(--accent-mid); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .pattern-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-dark); margin-bottom: 8px; }
+  .pattern-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .pattern-row:last-child { margin-bottom: 0; }
+
+  .the-move { font-size: 14px; font-weight: 600; color: var(--accent-dark); background: var(--bg); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; line-height: 1.6; border-left: 3px solid var(--accent); }
+
+  .verdict-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; }
+  .verdict-row.real { background: var(--green-dim); border: 1px solid var(--green-mid); }
+  .verdict-row.watch { background: var(--amber-dim); border: 1px solid var(--amber-mid); }
+  .verdict-row.using { background: var(--red-dim); border: 1px solid var(--red-mid); }
+  .verdict-icon { flex-shrink: 0; font-size: 16px; }
+
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; margin-top: 8px; }
+  .btn-next:hover { opacity: 0.85; }
+
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🧠 Street Smart</div>
+  <h1 class="lesson-title">When someone <span>is using you</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Has someone ever needed you a lot — right up until they didn't?</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">There is a difference between people who are in your life and people who are in your life when it is convenient for them. The skill is being able to tell the difference — not to become paranoid, but to stop being caught off guard when it happens. Read the text exchanges below. What is the pattern?</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Read the thread — what is the pattern?</div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Scenario 1 of 6</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="thread-name" id="thread-name"></div>
+      <div class="thread" id="thread"></div>
+      <div class="pick-label">What is this person?</div>
+      <div class="options" id="options-list"></div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="pattern-box">
+          <div class="pattern-label">The pattern</div>
+          <div id="pattern-list"></div>
+        </div>
+        <div class="the-move" id="the-move"></div>
+        <div id="verdict-rows"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">correct reads out of 6</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Think about someone in your life right now. Do they show up when you need something — or only when they do? You do not have to cut anyone off. But knowing the difference changes how much you give.</div>
+  </div>
+</div>
+
+<script>
+const rounds = [
+  {
+    name: "Jordan",
+    correct: 'using',
+    messages: [
+      { side:'them', sender:'Jordan', text:'hey can you give me a ride to work tomorrow' },
+      { side:'you', text:'yeah sure what time' },
+      { side:'them', sender:'Jordan', text:'7:30 thx' },
+      { side:'narrator', text:'3 weeks later' },
+      { side:'them', sender:'Jordan', text:'hey you busy Saturday? need help moving some stuff' },
+      { side:'you', text:'I can help for a few hours' },
+      { side:'them', sender:'Jordan', text:"you're the best" },
+      { side:'narrator', text:'2 weeks later' },
+      { side:'them', sender:'Jordan', text:'can I borrow $40 til Friday' },
+      { side:'you', text:'I mean I guess' },
+      { side:'them', sender:'Jordan', text:"I'll pay you back" },
+      { side:'narrator', text:'Friday comes and goes. No mention of the $40.' },
+      { side:'them', sender:'Jordan', text:'hey what are you doing tonight' },
+    ],
+    patterns: [
+      { icon:'🔴', text:'Every text Jordan sends is a request — rides, help, money' },
+      { icon:'🔴', text:'Never paid back the $40. No mention of it.' },
+      { icon:'🔴', text:'Only reaches out when they need something — then goes quiet' },
+      { icon:'🔴', text:'"You\'re the best" appears right after getting what they wanted' },
+    ],
+    move: "The $40 is not really about the $40. It is data. Someone who intended to pay you back would have said something by Friday.",
+    verdicts: [
+      { type:'real', text:'🟢 Real one — nothing here suggests that.' },
+      { type:'watch', text:'🟡 Watch this one — this is past watching. The pattern is clear.' },
+      { type:'using', text:'🔴 They\'re using you — every interaction follows the same structure: Jordan needs something, you provide it, Jordan disappears.' },
+    ]
+  },
+  {
+    name: "Derek",
+    correct: 'using',
+    messages: [
+      { side:'them', sender:'Derek', text:'bro I need help with this math homework can you come over' },
+      { side:'you', text:'yeah I got you' },
+      { side:'narrator', text:'You go over. You help for 2 hours.' },
+      { side:'narrator', text:'1 week later — you text him' },
+      { side:'you', text:'yo you want to hang tonight' },
+      { side:'them', sender:'Derek', text:"nah I'm good" },
+      { side:'narrator', text:'3 days later' },
+      { side:'them', sender:'Derek', text:'hey can you look at this essay I wrote' },
+      { side:'you', text:'sure send it' },
+      { side:'them', sender:'Derek', text:"you're literally so smart thank you" },
+      { side:'narrator', text:'You edit his essay. He gets a B+.' },
+      { side:'narrator', text:'2 weeks later — you text again' },
+      { side:'you', text:'what are you doing this weekend' },
+      { side:'them', sender:'Derek', text:'busy' },
+    ],
+    patterns: [
+      { icon:'🔴', text:'Derek responds fast when he needs something. Goes quiet when you reach out.' },
+      { icon:'🔴', text:'Two hours of homework help, essay edits — Derek has not offered anything in return' },
+      { icon:'🔴', text:'One word responses when the ask is coming from your side' },
+      { icon:'🔴', text:'The compliments ("you\'re literally so smart") come right after getting help' },
+    ],
+    move: "The test is simple: who initiates when there is nothing to gain? Derek only shows up when there is something in it for him.",
+    verdicts: [
+      { type:'real', text:'🟢 Real one — a real friend shows up both ways.' },
+      { type:'watch', text:'🟡 Watch this one — the pattern has been consistent for months. This is past watching.' },
+      { type:'using', text:'🔴 They\'re using you — Derek reaches out when he needs academic help and is unavailable when you want to just hang.' },
+    ]
+  },
+  {
+    name: "Chris",
+    correct: 'real',
+    messages: [
+      { side:'them', sender:'Chris', text:'yo you good? you seemed off today' },
+      { side:'you', text:'yeah just tired' },
+      { side:'them', sender:'Chris', text:"you sure? you can talk to me if something's up" },
+      { side:'you', text:"nah I'm good thanks though" },
+      { side:'them', sender:'Chris', text:"ok but I'm here if you need it" },
+      { side:'narrator', text:'Next day' },
+      { side:'you', text:'hey can you give me a ride Saturday?' },
+      { side:'them', sender:'Chris', text:'yeah where to' },
+      { side:'you', text:'doctor appointment' },
+      { side:'them', sender:'Chris', text:'of course. what time' },
+      { side:'narrator', text:'Later that week' },
+      { side:'them', sender:'Chris', text:"you want to grab food? I'm buying, I owe you from last time" },
+      { side:'you', text:"you don't owe me anything" },
+      { side:'them', sender:'Chris', text:'no I literally do lol. you free at 6?' },
+    ],
+    patterns: [
+      { icon:'🟢', text:'Chris checked in without being asked — and did not drop it at the first "I\'m fine"' },
+      { icon:'🟢', text:'Said yes to the ride without asking why or making it complicated' },
+      { icon:'🟢', text:'Initiated plans and offered to pay — unprompted' },
+      { icon:'🟢', text:'Remembered he owed you something and brought it up himself' },
+    ],
+    move: "Real ones notice when something is off. They follow up. They remember. They initiate. Chris is doing all four.",
+    verdicts: [
+      { type:'real', text:'🟢 Real one — Chris checks in, follows through, and gives back without being asked.' },
+      { type:'watch', text:'🟡 Watch this one — nothing here raises a flag.' },
+      { type:'using', text:'🔴 They\'re using you — no evidence of that at all.' },
+    ]
+  },
+  {
+    name: "Tyler",
+    correct: 'watch',
+    messages: [
+      { side:'them', sender:'Tyler', text:'hey you working Saturday?' },
+      { side:'you', text:"nah I'm off" },
+      { side:'them', sender:'Tyler', text:'can you cover my shift? I have something going on' },
+      { side:'you', text:'yeah I can probably do that' },
+      { side:'them', sender:'Tyler', text:"you're a lifesaver" },
+      { side:'narrator', text:'2 weeks later' },
+      { side:'them', sender:'Tyler', text:'what are you doing Friday night' },
+      { side:'you', text:'nothing why' },
+      { side:'them', sender:'Tyler', text:"there's a party you should come" },
+      { side:'you', text:"yeah I'm down" },
+      { side:'narrator', text:'You go. You have a good time. Tyler introduces you to people.' },
+      { side:'narrator', text:'1 week later' },
+      { side:'them', sender:'Tyler', text:'hey any chance you can cover my shift again this week' },
+      { side:'you', text:'I mean maybe, what day' },
+      { side:'them', sender:'Tyler', text:"Thursday. I'll get you back" },
+    ],
+    patterns: [
+      { icon:'🟡', text:'Two shift cover requests in a month — could be coincidence, could be a pattern forming' },
+      { icon:'🟡', text:'Did invite you to a party and introduce you to people — that is something' },
+      { icon:'🟡', text:'"I\'ll get you back" is the second time a vague IOU has appeared' },
+      { icon:'🟡', text:'Not enough data yet to know — but the shift requests are worth tracking' },
+    ],
+    move: "Tyler might be a good person going through a busy stretch. Or this might be the beginning of a pattern. You do not have enough data yet — but you have enough to start paying attention.",
+    verdicts: [
+      { type:'real', text:'🟢 Real one — possible, but too soon to say for sure.' },
+      { type:'watch', text:'🟡 Watch this one — correct. Not enough to call it, but enough to notice.' },
+      { type:'using', text:'🔴 They\'re using you — too soon to make that call. Give it time.' },
+    ]
+  },
+  {
+    name: "Brianna",
+    correct: 'using',
+    messages: [
+      { side:'them', sender:'Brianna', text:"I am literally so stressed I don't know what to do" },
+      { side:'you', text:"what's going on" },
+      { side:'them', sender:'Brianna', text:"my boyfriend and I got in a fight and now he's not texting me back" },
+      { side:'you', text:"I'm sorry that's rough. do you want to talk?" },
+      { side:'them', sender:'Brianna', text:'yes please can you call me' },
+      { side:'narrator', text:'You talk for an hour.' },
+      { side:'narrator', text:'Next day' },
+      { side:'you', text:'hey how are you doing today' },
+      { side:'them', sender:'Brianna', text:'omg so much better. anyway I have to tell you what happened' },
+      { side:'narrator', text:'The next 45 minutes is about Brianna.' },
+      { side:'narrator', text:'2 days later — you are having a hard day' },
+      { side:'you', text:"hey I'm kind of going through it today" },
+      { side:'them', sender:'Brianna', text:'ugh same honestly. okay so you will NOT believe what happened with my boyfriend again' },
+    ],
+    patterns: [
+      { icon:'🔴', text:'Every conversation is about Brianna — even the ones you started about yourself' },
+      { icon:'🔴', text:'When you said you were having a hard day, she redirected to herself within one message' },
+      { icon:'🔴', text:'You listened for hours. When you needed the same, it was not available.' },
+      { icon:'🔴', text:'The friendship only flows one direction' },
+    ],
+    move: "This one is subtle because Brianna is not being mean — she probably does not even realize she is doing it. But a friendship where your feelings only come up as a transition to talking about them is not really a friendship.",
+    verdicts: [
+      { type:'real', text:'🟢 Real one — real friends notice when you are struggling and make space for it.' },
+      { type:'watch', text:'🟡 Watch this one — this is a clear and consistent pattern, not a one-time thing.' },
+      { type:'using', text:'🔴 They\'re using you — emotionally. You are a listener, not a friend in this dynamic.' },
+    ]
+  },
+  {
+    name: "Alex",
+    correct: 'real',
+    messages: [
+      { side:'them', sender:'Alex', text:'hey do you know where they keep the extra aprons' },
+      { side:'you', text:'yeah back storage room left side' },
+      { side:'them', sender:'Alex', text:'thank you!! you\'re a lifesaver' },
+      { side:'narrator', text:'Next shift' },
+      { side:'them', sender:'Alex', text:'hey heads up Marcus is in a mood today lol' },
+      { side:'you', text:'good to know haha thanks' },
+      { side:'them', sender:'Alex', text:'also did you see they changed the schedule' },
+      { side:'you', text:'no?? when' },
+      { side:'them', sender:'Alex', text:'just now. check the app' },
+      { side:'narrator', text:'A week later' },
+      { side:'them', sender:'Alex', text:'you want to grab food after our shift?' },
+      { side:'you', text:'yeah definitely' },
+      { side:'them', sender:'Alex', text:"cool. also I'm getting everyone coffee before we open, you want anything?" },
+      { side:'you', text:"oh you don't have to do that" },
+      { side:'them', sender:'Alex', text:"it's no big deal I'm already going" },
+    ],
+    patterns: [
+      { icon:'🟢', text:'Alex gives you useful information without being asked — heads up about Marcus, the schedule change' },
+      { icon:'🟢', text:'Initiated plans to hang out, no agenda attached' },
+      { icon:'🟢', text:'Offered to get coffee for everyone unprompted — including you' },
+      { icon:'🟢', text:'The first message was a question but the rest of the thread is balanced give and take' },
+    ],
+    move: "Friendships start with someone asking something. What matters is what comes after. Alex followed one question with consistent effort — that is the difference.",
+    verdicts: [
+      { type:'real', text:'🟢 Real one — Alex gives information, initiates plans, and does things without being asked.' },
+      { type:'watch', text:'🟡 Watch this one — nothing here raises a concern.' },
+      { type:'using', text:'🔴 They\'re using you — no evidence of that. The dynamic is balanced.' },
+    ]
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Scenario ${current + 1} of ${rounds.length}`;
+  document.getElementById('thread-name').textContent = r.name;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+
+  // Build thread
+  document.getElementById('thread').innerHTML = r.messages.map(m => {
+    if (m.side === 'narrator') return `<div class="msg-row narrator"><div class="msg-bubble">${m.text}</div></div>`;
+    if (m.side === 'you') return `<div class="msg-row you"><div class="msg-bubble">${m.text}</div></div>`;
+    return `<div class="msg-row them"><div class="msg-sender">${m.sender}</div><div class="msg-bubble">${m.text}</div></div>`;
+  }).join('');
+
+  // Options
+  document.getElementById('options-list').innerHTML = `
+    <button class="opt-btn" onclick="pickOption('real', this)">🟢 Real one</button>
+    <button class="opt-btn" onclick="pickOption('watch', this)">🟡 Watch this one</button>
+    <button class="opt-btn" onclick="pickOption('using', this)">🔴 They're using you</button>`;
+
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function pickOption(pick, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  if (pick === r.correct) score++;
+
+  // Color all buttons
+  document.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent.includes('Real one')) b.classList.add('real');
+    else if (b.textContent.includes('Watch')) b.classList.add('watch');
+    else b.classList.add('using');
+  });
+
+  // Pattern
+  document.getElementById('pattern-list').innerHTML = r.patterns.map(p =>
+    `<div class="pattern-row"><span>${p.icon}</span><span>${p.text}</span></div>`).join('');
+
+  document.getElementById('the-move').textContent = r.move;
+
+  // Verdicts
+  document.getElementById('verdict-rows').innerHTML = r.verdicts.map(v =>
+    `<div class="verdict-row ${v.type}"><span>${v.text}</span></div>`).join('');
+
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/6';
+  let comment;
+  if (score >= 5) comment = "You read the patterns clearly. That skill protects you without making you suspicious of everyone.";
+  else if (score >= 3) comment = "You caught most of them. The ones that slipped are usually the subtle ones — the emotional drain or the slow build.";
+  else comment = "These are genuinely hard to read in real life. The goal is not to suspect everyone — it is to stop being surprised when the pattern was there all along.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax or Theft?? — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #e8a045;
+    --accent-dark: #c47820;
+    --accent-dim: #fdf5e8;
+    --accent-mid: #f0d0a0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --blue: #5a9fd4;
+    --blue-dim: #e8f2fb;
+    --blue-mid: #a8cff0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(32px, 7vw, 48px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(196,120,32,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3vw, 21px); font-weight: 800; line-height: 1.4; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  /* SLIDERS */
+  .slider-row { margin-bottom: 16px; }
+  .slider-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .slider-label { font-size: 14px; font-weight: 600; color: var(--text); }
+  .slider-val { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--accent-dark); }
+  input[type=range] { width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer; accent-color: var(--accent-dark); margin-bottom: 4px; }
+  .slider-range { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
+
+  /* PAYSTUB */
+  .paystub { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .paystub-header { background: var(--accent-dark); padding: 16px 20px; }
+  .paystub-employer { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+  .paystub-subtitle { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .paystub-meta { display: flex; justify-content: space-between; padding: 10px 20px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text3); flex-wrap: wrap; gap: 6px; }
+  .paystub-meta span strong { color: var(--text); }
+
+  .paystub-gross { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .paystub-gross-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .paystub-gross-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .paystub-gross-val { font-family: 'Nunito', sans-serif; font-size: 34px; font-weight: 900; color: var(--text); }
+
+  .paystub-section-header { padding: 8px 20px; background: var(--bg); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); border-bottom: 1px solid var(--border); }
+
+  .paystub-line { border-bottom: 1px solid var(--border); }
+  .paystub-line:last-of-type { border-bottom: none; }
+  .paystub-line-inner { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; transition: background 0.12s; cursor: pointer; }
+  .paystub-line-inner:hover { background: var(--bg); }
+  .paystub-line-left { flex: 1; }
+  .paystub-line-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .paystub-line-wtf { font-size: 11px; color: var(--blue); margin-top: 2px; }
+  .paystub-line-amount { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; color: var(--red); }
+  .paystub-expand { display: none; padding: 10px 20px 14px; background: var(--blue-dim); border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); line-height: 1.65; animation: fadeUp 0.15s ease both; border-left: 3px solid var(--blue); }
+  .paystub-expand.open { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
+  .paystub-total-ded { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: var(--red-dim); border-top: 1px solid var(--red-mid); border-bottom: 1px solid var(--red-mid); }
+  .paystub-total-ded-label { font-size: 14px; font-weight: 700; color: var(--red); }
+  .paystub-total-ded-val { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--red); }
+
+  .paystub-takehome { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: var(--green-dim); border-top: 2px solid var(--green); }
+  .paystub-takehome-label { font-size: 14px; font-weight: 700; color: var(--green); }
+  .paystub-takehome-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .paystub-takehome-val { font-family: 'Nunito', sans-serif; font-size: 44px; font-weight: 900; color: var(--green); }
+
+  /* REALITY CHECK */
+  .reality-section { margin-bottom: 20px; }
+  .reality-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 14px; }
+  .reality-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; }
+  .reality-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .reality-item-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .reality-item-note { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .reality-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+  .reality-item-cost { font-size: 13px; color: var(--text2); }
+  .reality-status { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; }
+  .reality-status.covered { color: var(--green); }
+  .reality-status.tight { color: var(--accent-dark); }
+  .reality-status.nope { color: var(--red); }
+  .reality-slider-row { display: flex; align-items: center; gap: 10px; }
+  .reality-slider-row input[type=range] { flex: 1; margin: 0; }
+  .reality-slider-val { font-size: 13px; font-weight: 700; color: var(--accent-dark); min-width: 60px; text-align: right; }
+  .na-btn { padding: 4px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--bg); font-size: 11px; font-weight: 700; color: var(--text3); cursor: pointer; transition: all 0.12s; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+  .na-btn:hover { border-color: var(--text3); }
+  .na-btn.active { border-color: var(--text3); background: #eee; color: var(--text3); text-decoration: line-through; }
+  .reality-item.na-active { opacity: 0.45; }
+  .reality-item.na-active .reality-status { color: var(--text3) !important; }
+
+  /* VOTING CONNECTION */
+  .voting-box { background: var(--blue-dim); border: 1px solid var(--blue-mid); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; font-size: 14px; color: var(--text2); line-height: 1.75; border-left: 3px solid var(--blue); }
+  .voting-box strong { color: var(--text); }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">💼 Work + Real Life</div>
+  <h1 class="lesson-title">Tax or <span>Theft??</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">"Who the heck is FICA and why is he taking all my money?"</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Grossed out by your net pay? Every time you get paid, a chunk disappears before you ever see it. Federal tax, Kansas state tax, Social Security, Medicare — none of it is optional and none of it was explained to you when you got hired. Here is what actually happens to your paycheck — and why the people who set these rates matter more than most people realize.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">Build your paycheck</div>
+
+    <div class="slider-row">
+      <div class="slider-label-row">
+        <span class="slider-label">Hourly wage</span>
+        <span class="slider-val" id="wage-val">$12.00/hr</span>
+      </div>
+      <input type="range" min="7.25" max="25" step="0.25" value="12" oninput="updatePaycheck('wage', this.value)">
+      <div class="slider-range"><span>$7.25 (minimum)</span><span>$25.00</span></div>
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-label-row">
+        <span class="slider-label">Hours this week</span>
+        <span class="slider-val" id="hours-val">28 hrs</span>
+      </div>
+      <input type="range" min="5" max="40" step="1" value="28" oninput="updatePaycheck('hours', this.value)">
+      <div class="slider-range"><span>5 hrs</span><span>40 hrs</span></div>
+    </div>
+
+    <!-- PAYSTUB -->
+    <div class="paystub">
+      <div class="paystub-header">
+        <div class="paystub-employer">YOUR EMPLOYER</div>
+        <div class="paystub-subtitle">Pay Statement — Weekly</div>
+      </div>
+      <div class="paystub-meta">
+        <span>Hours: <strong id="meta-hours">28</strong></span>
+        <span>Rate: <strong id="meta-rate">$12.00/hr</strong></span>
+        <span>Period: Weekly</span>
+      </div>
+
+      <div class="paystub-gross">
+        <div>
+          <div class="paystub-gross-label">Gross Pay</div>
+          <div class="paystub-gross-sub">What you earned before anything is taken out</div>
+        </div>
+        <div class="paystub-gross-val" id="gross-val">$336.00</div>
+      </div>
+
+      <div class="paystub-section-header">Deductions — where it goes</div>
+
+      <div class="paystub-line">
+        <div class="paystub-line-inner" onclick="toggleExpand('fed')">
+          <div class="paystub-line-left">
+            <div class="paystub-line-name">Federal Income Tax</div>
+            <div class="paystub-line-wtf">What is this? ▾</div>
+          </div>
+          <div class="paystub-line-amount" id="fed-amt">$0.00</div>
+        </div>
+        <div class="paystub-expand" id="expand-fed">Federal income tax is based on how you filled out your W-4 when you got hired. At part-time wages, most teenagers owe little to nothing in federal tax — especially if your total annual income is below the standard deduction of $16,100. If you claimed exempt on your W-4, this could be $0. This funds the federal government: roads, military, national programs.</div>
+      </div>
+
+      <div class="paystub-line">
+        <div class="paystub-line-inner" onclick="toggleExpand('ks')">
+          <div class="paystub-line-left">
+            <div class="paystub-line-name">Kansas State Income Tax</div>
+            <div class="paystub-line-wtf">What is this? ▾</div>
+          </div>
+          <div class="paystub-line-amount" id="ks-amt">$0.00</div>
+        </div>
+        <div class="paystub-expand" id="expand-ks">Kansas uses a two-bracket progressive income tax system. In 2026: the first $23,000 of income is taxed at 5.20%, and anything above $23,000 is taxed at 5.58%. For most part-time workers making under $23,000/year, your effective rate is 5.20%. This funds Kansas state programs — schools, roads, and state services.</div>
+      </div>
+
+      <div class="paystub-line">
+        <div class="paystub-line-inner" onclick="toggleExpand('ss')">
+          <div class="paystub-line-left">
+            <div class="paystub-line-name">Social Security (FICA)</div>
+            <div class="paystub-line-wtf">What is this? ▾</div>
+          </div>
+          <div class="paystub-line-amount" id="ss-amt">$0.00</div>
+        </div>
+        <div class="paystub-expand" id="expand-ss">6.2% of every dollar you earn goes here — no exceptions, no age limit, no opt-out. Social Security is a retirement program. You will not be able to collect this money until you are at least 67 years old. You are funding someone else's retirement right now. One day, someone else will fund yours.</div>
+      </div>
+
+      <div class="paystub-line">
+        <div class="paystub-line-inner" onclick="toggleExpand('mc')">
+          <div class="paystub-line-left">
+            <div class="paystub-line-name">Medicare (FICA)</div>
+            <div class="paystub-line-wtf">What is this? ▾</div>
+          </div>
+          <div class="paystub-line-amount" id="mc-amt">$0.00</div>
+        </div>
+        <div class="paystub-expand" id="expand-mc">1.45% funds Medicare — healthcare for people over 65. There is no age exemption and no wage cap. You are paying into a healthcare program right now that you cannot use for approximately 50 years. Every American worker pays this. Not even teenagers get out of it.</div>
+      </div>
+
+      <div class="paystub-total-ded">
+        <div class="paystub-total-ded-label">Total Deductions</div>
+        <div class="paystub-total-ded-val" id="total-ded">$0.00</div>
+      </div>
+
+      <div class="paystub-takehome">
+        <div>
+          <div class="paystub-takehome-label">NET PAY — Your actual take-home</div>
+          <div class="paystub-takehome-sub" id="takehome-sub">≈ $0/month</div>
+        </div>
+        <div class="paystub-takehome-val" id="takehome-val">$0.00</div>
+      </div>
+    </div>
+
+    <!-- REALITY CHECK -->
+    <div class="reality-section">
+      <div class="reality-label">Reality check — can your take-home cover this?</div>
+      <div class="reality-item" id="ri-rent">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name">Rent — 1BR apartment, Hutchinson KS</div>
+            <div class="reality-item-note">avg market rate — not adjustable</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost">$750/mo (~$173/wk)</div>
+            <div class="reality-status" id="rs-rent">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reality-item">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name">Groceries</div>
+            <div class="reality-item-note">bare minimum — adjust to your reality</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost" id="rc-groc">$60/wk</div>
+            <div class="reality-status" id="rs-groc">—</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <button class="na-btn" id="na-groc" onclick="toggleNA('groc')">N/A</button>
+          <span style="font-size:11px;color:var(--text3);">doesn't apply to me</span>
+        </div>
+        <div class="reality-slider-row" id="slider-row-groc">
+          <input type="range" min="30" max="200" step="5" value="60" oninput="updateReality('groc', this.value, false)">
+          <span class="reality-slider-val" id="rv-groc">$60/wk</span>
+        </div>
+      </div>
+
+      <div class="reality-item">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name">Phone bill</div>
+            <div class="reality-item-note">bare minimum plan — adjust to your reality</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost" id="rc-phone">$50/mo (~$12/wk)</div>
+            <div class="reality-status" id="rs-phone">—</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <button class="na-btn" id="na-phone" onclick="toggleNA('phone')">N/A</button>
+          <span style="font-size:11px;color:var(--text3);">doesn't apply to me</span>
+        </div>
+        <div class="reality-slider-row" id="slider-row-phone">
+          <input type="range" min="25" max="120" step="5" value="50" oninput="updateReality('phone', this.value, true)">
+          <span class="reality-slider-val" id="rv-phone">$50/mo</span>
+        </div>
+      </div>
+
+      <div class="reality-item">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name">Car insurance (minimum coverage)</div>
+            <div class="reality-item-note">lowest available rate — adjust to your reality</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost" id="rc-ins">$100/mo (~$23/wk)</div>
+            <div class="reality-status" id="rs-ins">—</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <button class="na-btn" id="na-ins" onclick="toggleNA('ins')">N/A</button>
+          <span style="font-size:11px;color:var(--text3);">doesn't apply to me</span>
+        </div>
+        <div class="reality-slider-row" id="slider-row-ins">
+          <input type="range" min="60" max="250" step="10" value="100" oninput="updateReality('ins', this.value, true)">
+          <span class="reality-slider-val" id="rv-ins">$100/mo</span>
+        </div>
+      </div>
+
+      <div class="reality-item">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name">Gas for the week</div>
+            <div class="reality-item-note">to get to work and back — adjust to your reality</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost" id="rc-gas">$35/wk</div>
+            <div class="reality-status" id="rs-gas">—</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <button class="na-btn" id="na-gas" onclick="toggleNA('gas')">N/A</button>
+          <span style="font-size:11px;color:var(--text3);">doesn't apply to me</span>
+        </div>
+        <div class="reality-slider-row" id="slider-row-gas">
+          <input type="range" min="10" max="100" step="5" value="35" oninput="updateReality('gas', this.value, false)">
+          <span class="reality-slider-val" id="rv-gas">$35/wk</span>
+        </div>
+      </div>
+
+      <div class="reality-item">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name">Fast food — 1 meal/day, 5 days (~$10-13/meal)</div>
+            <div class="reality-item-note">adjust to your reality</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost" id="rc-food">$55/wk</div>
+            <div class="reality-status" id="rs-food">—</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <button class="na-btn" id="na-food" onclick="toggleNA('food')">N/A</button>
+          <span style="font-size:11px;color:var(--text3);">doesn't apply to me</span>
+        </div>
+        <div class="reality-slider-row" id="slider-row-food">
+          <input type="range" min="0" max="100" step="5" value="55" oninput="updateReality('food', this.value, false)">
+          <span class="reality-slider-val" id="rv-food">$55/wk</span>
+        </div>
+      </div>
+
+      <div class="reality-item" style="background:var(--bg);border-style:dashed;">
+        <div class="reality-item-top">
+          <div>
+            <div class="reality-item-name" style="color:var(--text3);">Total weekly expenses</div>
+          </div>
+          <div class="reality-item-right">
+            <div class="reality-item-cost" id="total-expenses" style="font-size:16px;font-weight:700;color:var(--text);">$0/wk</div>
+          </div>
+        </div>
+        <div id="punchline" style="font-size:14px;line-height:1.75;color:var(--text2);margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <div class="voting-box">
+      <strong>💙 The voting connection:</strong> Every politician who sets tax rates and decides where this money goes was elected by voters. You are already paying into the system with every single paycheck. When you turn 18 — that vote is literally about your money.
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Look at your take-home number. Now look at the reality check. Does the math work? What would need to change for it to work — more hours, higher wage, fewer expenses, a roommate?</div>
+  </div>
+</div>
+
+<script>
+// 2026 verified tax rates
+const TAX = {
+  SS: 0.062,       // Social Security — 6.2% (IRS confirmed 2026)
+  MC: 0.0145,      // Medicare — 1.45% (IRS confirmed 2026)
+  KS_RATE1: 0.052, // Kansas bracket 1 — 5.20% (up to $23,000/yr)
+  KS_RATE2: 0.0558,// Kansas bracket 2 — 5.58% (above $23,000/yr)
+  KS_BRACKET: 23000,
+};
+
+let wage = 12;
+let hours = 28;
+
+// Reality state (weekly equiv)
+const reality = {
+  rent:  { weekly: 750/4.33, monthly: true,  fixed: true },
+  groc:  { weekly: 60,       monthly: false, fixed: false },
+  phone: { weekly: 50/4.33,  monthly: true,  fixed: false },
+  ins:   { weekly: 100/4.33, monthly: true,  fixed: false },
+  gas:   { weekly: 35,       monthly: false, fixed: false },
+  food:  { weekly: 55,       monthly: false, fixed: false },
+};
+
+function fmt(n) { return '$' + Math.abs(n).toFixed(2); }
+function fmtRound(n) { return '$' + Math.round(Math.abs(n)).toLocaleString(); }
+
+function calcKansasWeekly(grossWeekly) {
+  // Annualize, apply progressive brackets, de-annualize
+  const annual = grossWeekly * 52;
+  let ksTax = 0;
+  if (annual <= TAX.KS_BRACKET) {
+    ksTax = annual * TAX.KS_RATE1;
+  } else {
+    ksTax = TAX.KS_BRACKET * TAX.KS_RATE1 + (annual - TAX.KS_BRACKET) * TAX.KS_RATE2;
+  }
+  return ksTax / 52;
+}
+
+function calcFederalWeekly(grossWeekly) {
+  // For part-time teens: if annual gross < standard deduction ($16,100), federal = $0
+  // Above that, simplified 10% on excess (conservative estimate for teens)
+  const annual = grossWeekly * 52;
+  const standardDeduction = 16100;
+  if (annual <= standardDeduction) return 0;
+  const taxable = annual - standardDeduction;
+  // 10% bracket up to $11,925 taxable, then 12%
+  let fedTax = 0;
+  if (taxable <= 11925) {
+    fedTax = taxable * 0.10;
+  } else {
+    fedTax = 11925 * 0.10 + (taxable - 11925) * 0.12;
+  }
+  return fedTax / 52;
+}
+
+function updatePaycheck(field, val) {
+  if (field === 'wage') { wage = parseFloat(val); document.getElementById('wage-val').textContent = '$' + parseFloat(val).toFixed(2) + '/hr'; }
+  if (field === 'hours') { hours = parseInt(val); document.getElementById('hours-val').textContent = val + ' hrs'; }
+
+  const gross = wage * hours;
+  const fed = calcFederalWeekly(gross);
+  const ks = calcKansasWeekly(gross);
+  const ss = gross * TAX.SS;
+  const mc = gross * TAX.MC;
+  const totalDed = fed + ks + ss + mc;
+  const takehome = gross - totalDed;
+  const monthly = takehome * 4.33;
+
+  document.getElementById('meta-hours').textContent = hours;
+  document.getElementById('meta-rate').textContent = '$' + wage.toFixed(2) + '/hr';
+  document.getElementById('gross-val').textContent = fmt(gross);
+  document.getElementById('fed-amt').textContent = '-' + fmt(fed);
+  document.getElementById('ks-amt').textContent = '-' + fmt(ks);
+  document.getElementById('ss-amt').textContent = '-' + fmt(ss);
+  document.getElementById('mc-amt').textContent = '-' + fmt(mc);
+  document.getElementById('total-ded').textContent = '-' + fmt(totalDed);
+  document.getElementById('takehome-val').textContent = fmt(takehome);
+  document.getElementById('takehome-sub').textContent = '≈ ' + fmtRound(monthly) + '/month';
+
+  updateRealityStatuses(takehome);
+}
+
+function updateReality(key, val, isMonthly) {
+  const weekly = isMonthly ? parseFloat(val) / 4.33 : parseFloat(val);
+  reality[key].weekly = weekly;
+
+  const dispVal = isMonthly ? '$' + parseFloat(val).toFixed(0) + '/mo' : '$' + parseFloat(val).toFixed(0) + '/wk';
+  document.getElementById('rv-' + key).textContent = dispVal;
+
+  const costDisp = isMonthly
+    ? '$' + parseFloat(val).toFixed(0) + '/mo (~$' + Math.round(weekly) + '/wk)'
+    : '$' + parseFloat(val).toFixed(0) + '/wk';
+  document.getElementById('rc-' + key).textContent = costDisp;
+
+  const gross = wage * hours;
+  const totalDed = calcFederalWeekly(gross) + calcKansasWeekly(gross) + gross * TAX.SS + gross * TAX.MC;
+  updateRealityStatuses(gross - totalDed);
+}
+
+function updateRealityStatuses(takehome) {
+  let totalWeekly = 0;
+  Object.entries(reality).forEach(([key, r]) => {
+    totalWeekly += r.weekly;
+    if (key === 'rent') {
+      setStatus('rs-rent', takehome / r.weekly);
+      return;
+    }
+    if (naState[key]) return; // skip N/A items
+    const el = document.getElementById('rs-' + key);
+    if (!el) return;
+    setStatus('rs-' + key, takehome / r.weekly);
+  });
+
+  // Total expenses
+  const totalW = Object.values(reality).reduce((sum, r) => sum + r.weekly, 0);
+  document.getElementById('total-expenses').textContent = '$' + Math.round(totalW) + '/wk';
+
+  // Punchline
+  const surplus = takehome - totalW;
+  const punchline = document.getElementById('punchline');
+  if (surplus >= 50) {
+    punchline.textContent = 'Your take-home covers your expenses with $' + Math.round(surplus) + '/week left over. That is workable — but notice how fast the basics eat through a paycheck. Every raise you earn changes these numbers.';
+  } else if (surplus >= 0) {
+    punchline.textContent = 'Your take-home barely covers your expenses — $' + Math.round(surplus) + '/week left over. One unexpected cost could put you in the negative. This is why most people this age need roommates or help.';
+  } else {
+    punchline.textContent = 'Your take-home is $' + Math.round(Math.abs(surplus)) + '/week short of covering these expenses. The math does not work at this wage and these hours. Something has to change — more hours, higher wage, fewer expenses, or a roommate splitting rent.';
+  }
+}
+
+function setStatus(id, ratio) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (ratio >= 1.3) { el.className = 'reality-status covered'; el.textContent = '✓ Covered'; }
+  else if (ratio >= 0.85) { el.className = 'reality-status tight'; el.textContent = '⚠ Tight'; }
+  else { el.className = 'reality-status nope'; el.textContent = '✗ Not enough'; }
+}
+
+const naState = {};
+
+function toggleNA(key) {
+  naState[key] = !naState[key];
+  const btn = document.getElementById('na-' + key);
+  const row = document.getElementById('slider-row-' + key);
+  const item = btn.closest('.reality-item');
+  if (naState[key]) {
+    btn.classList.add('active');
+    item.classList.add('na-active');
+    const origWeekly = reality[key].weekly;
+    reality[key]._saved = origWeekly;
+    reality[key].weekly = 0;
+    document.getElementById('rs-' + key).textContent = 'N/A';
+    document.getElementById('rs-' + key).className = 'reality-status';
+  } else {
+    btn.classList.remove('active');
+    item.classList.remove('na-active');
+    reality[key].weekly = reality[key]._saved || reality[key].weekly;
+  }
+  const gross = wage * hours;
+  const totalDed = calcFederalWeekly(gross) + calcKansasWeekly(gross) + gross * TAX.SS + gross * TAX.MC;
+  updateRealityStatuses(gross - totalDed);
+}
+
+function toggleExpand(id) {
+  const el = document.getElementById('expand-' + id);
+  el.classList.toggle('open');
+}
+
+// Init
+updatePaycheck('wage', 12);
+</script>
+</body>
+</html>

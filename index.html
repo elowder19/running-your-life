@@ -3,162 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EF Seminar — Brain HQ</title>
+<title>Brain HQ — EF Seminar</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #0a0c10; --bg2: #0f1218; --bg3: #141820;
-    --panel: #1a1f2e; --panel2: #1f2535; --border: #2a3045;
-    --accent: #00c8ff; --accent2: #7b5cff; --accent3: #ff6b35;
-    --text: #e8eaf0; --text2: #8a91a8; --text3: #525a72;
-    --success: #00e5a0; --warn: #ffd166;
+    --bg:      #13161f;
+    --bg2:     #181c28;
+    --bg3:     #1c2030;
+    --panel:   #1e2335;
+    --panel2:  #242840;
+    --border:  #2e3450;
+    --border2: #3a4060;
+
+    --accent:  #00c8ff;
+    --accent2: #7b5cff;
+    --accent3: #ff6b35;
+    --success: #00e5a0;
+    --warn:    #ffd166;
+
+    --text:    #e8eaf0;
+    --text2:   #8a91a8;
+    --text3:   #50587a;
   }
-  body { background: var(--bg); color: var(--text); font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
-  .scanline { position: fixed; top:0;left:0;right:0;bottom:0; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px); pointer-events:none; z-index:1000; }
-  .container { max-width: 1140px; margin: 0 auto; padding: 20px 20px; }
 
-  /* HEADER */
-  .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border); }
-  .header-left { display:flex; align-items:center; gap:12px; }
-  .brain-icon { width:42px;height:42px; background:linear-gradient(135deg,var(--accent2),var(--accent)); border-radius:10px; display:flex;align-items:center;justify-content:center; font-size:20px; box-shadow:0 0 18px rgba(123,92,255,0.4); flex-shrink:0; }
-  .title-group h1 { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); text-shadow:0 0 16px rgba(0,200,255,0.5); }
-  .title-group p { font-size:10px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; }
-  .clock-block { text-align:right; }
-  #live-clock { font-family:'Share Tech Mono',monospace; font-size:26px; color:var(--accent); text-shadow:0 0 10px rgba(0,200,255,0.5); letter-spacing:2px; }
-  #live-date { font-size:10px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; margin-top:2px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-  /* PANEL BASE */
-  .panel { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; position:relative; overflow:hidden; }
-  .panel-label { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-  .panel-label .dot { width:6px;height:6px; border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  /* subtle grid */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+  }
 
-  /* ROW 1: quote + countdown */
-  .row1 { display:grid; grid-template-columns:1fr 260px; gap:14px; margin-bottom:14px; }
+  .container { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: 18px 20px 24px; }
 
-  /* QUOTE */
-  .quote-panel { border-top:2px solid var(--accent2); }
-  .quote-panel .panel-label { color:var(--accent2); }
-  .quote-panel .dot { background:var(--accent2); box-shadow:0 0 6px var(--accent2); }
-  .quote-text { font-size:16px; font-weight:300; line-height:1.5; font-style:italic; margin-bottom:10px; color:var(--text); }
-  .quote-meta { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-  .quote-skills { display:flex; gap:6px; flex-wrap:wrap; }
-  .skill-tag { font-size:9px; padding:2px 9px; border-radius:20px; border:1px solid; font-family:'Share Tech Mono',monospace; letter-spacing:1px; text-transform:uppercase; }
-  .skill-tag.purple { color:#b39dff; border-color:#7b5cff; background:rgba(123,92,255,0.1); }
-  .skill-tag.cyan { color:var(--accent); border-color:var(--accent); background:rgba(0,200,255,0.08); }
-  .skill-tag.orange { color:#ffaa70; border-color:var(--accent3); background:rgba(255,107,53,0.1); }
-  .skill-tag.green { color:var(--success); border-color:var(--success); background:rgba(0,229,160,0.08); }
-  .quote-num { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--text3); }
-  .quote-nav { display:flex; gap:7px; margin-top:12px; flex-wrap:wrap; }
-  .btn-sm { padding:5px 14px; border-radius:6px; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:12px; font-weight:600; letter-spacing:1px; transition:all 0.2s; border:1px solid; }
-  .btn-ghost { background:var(--panel2); border-color:var(--border); color:var(--text2); }
-  .btn-ghost:hover { background:var(--border); color:var(--text); border-color:var(--accent2); }
-  .btn-purple { background:rgba(123,92,255,0.15); border-color:var(--accent2); color:#c4b5ff; }
-  .btn-purple:hover { background:rgba(123,92,255,0.3); }
-  .discussion-box { margin-top:12px; padding:12px 14px; background:var(--bg3); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; display:none; }
-  .discussion-box.visible { display:block; animation:slideIn 0.3s ease; }
+  /* ── HEADER ── */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .brain-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: 0 0 18px rgba(123,92,255,0.35); flex-shrink: 0;
+  }
+  .title-group h1 {
+    font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); text-shadow: 0 0 14px rgba(0,200,255,0.4);
+  }
+  .title-group p {
+    font-size: 10px; color: var(--text3); letter-spacing: 3px;
+    text-transform: uppercase; font-family: 'Share Tech Mono', monospace;
+  }
+  .clock-block { text-align: right; }
+  #live-clock {
+    font-family: 'Share Tech Mono', monospace; font-size: 26px;
+    color: var(--accent); letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0,200,255,0.4);
+  }
+  #live-date {
+    font-size: 10px; color: var(--text3); letter-spacing: 2px;
+    text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-top: 2px;
+  }
+
+  /* ── PANEL BASE ── */
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    position: relative; overflow: hidden;
+  }
+  .panel-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 5px 13px; border-radius: 6px; cursor: pointer;
+    font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.5px; transition: all 0.18s; border: 1px solid;
+  }
+  .btn-ghost { background: var(--panel2); border-color: var(--border); color: var(--text2); }
+  .btn-ghost:hover { background: var(--border); color: var(--text); border-color: var(--border2); }
+  .btn-purple { background: rgba(123,92,255,0.14); border-color: var(--accent2); color: #c4b5ff; }
+  .btn-purple:hover { background: rgba(123,92,255,0.28); }
+  .btn-cyan { background: rgba(0,200,255,0.1); border-color: var(--accent); color: var(--accent); }
+  .btn-cyan:hover { background: rgba(0,200,255,0.2); }
+  .btn-orange { background: rgba(255,107,53,0.13); border-color: var(--accent3); color: #ffaa70; }
+  .btn-orange:hover { background: rgba(255,107,53,0.26); }
+  .btn-green { background: rgba(0,229,160,0.1); border-color: var(--success); color: var(--success); }
+  .btn-green:hover { background: rgba(0,229,160,0.2); }
+  .btn-warn { background: rgba(255,209,102,0.12); border-color: var(--warn); color: var(--warn); }
+  .btn-warn:hover { background: rgba(255,209,102,0.24); }
+
+  /* ── ROW 1: QUOTE + COUNTDOWN ── */
+  .row1 { display: grid; grid-template-columns: 1fr 250px; gap: 14px; margin-bottom: 14px; }
+
+  .quote-panel { border-top: 2px solid var(--accent2); }
+  .quote-panel .panel-label { color: var(--accent2); }
+  .quote-panel .dot { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+  .quote-text { font-size: 15px; font-weight: 300; line-height: 1.55; font-style: italic; margin-bottom: 10px; }
+  .quote-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .quote-skills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .skill-tag {
+    font-size: 9px; padding: 2px 8px; border-radius: 20px; border: 1px solid;
+    font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .st-purple { color: #b39dff; border-color: var(--accent2); background: rgba(123,92,255,0.1); }
+  .st-cyan   { color: var(--accent); border-color: var(--accent); background: rgba(0,200,255,0.08); }
+  .st-orange { color: #ffaa70; border-color: var(--accent3); background: rgba(255,107,53,0.1); }
+  .st-green  { color: var(--success); border-color: var(--success); background: rgba(0,229,160,0.08); }
+  .quote-num { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text3); }
+  .quote-nav { display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
+  .discussion-box {
+    margin-top: 10px; padding: 11px 13px;
+    background: var(--bg3); border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0; display: none;
+  }
+  .discussion-box.visible { display: block; animation: slideIn 0.25s ease; }
   @keyframes slideIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
-  .discussion-box p { font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:5px; }
-  .discussion-box p:last-child { margin-bottom:0; }
-  .discussion-box p::before { content:'▸ '; color:var(--accent2); }
+  .discussion-box p { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 4px; }
+  .discussion-box p:last-child { margin-bottom: 0; }
+  .discussion-box p::before { content: '▸ '; color: var(--accent2); }
 
-  /* COUNTDOWN */
-  .countdown-panel { border-top:2px solid var(--warn); display:flex; flex-direction:column; justify-content:center; }
-  .countdown-panel .panel-label { color:var(--warn); }
-  .countdown-panel .dot { background:var(--warn); box-shadow:0 0 6px var(--warn); }
-  .countdown-big { font-family:'Rajdhani',sans-serif; font-size:64px; font-weight:700; color:var(--warn); text-align:center; line-height:1; text-shadow:0 0 20px rgba(255,209,102,0.4); margin:8px 0 4px; }
-  .countdown-label { text-align:center; font-size:11px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; }
-  .countdown-sub { text-align:center; font-size:10px; color:var(--text3); font-family:'Share Tech Mono',monospace; margin-top:6px; }
-  .progress-bar { height:6px; background:var(--bg3); border-radius:3px; margin-top:12px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent2),var(--warn)); border-radius:3px; transition:width 1s; }
+  .countdown-panel { border-top: 2px solid var(--warn); display: flex; flex-direction: column; justify-content: center; }
+  .countdown-panel .panel-label { color: var(--warn); }
+  .countdown-panel .dot { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+  .countdown-big {
+    font-family: 'Rajdhani', sans-serif; font-size: 62px; font-weight: 700;
+    color: var(--warn); text-align: center; line-height: 1;
+    text-shadow: 0 0 20px rgba(255,209,102,0.35); margin: 6px 0 4px;
+  }
+  .countdown-label { text-align: center; font-size: 11px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
+  .countdown-sub { text-align: center; font-size: 10px; color: var(--text3); font-family: 'Share Tech Mono', monospace; margin-top: 5px; }
+  .progress-bar { height: 5px; background: var(--bg3); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--warn)); border-radius: 3px; transition: width 1s; }
 
-  /* ROW 2: brain fact + teaser + holiday */
-  .row2 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px; }
+  /* ── ROW 2: BRAIN FACT + WOULD YOU RATHER + HOLIDAY ── */
+  .row2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 
-  /* BRAIN FACT */
-  .brain-panel { border-top:2px solid var(--accent); }
-  .brain-panel .panel-label { color:var(--accent); }
-  .brain-panel .dot { background:var(--accent); box-shadow:0 0 6px var(--accent); }
-  .brain-fact-text { font-size:13px; line-height:1.6; color:var(--text); margin-bottom:10px; min-height:60px; }
-  .brain-fact-tag { font-size:9px; padding:2px 9px; border-radius:20px; border:1px solid var(--accent); color:var(--accent); background:rgba(0,200,255,0.08); font-family:'Share Tech Mono',monospace; letter-spacing:1px; text-transform:uppercase; display:inline-block; margin-bottom:10px; }
+  .brain-panel { border-top: 2px solid var(--accent); }
+  .brain-panel .panel-label { color: var(--accent); }
+  .brain-panel .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .brain-fact-tag {
+    font-size: 9px; padding: 2px 8px; border-radius: 20px;
+    border: 1px solid var(--accent); color: var(--accent);
+    background: rgba(0,200,255,0.08); font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 8px;
+  }
+  .brain-fact-text { font-size: 13px; line-height: 1.6; color: var(--text); margin-bottom: 10px; min-height: 72px; }
 
-  /* TEASER */
-  .teaser-panel { border-top:2px solid var(--accent3); }
-  .teaser-panel .panel-label { color:var(--accent3); }
-  .teaser-panel .dot { background:var(--accent3); }
-  .teaser-q { font-size:13px; line-height:1.5; color:var(--text); margin-bottom:10px; min-height:48px; }
-  .answer-zone { background:var(--bg3); border:1px dashed var(--border); border-radius:7px; padding:9px 12px; margin-bottom:10px; min-height:36px; font-size:13px; color:var(--text3); }
-  .answer-zone.revealed { border-style:solid; border-color:var(--accent3); color:#ffaa70; font-weight:600; background:rgba(255,107,53,0.08); }
-  .btn-orange { background:rgba(255,107,53,0.15); border-color:var(--accent3); color:#ffaa70; }
-  .btn-orange:hover { background:rgba(255,107,53,0.3); }
+  /* WOULD YOU RATHER */
+  .wyr-panel { border-top: 2px solid var(--success); }
+  .wyr-panel .panel-label { color: var(--success); }
+  .wyr-panel .dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+  .wyr-question { font-size: 13px; line-height: 1.55; color: var(--text); margin-bottom: 12px; min-height: 60px; font-weight: 400; }
+  .wyr-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .wyr-opt {
+    padding: 8px 10px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--bg3); font-size: 11px; color: var(--text2); line-height: 1.4;
+    cursor: pointer; transition: all 0.18s; text-align: center;
+  }
+  .wyr-opt:hover { border-color: var(--success); color: var(--success); background: rgba(0,229,160,0.07); }
+  .wyr-opt.selected-a { border-color: var(--accent); color: var(--accent); background: rgba(0,200,255,0.1); }
+  .wyr-opt.selected-b { border-color: var(--accent2); color: #c4b5ff; background: rgba(123,92,255,0.1); }
+  .wyr-vs { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 11px; color: var(--text3); letter-spacing: 2px; margin: 2px 0; }
 
-  /* HOLIDAY */
-  .holiday-panel { border-top:2px solid var(--success); }
-  .holiday-panel .panel-label { color:var(--success); }
-  .holiday-panel .dot { background:var(--success); box-shadow:0 0 6px var(--success); }
-  .holiday-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:var(--success); line-height:1.2; margin-bottom:6px; }
-  .holiday-desc { font-size:12px; color:var(--text2); line-height:1.5; }
-  .holiday-weekend { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
-  .holiday-weekend-label { font-size:9px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono',monospace; margin-bottom:4px; }
-  .holiday-weekend-name { font-size:12px; color:var(--text2); }
+  .holiday-panel { border-top: 2px solid var(--accent3); }
+  .holiday-panel .panel-label { color: var(--accent3); }
+  .holiday-panel .dot { background: var(--accent3); }
+  .holiday-name { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: #ffaa70; line-height: 1.2; margin-bottom: 6px; }
+  .holiday-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .holiday-weekend { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .holiday-weekend-label { font-size: 9px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-bottom: 3px; }
+  .holiday-weekend-name { font-size: 11px; color: var(--text2); }
 
-  /* ROW 3: micro lesson + brain games */
-  .row3 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  /* ── ROW 3: BRAIN GAMES (full width) ── */
+  .row3 { margin-bottom: 14px; }
 
-  /* MICRO LESSON */
-  .lesson-panel { border-top:2px solid var(--accent2); }
-  .lesson-panel .panel-label { color:var(--accent2); }
-  .lesson-panel .dot { background:var(--accent2); box-shadow:0 0 6px var(--accent2); }
-  .lesson-link { display:flex; align-items:center; gap:10px; padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s; text-decoration:none; }
-  .lesson-link:hover { border-color:var(--accent2); background:rgba(123,92,255,0.08); transform:translateY(-1px); }
-  .lesson-icon { font-size:24px; flex-shrink:0; }
-  .lesson-text h3 { font-size:15px; font-weight:700; color:var(--text); font-family:'Rajdhani',sans-serif; letter-spacing:1px; }
-  .lesson-text p { font-size:11px; color:var(--text3); font-family:'Share Tech Mono',monospace; margin-top:2px; }
-  .lesson-arrow { margin-left:auto; color:var(--accent2); font-size:18px; flex-shrink:0; }
+  .games-panel { border-top: 2px solid var(--accent3); }
+  .games-panel .panel-label { color: var(--accent3); }
+  .games-panel .dot { background: var(--accent3); }
 
-  /* BRAIN GAMES */
-  .games-panel { border-top:2px solid var(--accent3); }
-  .games-panel .panel-label { color:var(--accent3); }
-  .games-panel .dot { background:var(--accent3); }
-  .games-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .game-card { padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s; }
-  .game-card:hover { border-color:var(--accent3); background:rgba(255,107,53,0.08); transform:translateY(-1px); }
-  .game-name { font-size:12px; font-weight:600; color:var(--text); margin-bottom:2px; }
-  .game-desc { font-size:10px; color:var(--text3); font-family:'Share Tech Mono',monospace; }
-  .game-modal { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.85); z-index:500; align-items:center; justify-content:center; }
-  .game-modal.open { display:flex; }
-  .game-modal-inner { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:28px; max-width:540px; width:90%; max-height:80vh; overflow-y:auto; }
-  .game-modal-title { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:var(--accent3); margin-bottom:6px; }
-  .game-modal-sub { font-size:11px; color:var(--text3); font-family:'Share Tech Mono',monospace; margin-bottom:16px; }
-  .game-modal-content { font-size:14px; color:var(--text2); line-height:1.7; }
-  .game-modal-content .puzzle-img { width:100%; border-radius:8px; background:var(--bg3); border:1px solid var(--border); padding:16px; text-align:center; margin:12px 0; font-size:13px; color:var(--text3); min-height:100px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; }
-  .reveal-btn { margin-top:14px; width:100%; padding:10px; background:rgba(255,107,53,0.15); border:1px solid var(--accent3); color:#ffaa70; border-radius:8px; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
-  .reveal-btn:hover { background:rgba(255,107,53,0.3); }
-  .answer-reveal { display:none; margin-top:12px; padding:12px; background:rgba(255,107,53,0.08); border:1px solid var(--accent3); border-radius:8px; color:#ffaa70; font-weight:600; font-size:14px; }
-  .answer-reveal.show { display:block; }
-  .btn-close { margin-top:14px; padding:8px 20px; background:var(--panel2); border:1px solid var(--border); color:var(--text2); border-radius:7px; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
-  .btn-close:hover { background:var(--border); color:var(--text); }
+  .game-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .gtab {
+    padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text3);
+    font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.18s; letter-spacing: 0.5px;
+  }
+  .gtab:hover { border-color: var(--accent3); color: var(--text2); }
+  .gtab.active { background: rgba(255,107,53,0.13); border-color: var(--accent3); color: #ffaa70; }
 
-  /* GAME TABS + DECK */
-  .game-tabs { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
-  .gtab { padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg3); color:var(--text3); font-family:'Exo 2',sans-serif; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.2s; letter-spacing:0.5px; }
-  .gtab:hover { border-color:var(--accent3); color:var(--text2); }
-  .gtab.active { background:rgba(255,107,53,0.15); border-color:var(--accent3); color:#ffaa70; }
-  .game-deck { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:14px; min-height:110px; }
-  .deck-q { font-size:13px; line-height:1.6; color:var(--text); margin-bottom:8px; white-space:pre-line; }
-  .deck-answer { font-size:13px; color:#ffaa70; font-weight:600; background:rgba(255,107,53,0.08); border:1px solid var(--accent3); border-radius:6px; padding:8px 12px; display:none; margin-bottom:4px; }
-  .deck-answer.show { display:block; }
+  .game-deck {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; min-height: 120px;
+  }
+  .deck-q { font-size: 14px; line-height: 1.65; color: var(--text); margin-bottom: 10px; white-space: pre-line; }
+  .deck-q strong { color: var(--accent); font-weight: 700; }
+  .deck-answer {
+    font-size: 13px; color: #ffaa70; font-weight: 600;
+    background: rgba(255,107,53,0.08); border: 1px solid var(--accent3);
+    border-radius: 6px; padding: 8px 12px; display: none; margin-bottom: 6px;
+  }
+  .deck-answer.show { display: block; }
+  .deck-controls { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  .deck-counter { font-size: 10px; color: var(--text3); font-family: 'Share Tech Mono', monospace; }
 
-  /* STATUS BAR */
-  .status-bar { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; background:var(--panel); border:1px solid var(--border); border-radius:8px; }
-  .status-item { display:flex; align-items:center; gap:6px; font-size:10px; color:var(--text3); font-family:'Share Tech Mono',monospace; }
-  .status-dot { width:5px;height:5px; border-radius:50%; background:var(--success); box-shadow:0 0 5px var(--success); animation:pulse 2s infinite; }
+  /* Logic grid table */
+  .logic-grid-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+  .logic-grid-table th, .logic-grid-table td {
+    border: 1px solid var(--border2); padding: 5px 8px; text-align: center; color: var(--text2);
+  }
+  .logic-grid-table th { background: var(--panel2); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px; }
+  .logic-grid-table td { cursor: pointer; transition: background 0.15s; }
+  .logic-grid-table td:hover { background: var(--panel2); }
+  .logic-grid-table td.yes { color: var(--success); font-weight: 700; background: rgba(0,229,160,0.08); }
+  .logic-grid-table td.no  { color: #ff5555; font-weight: 700; background: rgba(255,85,85,0.06); }
+
+  /* ── LAUNCH STRIP ── */
+  .launch-strip {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 18px; margin-bottom: 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; text-decoration: none; color: inherit;
+    transition: all 0.18s; border-left: 3px solid var(--accent2);
+  }
+  .launch-strip:hover { border-color: var(--accent2); background: rgba(123,92,255,0.08); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .launch-icon { font-size: 20px; flex-shrink: 0; }
+  .launch-text { flex: 1; }
+  .launch-text strong { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; color: var(--text); }
+  .launch-text span { display: block; font-size: 10px; color: var(--text3); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; margin-top: 1px; }
+  .launch-arrow { color: var(--accent2); font-size: 18px; flex-shrink: 0; }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    padding: 8px 14px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .status-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text3); font-family: 'Share Tech Mono', monospace; }
+  .status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); box-shadow: 0 0 5px var(--success); animation: pulse 2s infinite; }
 </style>
 </head>
 <body>
-<div class="scanline"></div>
-
 <div class="container">
 
   <!-- HEADER -->
@@ -183,12 +289,12 @@
       <div class="quote-text" id="quote-text">Loading...</div>
       <div class="quote-meta">
         <div class="quote-skills" id="quote-skills"></div>
-        <div class="quote-num" id="quote-num">#1 / 200</div>
+        <div class="quote-num" id="quote-num">#1</div>
       </div>
       <div class="quote-nav">
-        <button class="btn-sm btn-ghost" onclick="prevQuote()">◀ Prev</button>
-        <button class="btn-sm btn-ghost" onclick="nextQuote()">Next ▶</button>
-        <button class="btn-sm btn-purple" onclick="toggleDiscussion()">💬 Discussion Starters</button>
+        <button class="btn btn-ghost" onclick="prevQuote()">◀ Prev</button>
+        <button class="btn btn-ghost" onclick="nextQuote()">Next ▶</button>
+        <button class="btn btn-purple" onclick="toggleDiscussion()">💬 Discussion Starters</button>
       </div>
       <div class="discussion-box" id="discussion-box"></div>
     </div>
@@ -197,32 +303,33 @@
       <div class="panel-label"><span class="dot"></span>Days Until Summer</div>
       <div class="countdown-big" id="countdown-num">--</div>
       <div class="countdown-label">school days left</div>
-      <div class="countdown-sub" id="countdown-date">Last day: May 20, 2026</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-      </div>
+      <div class="countdown-sub">Last day: May 20, 2026</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     </div>
   </div>
 
-  <!-- ROW 2: BRAIN FACT + TEASER + HOLIDAY -->
+  <!-- ROW 2: BRAIN FACT + WOULD YOU RATHER + HOLIDAY -->
   <div class="row2">
     <div class="panel brain-panel">
       <div class="panel-label"><span class="dot"></span>Brain Fact</div>
-      <div class="brain-fact-tag" id="brain-tag">Frontal Lobe</div>
+      <div class="brain-fact-tag" id="brain-tag">Loading...</div>
       <div class="brain-fact-text" id="brain-text">Loading...</div>
       <div style="display:flex;gap:7px;">
-        <button class="btn-sm btn-ghost" onclick="prevFact()">◀</button>
-        <button class="btn-sm btn-ghost" onclick="nextFact()">Next ▶</button>
+        <button class="btn btn-ghost" onclick="prevFact()">◀</button>
+        <button class="btn btn-ghost" onclick="nextFact()">Next ▶</button>
       </div>
     </div>
 
-    <div class="panel teaser-panel">
-      <div class="panel-label"><span class="dot"></span>Brain Teaser</div>
-      <div class="teaser-q" id="teaser-q">Loading...</div>
-      <div class="answer-zone" id="teaser-a">Think first...</div>
+    <div class="panel wyr-panel">
+      <div class="panel-label"><span class="dot"></span>Would You Rather</div>
+      <div class="wyr-question" id="wyr-q">Loading...</div>
+      <div class="wyr-options">
+        <div class="wyr-opt" id="wyr-a" onclick="selectWyr('a')"></div>
+        <div class="wyr-opt" id="wyr-b" onclick="selectWyr('b')"></div>
+      </div>
       <div style="display:flex;gap:7px;">
-        <button class="btn-sm btn-orange" onclick="revealAnswer()">Reveal Answer</button>
-        <button class="btn-sm btn-ghost" onclick="nextTeaser()">New ▶</button>
+        <button class="btn btn-ghost" onclick="prevWyr()">◀</button>
+        <button class="btn btn-green" onclick="nextWyr()">Next ▶</button>
       </div>
     </div>
 
@@ -237,56 +344,51 @@
     </div>
   </div>
 
-  <!-- ROW 3: MICRO LESSON + BRAIN GAMES -->
+  <!-- ROW 3: BRAIN GAMES -->
   <div class="row3">
-    <div class="panel lesson-panel">
-      <div class="panel-label"><span class="dot"></span>Today's Micro Lesson</div>
-      <a href="https://elowder19.github.io/running-your-life/lessons.html" id="micro-lesson-link" class="lesson-link" target="_blank">
-        <div class="lesson-icon">⚡</div>
-        <div class="lesson-text">
-          <h3>Running Your Life</h3>
-          <p>Micro-lesson menu — pick today's topic</p>
-        </div>
-        <div class="lesson-arrow">→</div>
-      </a>
-
-    </div>
-
     <div class="panel games-panel">
       <div class="panel-label"><span class="dot"></span>Brain Games</div>
       <div class="game-tabs">
-        <button class="gtab active" onclick="setGameTab('puzzle')">Puzzle Play</button>
-        <button class="gtab" onclick="setGameTab('teaser')">Brain Teasers</button>
-        <button class="gtab" onclick="setGameTab('kickout')">Kick One Out</button>
-        <button class="gtab" onclick="setGameTab('mystery')">Mystery #</button>
-        <button class="gtab" onclick="setGameTab('fillin')">Fill in the Blank</button>
+        <button class="gtab active" onclick="setTab('teaser',this)">🧩 Brain Teasers</button>
+        <button class="gtab" onclick="setTab('kickout',this)">🦶 Kick One Out</button>
+        <button class="gtab" onclick="setTab('mystery',this)">🔢 Mystery #</button>
+        <button class="gtab" onclick="setTab('logic',this)">🧠 Logic Grid</button>
+        <button class="gtab" onclick="setTab('pattern',this)">📈 Pattern Sequence</button>
       </div>
       <div class="game-deck">
-        <div class="deck-q" id="deck-q">Loading...</div>
+        <div class="deck-q" id="deck-q"></div>
         <div class="deck-answer" id="deck-answer"></div>
-        <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;align-items:center;">
-          <button class="btn-sm btn-orange" onclick="revealDeckAnswer()">Reveal Answer</button>
-          <button class="btn-sm btn-ghost" onclick="prevDeck()">◀</button>
-          <span id="deck-counter" style="font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;">1/1</span>
-          <button class="btn-sm btn-ghost" onclick="nextDeck()">▶</button>
+        <div class="deck-controls">
+          <button class="btn btn-orange" onclick="revealDeck()">Reveal Answer</button>
+          <button class="btn btn-ghost" onclick="prevDeck()">◀</button>
+          <span class="deck-counter" id="deck-counter">1/1</span>
+          <button class="btn btn-ghost" onclick="nextDeck()">▶</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- STATUS -->
+  <!-- LAUNCH STRIP -->
+  <a class="launch-strip" href="https://elowder19.github.io/running-your-life/dashboard.html" target="_blank" rel="noopener">
+    <div class="launch-icon">⚡</div>
+    <div class="launch-text">
+      <strong>Running Your Life: The Unwritten Rulebook</strong>
+      <span>Open micro-lesson dashboard → pick today's topic</span>
+    </div>
+    <div class="launch-arrow">→</div>
+  </a>
+
+  <!-- STATUS BAR -->
   <div class="status-bar">
     <div class="status-item"><div class="status-dot"></div>System Online</div>
     <div class="status-item">🧠 EF Seminar — High School Boys</div>
-    <div class="status-item">Brain HQ v2</div>
+    <div class="status-item">Brain HQ v3</div>
   </div>
+
 </div>
 
-
 <script>
-// ============================================================
-// QUOTES — 35 hand-selected from the 200
-// ============================================================
+// ── QUOTES ──────────────────────────────────────────────────
 const quotes = [
   {text:"You are enough and a work in progress all at the same time.",skills:["Confidence","Self-Awareness"],disc:["What does it mean to believe you are enough as you are?","What does it mean to be a work in progress?","How can you be both at the same time?"]},
   {text:"Think of executive functioning skills like the roots to a tree. They are the foundation for everything else.",skills:["EF Skills"],disc:["What are some everyday tasks you do?","How can strong EF skills help you do those tasks?","How do you think you can strengthen your EF roots?"]},
@@ -325,9 +427,7 @@ const quotes = [
   {text:"You get to decide what you want to be.",skills:["Choices","Self-Awareness"],disc:["What words do you want to describe who you are?","How can you figure out what you want to be?"]},
 ];
 
-// ============================================================
-// BRAIN FACTS
-// ============================================================
+// ── BRAIN FACTS ──────────────────────────────────────────────
 const brainFacts = [
   {tag:"Frontal Lobe",text:"The frontal lobe is the largest lobe in your brain — and it's basically your brain's CEO. It handles planning, decision-making, emotions, behavior, focus, and problem-solving all at once."},
   {tag:"Frontal Lobe",text:"Your frontal lobe has 6 big jobs: managing feelings and emotions, controlling behavior, planning ahead, staying focused, making decisions, and solving problems. That's a heavy workload."},
@@ -335,492 +435,425 @@ const brainFacts = [
   {tag:"Prefrontal Cortex",text:"Here's the wild part: your prefrontal cortex — The Boss — isn't fully developed until you're about 25. That's not an excuse, it's just science. And it means you CAN train it to work better right now."},
   {tag:"Prefrontal Cortex",text:"When you stop and think before reacting, that's your prefrontal cortex doing its job. Every time you use it, you're literally strengthening it — like a rep at the gym."},
   {tag:"Amygdala",text:"The amygdala is your brain's alarm system. It's always scanning for danger and threats — even social ones like disrespect, embarrassment, or conflict. When it fires, it fires FAST."},
-  {tag:"Amygdala",text:"When the amygdala — The Alarm — detects a threat, it can override The Boss (prefrontal cortex) in milliseconds. That's the 'hijack.' Your emotional brain takes the wheel before your thinking brain even knows what happened."},
+  {tag:"Amygdala",text:"When the amygdala detects a threat, it can override the prefrontal cortex in milliseconds. That's the 'hijack.' Your emotional brain takes the wheel before your thinking brain even knows what happened."},
   {tag:"Amygdala",text:"The amygdala can't tell the difference between a tiger chasing you and your teacher calling you out in class. Both feel like survival threats. That's why small things can feel like a huge deal in the moment."},
-  {tag:"Boss vs. Alarm",text:"The Boss (prefrontal cortex) and the Alarm (amygdala) are constantly competing for control. Stress, anger, hunger, and lack of sleep all make the Alarm louder and the Boss quieter."},
-  {tag:"Boss vs. Alarm",text:"Getting your Boss back online after a hijack takes time — usually 20–30 minutes for the stress hormones to clear. That's why 'calm down first, talk about it later' actually has science behind it."},
+  {tag:"Boss vs. Alarm",text:"The prefrontal cortex and the amygdala are constantly competing for control. Stress, anger, hunger, and lack of sleep all make the Alarm louder and the Boss quieter."},
+  {tag:"Boss vs. Alarm",text:"Getting your prefrontal cortex back online after a hijack takes time — usually 20–30 minutes for the stress hormones to clear. That's why 'calm down first, talk about it later' actually has science behind it."},
   {tag:"Boss vs. Alarm",text:"Things that strengthen The Boss: sleep, exercise, deep breathing, taking a pause before reacting. Things that weaken it: stress, no sleep, hunger, anger. You have more control over this than you think."},
   {tag:"Temporal Lobe",text:"Your temporal lobe sits on the side of your brain, right around your ears. Its main jobs are processing what you hear, understanding language, and storing long-term memories."},
   {tag:"Temporal Lobe",text:"Ever wonder why you can remember every lyric to a song you haven't heard in years but can't remember what you studied last night? That's your temporal lobe — music and emotion get stored differently than plain facts."},
-  {tag:"Temporal Lobe",text:"The temporal lobe doesn't just store neutral memories — it stores emotional ones too. If something made you feel strong emotions when it happened, your brain is more likely to hold onto it. Good or bad."},
+  {tag:"Temporal Lobe",text:"The temporal lobe doesn't just store neutral memories — it stores emotional ones too. If something made you feel strong emotions when it happened, your brain is more likely to hold onto it."},
   {tag:"Temporal Lobe",text:"Language processing happens in the temporal lobe — specifically a region called Wernicke's Area. When you understand what someone is saying to you, that's this area doing its job."},
   {tag:"Parietal Lobe",text:"The parietal lobe sits at the top and back of your skull. It's your brain's sensory processing center — it handles touch, pain, temperature, and pressure signals from your whole body."},
   {tag:"Parietal Lobe",text:"Your parietal lobe helps you understand where you are in space — that's why you can catch a ball, navigate a room in the dark, or know without looking exactly where your hand is. That's called proprioception."},
   {tag:"Parietal Lobe",text:"The parietal lobe also helps integrate information — it takes what your eyes, ears, and body are sensing and combines it into one coherent picture of what's happening around you."},
   {tag:"Teen Brain",text:"Between ages 12–25, your brain goes through its biggest remodel since infancy. Old neural pathways get pruned, new ones get built. This is why the teenage years feel so intense — your brain is literally under construction."},
-  {tag:"Teen Brain",text:"The teenage brain is wired to seek novelty, take risks, and feel emotions more intensely than adults. That's not a flaw — evolutionarily, it pushed young humans to explore and take chances. The problem is, the risk-assessment systems aren't fully online yet."},
+  {tag:"Teen Brain",text:"The teenage brain is wired to seek novelty, take risks, and feel emotions more intensely than adults. That's not a flaw — evolutionarily, it pushed young humans to explore. The problem is the risk-assessment systems aren't fully online yet."},
   {tag:"Brain Science",text:"Your brain uses about 20% of your body's total energy, even though it only makes up about 2% of your body weight. Thinking is literally hard work."},
-  {tag:"Brain Science",text:"Sleep is when your brain cleans itself — literally. During deep sleep, waste products (including things linked to brain diseases) get flushed out. Skipping sleep doesn't just make you tired, it affects your memory, focus, and emotional control."},
-  {tag:"Brain Science",text:"Exercise increases blood flow to the prefrontal cortex — The Boss. Even a 20-minute walk can improve focus and reduce stress. Your brain and your body are on the same team."},
+  {tag:"Brain Science",text:"Sleep is when your brain cleans itself — literally. During deep sleep, waste products get flushed out. Skipping sleep doesn't just make you tired, it affects your memory, focus, and emotional control."},
+  {tag:"Brain Science",text:"Exercise increases blood flow to the prefrontal cortex. Even a 20-minute walk can improve focus and reduce stress. Your brain and your body are on the same team."},
 ];
 
-// ============================================================
-// TEASERS (visual/no writing)
-// ============================================================
-const teasers = [
+// ── WOULD YOU RATHER ──────────────────────────────────────────
+const wyrData = [
+  {q:"Would you rather...",a:"Always know when someone is lying to you",b:"Always get away with lying yourself"},
+  {q:"Would you rather...",a:"Have unlimited money but no free time",b:"Have unlimited free time but no money"},
+  {q:"Would you rather...",a:"Be able to pause time whenever you want",b:"Be able to rewind time once a day"},
+  {q:"Would you rather...",a:"Know exactly how you're going to die",b:"Know exactly when you're going to die"},
+  {q:"Would you rather...",a:"Have to speak every thought out loud",b:"Have everyone be able to read your mind"},
+  {q:"Would you rather...",a:"Be famous but hated",b:"Be unknown but loved by everyone who knows you"},
+  {q:"Would you rather...",a:"Never use social media again",b:"Never watch TV or streaming again"},
+  {q:"Would you rather...",a:"Have a rewind button for your life",b:"Have a fast-forward button for your life"},
+  {q:"Would you rather...",a:"Always be 10 minutes late",b:"Always be 2 hours early"},
+  {q:"Would you rather...",a:"Live without music",b:"Live without movies and TV"},
+  {q:"Would you rather...",a:"Find out your whole life has been a simulation",b:"Find out you're the only real person and everyone else is AI"},
+  {q:"Would you rather...",a:"Have a photographic memory",b:"Be able to forget anything you want"},
+  {q:"Would you rather...",a:"Be able to speak every language",b:"Be able to play every instrument"},
+  {q:"Would you rather...",a:"Work a job you hate that pays extremely well",b:"Work a job you love that barely pays the bills"},
+  {q:"Would you rather...",a:"Never feel physical pain again",b:"Never feel emotional pain again"},
+  {q:"Would you rather...",a:"Have every day be a Friday",b:"Have every day be a Saturday"},
+  {q:"Would you rather...",a:"Know every answer on any test",b:"Never have to take a test again"},
+  {q:"Would you rather...",a:"Be able to talk to animals",b:"Be able to talk to machines and technology"},
+  {q:"Would you rather...",a:"Have to apologize for everything you do even if it wasn't wrong",b:"Never be able to apologize even when you know you messed up"},
+  {q:"Would you rather...",a:"Always say exactly what you're thinking",b:"Never be able to express an opinion out loud"},
+];
+
+// ── BRAIN TEASERS ──────────────────────────────────────────────
+const teaserData = [
   {q:"Which month has 28 days?",a:"All of them. Every month has at least 28 days."},
   {q:"If you speak, you will break me. What am I?",a:"Silence."},
   {q:"What actually gets wetter as it dries?",a:"A towel."},
   {q:"A farmer had 10 sheep. All but six died. How many sheep did he have left?",a:"Six."},
   {q:"This starts with 'P' and ends with 'E' but has thousands of letters. What is it?",a:"Post office."},
   {q:"Everyone has this and cannot lose it. What is it?",a:"A shadow."},
-  {q:"What weighs more: a pound of feathers or a pound of bricks?",a:"They weigh exactly the same. Both are a pound."},
-  {q:"A man rode into town on Thursday. He stayed for two days and left on Wednesday. How is that possible?",a:"His horse's name is Thursday."},
+  {q:"What weighs more: a pound of feathers or a pound of bricks?",a:"Neither — they both weigh exactly one pound."},
+  {q:"A man rode into town on Thursday, stayed two days, and left on Wednesday. How?",a:"His horse's name is Thursday."},
   {q:"What must you break before you use it?",a:"An egg."},
   {q:"What has many keys but cannot open a single door?",a:"A piano."},
   {q:"What travels around the whole world but stays in one spot?",a:"A stamp."},
-  {q:"What occurs once in a minute, twice in a moment, and not once in a thousand years?",a:"The letter M."},
+  {q:"What occurs once in a minute, twice in a moment, and never in a thousand years?",a:"The letter M."},
   {q:"What has one eye but cannot see?",a:"A needle."},
   {q:"What has lots of words but never speaks?",a:"A book."},
-  {q:"I have cities, but no houses live there. I have mountains, but no trees grow there. I have water, but no fish swim there. What am I?",a:"A map."},
+  {q:"I have cities but no houses, mountains but no trees, and water but no fish. What am I?",a:"A map."},
   {q:"The more you take, the more you leave behind. What am I?",a:"Footsteps."},
   {q:"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",a:"An echo."},
   {q:"What has hands but can't clap?",a:"A clock."},
   {q:"What goes up but never comes back down?",a:"Your age."},
   {q:"I have a head and a tail, but no body. What am I?",a:"A coin."},
+  {q:"What can you catch but not throw?",a:"A cold."},
+  {q:"The more you have of it, the less you see. What is it?",a:"Darkness."},
+  {q:"What gets bigger the more you take away from it?",a:"A hole."},
 ];
 
-// ============================================================
-// WEIRD HOLIDAYS — every school day Mar 23 – May 20
-// Monday/Friday include weekend holidays
-// ============================================================
+// ── KICK ONE OUT ──────────────────────────────────────────────
+const kickoutData = [
+  {q:"dog / cat / cactus / frog",a:"Cactus — everything else is an animal."},
+  {q:"square / triangle / circle / rectangle",a:"Circle — only shape with no straight lines. (Trickier answer: triangle — only one with an odd number of sides.)"},
+  {q:"Twitter / Instagram / Facebook / Snapchat",a:"Facebook — oldest, different generation. (Trickier: Twitter — the only one without a camera as its core feature.)"},
+  {q:"hammer / screwdriver / wrench / nail",a:"Nail — everything else is a tool. A nail is a fastener."},
+  {q:"apple / orange / carrot / mango",a:"Carrot — everything else is a fruit."},
+  {q:"Sunday / Monday / Friday / March",a:"March — everything else is a day of the week. March is a month."},
+  {q:"whisper / shout / mumble / listen",a:"Listen — everything else is a way of speaking. Listening is receiving, not sending."},
+  {q:"lion / tiger / cheetah / dolphin",a:"Dolphin — everything else is a big cat. (Trickier: cheetah — the only one that can't roar.)"},
+  {q:"red / blue / green / purple",a:"Purple — only one that is a mix of two other colors on the list."},
+  {q:"piano / guitar / drums / microphone",a:"Microphone — everything else is an instrument. A mic is a tool for amplifying."},
+  {q:"run / jump / sleep / sprint",a:"Sleep — everything else is an active physical movement. (Trickier: sprint — all others can be done casually; sprinting implies maximum effort.)"},
+  {q:"doctor / lawyer / teacher / patient",a:"Patient — everyone else is a profession. A patient is a role someone is in."},
+  {q:"sneakers / sandals / boots / socks",a:"Socks — everything else is footwear worn on its own. Socks go under the other ones."},
+  {q:"cup / bowl / plate / fork",a:"Fork — everything else is a container. A fork is a utensil."},
+  {q:"Amazon / Google / Nike / Apple",a:"Nike — everything else is a tech company. (Trickier: Google — the only one that doesn't sell physical products as its main business.)"},
+  {q:"chess / checkers / Monopoly / basketball",a:"Basketball — everything else is a board game."},
+  {q:"whale / shark / dolphin / octopus",a:"Octopus — everything else is a fish or marine mammal. Octopus is a cephalopod mollusk."},
+  {q:"afraid / nervous / anxious / furious",a:"Furious — everything else relates to fear/anxiety. Furious is anger."},
+  {q:"California / Texas / Miami / New York",a:"Miami — everything else is a state. Miami is a city."},
+  {q:"Mars / Jupiter / Moon / Saturn",a:"Moon — everything else is a planet. The Moon is a natural satellite."},
+  {q:"breathing / blinking / walking / digesting",a:"Walking — everything else is involuntary (your body does it automatically). Walking requires conscious effort."},
+  {q:"comedy / horror / drama / Netflix",a:"Netflix — everything else is a movie genre. Netflix is a streaming platform."},
+  {q:"north / south / left / east",a:"Left — everything else is a cardinal direction. Left is a relative direction."},
+  {q:"iron / gold / bronze / silver",a:"Bronze — everything else is a pure element. Bronze is an alloy (a mix of copper and tin)."},
+  {q:"pen / pencil / marker / eraser",a:"Eraser — everything else is used to write or draw. An eraser removes what you wrote."},
+];
+
+// ── MYSTERY NUMBER ──────────────────────────────────────────────
+const mysteryData = [
+  {q:"I'm a two-digit number. My ones digit is smaller than my tens digit and the product of my digits is 9. What number am I?",a:"91 — 9 × 1 = 9, and 9 > 1."},
+  {q:"I have two digits and my second digit is 3 more than my first digit. The sum of my digits is 7. What number am I?",a:"25 — 2 + 5 = 7, and 5 is 3 more than 2."},
+  {q:"I'm a three-digit number. The sum of my digits is 4, my last digit is 0, and my first digit is 1. What number am I?",a:"130 — 1 + 3 + 0 = 4."},
+  {q:"The sum of my two digits is 9 and the product of them is 20. My first digit is less than the second. What number am I?",a:"45 — 4 + 5 = 9, and 4 × 5 = 20."},
+  {q:"The sum of my three digits is 13. My first digit is 2 and my last digit is a multiple of 5. What number am I?",a:"265 — 2 + 6 + 5 = 13, and 5 is a multiple of 5."},
+  {q:"I have two digits both with the same number. If you add us together, you will get 16. What number am I?",a:"88 — 8 + 8 = 16."},
+  {q:"The product of my two digits is 9. My first digit is 8 more than my second digit. What number am I?",a:"91 — 9 × 1 = 9, and 9 is 8 more than 1."},
+  {q:"All three of my digits are the same. If you multiply us, you will get 27. What number am I?",a:"333 — 3 × 3 × 3 = 27."},
+  {q:"I am a two-digit number that is less than 16. I'm an even number and I'm more than 12. What number am I?",a:"14 — even, more than 12, less than 16."},
+  {q:"I only have two digits. If you add them, you'll get 3. The highest number is in the ones place. What number am I?",a:"12 — 1 + 2 = 3, and 2 > 1."},
+  {q:"I am a two-digit number and my tens digit is 2 more than my ones digit. I am between 25 and 80 and I'm a multiple of 5. What number am I?",a:"75 — 7 is 2 more than 5, and 75 is a multiple of 5."},
+  {q:"I am a number between 30 and 50. The sum of my digits is 10. I'm not 37. What number am I?",a:"46 — 4 + 6 = 10, between 30 and 50."},
+  {q:"I'm a three-digit number with all digits in counting order. If you add them together you get 12 and if you multiply them you get 60. What number am I?",a:"345 — 3 + 4 + 5 = 12, and 3 × 4 × 5 = 60."},
+  {q:"I am an odd number between 100 and 130. If you add my digits you will get 12 but if you multiply them you will get 18. What number am I?",a:"129 — 1 + 2 + 9 = 12, and 1 × 2 × 9 = 18."},
+  {q:"The product of my three digits is 8. All of my digits are exactly the same. What number am I?",a:"222 — 2 × 2 × 2 = 8."},
+];
+
+// ── LOGIC GRIDS ──────────────────────────────────────────────
+const logicData = [
+  {
+    q:"Three friends — Alex, Ben, and Carlos — each have a different pet: a dog, a fish, and a snake.\n\nClues:\n• Alex is scared of snakes\n• Ben's pet lives in water\n• Carlos's pet barks",
+    people:["Alex","Ben","Carlos"], things:["Dog","Fish","Snake"],
+    solution:[[false,true,false],[false,false,true],[true,false,false]],
+    a:"Carlos has the dog, Ben has the fish, Alex has the snake — wait, Alex is scared of snakes, so: Alex has the fish? No — Ben's pet lives in water, so Ben has the fish. Carlos's pet barks, so Carlos has the dog. Alex gets the snake (the only one left)."
+  },
+  {
+    q:"Three students — Maya, Jordan, and Tyler — each play a different sport: basketball, soccer, and tennis.\n\nClues:\n• Maya doesn't like team sports\n• Jordan played his sport in the rain and got muddy\n• Tyler needs a net to play her sport",
+    people:["Maya","Jordan","Tyler"], things:["Basketball","Soccer","Tennis"],
+    solution:[[false,false,true],[false,true,false],[true,false,false]],
+    a:"Maya plays tennis (solo sport, no team). Jordan plays soccer (muddy field sport). Tyler plays basketball (net required)."
+  },
+  {
+    q:"Three people — Sam, Lee, and Priya — each drink a different morning beverage: coffee, tea, and juice.\n\nClues:\n• Sam's drink is hot\n• Lee's drink has no caffeine\n• Priya's drink comes from a fruit",
+    people:["Sam","Lee","Priya"], things:["Coffee","Tea","Juice"],
+    solution:[[true,false,false],[false,true,false],[false,false,true]],
+    a:"Sam drinks coffee (hot, has caffeine). Priya drinks juice (from fruit). Lee drinks tea (hot but no caffeine — herbal)."
+  },
+  {
+    q:"Three friends — Dante, Keisha, and Rory — each have a different job: cook, mechanic, and coder.\n\nClues:\n• Dante works with his hands on machines\n• Keisha never leaves her computer\n• Rory's job involves heat",
+    people:["Dante","Keisha","Rory"], things:["Cook","Mechanic","Coder"],
+    solution:[[false,true,false],[false,false,true],[true,false,false]],
+    a:"Dante is a mechanic (machines). Keisha is a coder (computer). Rory is a cook (heat)."
+  },
+  {
+    q:"Three siblings — Marcus, Zoe, and Eli — each prefer a different after-school snack: chips, fruit, and yogurt.\n\nClues:\n• Marcus avoids anything healthy\n• Zoe's snack is creamy\n• Eli's snack grew on a tree",
+    people:["Marcus","Zoe","Eli"], things:["Chips","Fruit","Yogurt"],
+    solution:[[true,false,false],[false,false,true],[false,true,false]],
+    a:"Marcus eats chips (not healthy). Zoe eats yogurt (creamy). Eli eats fruit (grew on a tree)."
+  },
+  {
+    q:"Three players — Chris, Ava, and Nate — each chose a different video game genre: racing, puzzle, and fighting.\n\nClues:\n• Chris finds his genre relaxing and calming\n• Ava's genre requires fast reflexes and aggression\n• Nate's genre involves speed and vehicles",
+    people:["Chris","Ava","Nate"], things:["Racing","Puzzle","Fighting"],
+    solution:[[false,true,false],[false,false,true],[true,false,false]],
+    a:"Chris plays puzzle (relaxing). Ava plays fighting (fast reflexes, aggression). Nate plays racing (speed, vehicles)."
+  },
+  {
+    q:"Three classmates — Jada, Omar, and Felix — each take a different route to school: bus, bike, and walking.\n\nClues:\n• Jada arrives sweaty and out of breath\n• Omar sits next to strangers on the way\n• Felix's route takes the longest",
+    people:["Jada","Omar","Felix"], things:["Bus","Bike","Walking"],
+    solution:[[false,true,false],[true,false,false],[false,false,true]],
+    a:"Jada rides a bike (sweaty, effort). Omar takes the bus (sits next to strangers). Felix walks (longest route)."
+  },
+  {
+    q:"Three coworkers — Tasha, Dev, and Milo — each have a different lunch: sandwich, salad, and pizza.\n\nClues:\n• Tasha is vegetarian\n• Dev's lunch has cheese, sauce, and dough\n• Milo's lunch has two slices of bread",
+    people:["Tasha","Dev","Milo"], things:["Sandwich","Salad","Pizza"],
+    solution:[[false,false,true],[false,true,false],[true,false,false]],
+    a:"Dev has pizza (cheese, sauce, dough). Milo has a sandwich (two slices of bread). Tasha has a salad (vegetarian, no meat)."
+  },
+  {
+    q:"Three students — Lena, Brice, and Amir — each have a different favorite subject: math, history, and art.\n\nClues:\n• Lena's favorite subject involves dates and past events\n• Brice loves numbers and formulas\n• Amir's class is the only one where he uses his hands to create things",
+    people:["Lena","Brice","Amir"], things:["Math","History","Art"],
+    solution:[[false,true,false],[true,false,false],[false,false,true]],
+    a:"Lena loves history (dates, past events). Brice loves math (numbers, formulas). Amir loves art (hands-on creation)."
+  },
+  {
+    q:"Three people — Gwen, Paulo, and Iris — each own a different vehicle: a truck, a motorcycle, and a hybrid car.\n\nClues:\n• Gwen's vehicle is the most fuel-efficient\n• Paulo's vehicle is the loudest\n• Iris hauls heavy loads for work",
+    people:["Gwen","Paulo","Iris"], things:["Truck","Motorcycle","Hybrid"],
+    solution:[[false,false,true],[false,true,false],[true,false,false]],
+    a:"Gwen drives a hybrid (most fuel-efficient). Paulo rides a motorcycle (loudest). Iris drives a truck (hauls heavy loads)."
+  },
+];
+
+// ── PATTERN SEQUENCES ──────────────────────────────────────────
+const patternData = [
+  {q:"What comes next?\n\n2, 4, 6, 8, ___",a:"10 — adding 2 each time."},
+  {q:"What comes next?\n\n1, 3, 9, 27, ___",a:"81 — multiplying by 3 each time."},
+  {q:"What comes next?\n\n100, 90, 81, 73, 66, ___",a:"60 — subtracting decreasing amounts: 10, 9, 8, 7, 6..."},
+  {q:"What comes next?\n\n1, 1, 2, 3, 5, 8, 13, ___",a:"21 — each number is the sum of the two before it (Fibonacci sequence)."},
+  {q:"What comes next?\n\n5, 10, 20, 40, ___",a:"80 — doubling each time."},
+  {q:"What comes next?\n\n3, 6, 12, 24, ___",a:"48 — doubling each time."},
+  {q:"What comes next?\n\n1, 4, 9, 16, 25, ___",a:"36 — these are perfect squares: 1², 2², 3², 4², 5², 6²."},
+  {q:"What comes next?\n\n2, 3, 5, 7, 11, 13, ___",a:"17 — these are all prime numbers."},
+  {q:"What comes next?\n\n64, 32, 16, 8, ___",a:"4 — dividing by 2 each time."},
+  {q:"What comes next?\n\n1, 2, 4, 7, 11, 16, ___",a:"22 — adding increasing amounts: +1, +2, +3, +4, +5, +6."},
+  {q:"What letter comes next?\n\nA, C, E, G, ___",a:"I — every other letter of the alphabet."},
+  {q:"What comes next?\n\nMon, Wed, Fri, ___",a:"Sun — every other day of the week (skipping one)."},
+  {q:"What comes next?\n\n1, 8, 27, 64, 125, ___",a:"216 — these are perfect cubes: 1³, 2³, 3³, 4³, 5³, 6³."},
+  {q:"What comes next?\n\n0, 1, 3, 6, 10, 15, ___",a:"21 — triangular numbers. Add 1, then 2, then 3, then 4..."},
+  {q:"What comes next?\n\n2, 6, 12, 20, 30, ___",a:"42 — differences are 4, 6, 8, 10, 12. Each gap increases by 2."},
+];
+
+// ── HOLIDAYS ─────────────────────────────────────────────────
 const holidays = {
-  "2026-03-23": {name:"National Puppy Day 🐶",desc:"A day dedicated to celebrating puppies and encouraging adoption. Also: Near Miss Day — in 1989, an asteroid barely missed Earth.",weekend:null},
-  "2026-03-24": {name:"National Cheesesteak Day 🥩",desc:"The Philadelphia cheesesteak gets its own national holiday. The debate over whiz vs. provolone continues.",weekend:null},
-  "2026-03-25": {name:"International Waffle Day 🧇",desc:"Celebrated since the 1600s in Sweden. Also: Tolkien Reading Day — fans read passages from The Lord of the Rings.",weekend:null},
-  "2026-03-26": {name:"Make Up Your Own Holiday Day 🎉",desc:"Today is literally whatever you want it to be. Create your own holiday. Also: Live Long and Prosper Day (Star Trek).",weekend:null},
-  "2026-03-27": {name:"International Scribble Day ✏️",desc:"A day that celebrates drawing, doodling, and scribbling. No artistic talent required — that's the whole point.",weekend:"National Spinach Day (Mar 26) + Something on a Stick Day (Mar 28)"},
-  "2026-03-30": {name:"I Am in Control Day 💪",desc:"A day to remind yourself that you — not your circumstances — are in control of your choices. Very on-brand for this class.",weekend:"Smoke and Mirrors Day (Mar 29) + Turkey Neck Soup Day (Mar 29)"},
-  "2026-03-31": {name:"National Crayon Day 🖍️",desc:"Crayola has made over 100 billion crayons since 1903. The average child wears down 730 crayons by age 10.",weekend:null},
-  "2026-04-01": {name:"April Fools' Day 🃏",desc:"One of the oldest recorded holidays — dates back to the 1500s. No one actually knows how it started.",weekend:null},
-  "2026-04-02": {name:"National Peanut Butter and Jelly Day 🥜",desc:"The average American kid eats 1,500 PB&J sandwiches before graduating high school. The math is unsettling.",weekend:null},
-  "2026-04-06": {name:"National Burrito Day 🌯",desc:"The word 'burrito' means 'little donkey' in Spanish. Nobody knows exactly why. Easter Monday bonus: candy everywhere.",weekend:"Easter Sunday (Apr 5) — chocolate for breakfast is socially acceptable exactly once a year"},
-  "2026-04-07": {name:"National Beer Day 🍺",desc:"Marks the day in 1933 when Americans could legally buy beer again after Prohibition. Also: No Housework Day (a classic).",weekend:null},
-  "2026-04-08": {name:"Draw a Picture of a Bird Day 🐦",desc:"Started in 1943 by a 7-year-old girl in memory of her uncle. The tradition spread worldwide from a single kid's idea.",weekend:null},
-  "2026-04-09": {name:"Name Yourself Day 🏷️",desc:"A day where you get to go by any name you want. Pick your alter ego. Also: National Unicorn Day.",weekend:null},
-  "2026-04-10": {name:"National Siblings Day 👫",desc:"A day to appreciate your siblings. Or argue with them. Statistically, probably both.",weekend:"Name Yourself Day (Apr 9) + National Unicorn Day (Apr 9)"},
-  "2026-04-13": {name:"Scrabble Day 🔡",desc:"Birthday of Alfred Mosher Butts, who invented Scrabble in 1938. He was rejected by every game company before self-publishing it.",weekend:"National Siblings Day weekend vibes"},
-  "2026-04-14": {name:"National Gardening Day 🌱",desc:"Plants actually communicate with each other through underground fungal networks. Trees warn neighboring trees about pests.",weekend:null},
-  "2026-04-15": {name:"Tax Day 💸",desc:"The day your future self will definitely care about. Understanding taxes = actual adulting. Also: World Art Day.",weekend:null},
-  "2026-04-16": {name:"National Stress Awareness Day 😤",desc:"Officially recognized since 1992. Stress literally shrinks your prefrontal cortex over time. Your Boss hates chronic stress.",weekend:null},
-  "2026-04-17": {name:"National Haiku Poetry Day 📜",desc:"Five syllables. Then seven. Then five again. That's it. Also: Blah Blah Blah Day — a day dedicated to actually following through.",weekend:"Stress Awareness Day vibes continue into the weekend"},
-  "2026-04-20": {name:"Look-Alike Day 👯",desc:"A day celebrating people who look like someone famous or like each other. Doppelgänger science is real — statistically everyone has one.",weekend:"National Haiku Day (Apr 17) and Blah Blah Blah Day follow-up"},
-  "2026-04-21": {name:"National Kindergarten Day 🎒",desc:"Celebrates the birthday of Friedrich Fröbel, who invented kindergarten in 1837. You've come a long way.",weekend:null},
-  "2026-04-22": {name:"Earth Day 🌍",desc:"Over 1 billion people in 193 countries participate. Started in 1970 by a U.S. Senator after he saw the devastation of a 1969 oil spill.",weekend:null},
-  "2026-04-23": {name:"World Book Day 📚",desc:"Shakespeare was born AND died on April 23 (different years). Also: Talk Like Shakespeare Day — thou art welcome to try.",weekend:null},
-  "2026-04-24": {name:"National Pigs-in-a-Blanket Day 🌭",desc:"Tiny hot dogs wrapped in dough. A food so specific it has its own national holiday. Also: Bring Your Daughter to Work Day.",weekend:"Earth Day weekend cleanup events"},
-  "2026-04-27": {name:"Tell a Story Day 📖",desc:"One of the oldest human activities — storytelling predates writing by tens of thousands of years.",weekend:"National Pigs-in-a-Blanket Day (Apr 24) was the real winner last week"},
-  "2026-04-28": {name:"National Superhero Day 🦸",desc:"Created by Marvel employees in 1995. The debate over best superhero is constitutionally protected.",weekend:null},
-  "2026-04-29": {name:"International Dance Day 💃",desc:"Established by UNESCO to promote dance as an art form. Also: Zipper Day — the modern zipper was patented in 1913.",weekend:null},
-  "2026-04-30": {name:"National Honesty Day 🤥",desc:"Created to balance out April Fools' Day at the start of the month. The creator said truth deserved its own holiday too.",weekend:null},
-  "2026-05-01": {name:"May Day / International Workers' Day 🔨",desc:"Celebrated worldwide as a day honoring workers' rights. Also: Save the Rhino Day and Batman Day (yes, really).",weekend:"National Honesty Day carried into the weekend"},
-  "2026-05-04": {name:"Star Wars Day 🚀",desc:"'May the Fourth be with you.' This is not a drill. Also: Bird Day — because birds are actually the closest living relatives to dinosaurs.",weekend:"May Day / International Workers Day (May 1) + Batman Day (May 1)"},
-  "2026-05-05": {name:"Cinco de Mayo 🌮",desc:"Commemorates Mexico's victory over France in 1862. More widely celebrated in the U.S. than in Mexico itself.",weekend:null},
-  "2026-05-06": {name:"National Nurses Day 🏥",desc:"Honors Florence Nightingale's birthday. Also: No Diet Day — a day to take a break from diet culture.",weekend:null},
-  "2026-05-07": {name:"National Space Day 🌌",desc:"The first Friday in May. Celebrates space exploration and astronomy. The nearest star (besides the sun) is 4.2 light years away.",weekend:null},
-  "2026-05-08": {name:"National Have a Coke Day 🥤",desc:"Coca-Cola was invented in 1886 by a pharmacist. It originally contained trace amounts of cocaine. History is wild.",weekend:"National Space Day (May 7) — look up at the stars this weekend"},
-  "2026-05-11": {name:"Eat What You Want Day 🍔",desc:"Officially one day a year to eat whatever you want guilt-free. Nutritionists are mixed on this one.",weekend:"Mother's Day (May 10) — hopefully someone made brunch"},
-  "2026-05-12": {name:"National Limerick Day 🎭",desc:"Celebrates the birthday of Edward Lear, who popularized the limerick. There once was a student in class...",weekend:null},
-  "2026-05-13": {name:"Frog Jumping Day 🐸",desc:"Inspired by Mark Twain's famous story 'The Celebrated Jumping Frog of Calaveras County.' Frog racing exists as an actual sport.",weekend:null},
-  "2026-05-14": {name:"National Underground America Day 🕳️",desc:"A day celebrating underground structures — caves, tunnels, bunkers. Humans have been building underground for 12,000 years.",weekend:null},
-  "2026-05-15": {name:"National Nylon Stockings Day 🧦",desc:"Nylon was first sold on May 15, 1940 — 72,000 pairs sold in hours. Also: International Day of Families.",weekend:"Frog Jumping Day (May 13) energy still going"},
-  "2026-05-18": {name:"No Dirty Dishes Day 🍽️",desc:"A day to either wash everything or use paper plates. No middle ground. Also: International Museum Day.",weekend:"National Nylon Day (May 15) and Armed Forces Day (May 16)"},
-  "2026-05-19": {name:"May Ray Day ☀️",desc:"A day created to celebrate sunshine and the coming of summer. You're almost there.",weekend:null},
-  "2026-05-20": {name:"🎉 LAST DAY OF SCHOOL 🎉",desc:"You made it. That's it. That's the holiday.",weekend:null},
+  "2026-03-23":{name:"National Puppy Day 🐶",desc:"A day dedicated to celebrating puppies and encouraging adoption.",weekend:null},
+  "2026-03-24":{name:"National Cheesesteak Day 🥩",desc:"The Philadelphia cheesesteak gets its own national holiday. The debate over whiz vs. provolone continues.",weekend:null},
+  "2026-03-25":{name:"International Waffle Day 🧇",desc:"Celebrated since the 1600s in Sweden. Also: Tolkien Reading Day.",weekend:null},
+  "2026-03-26":{name:"Make Up Your Own Holiday Day 🎉",desc:"Today is literally whatever you want it to be. Create your own holiday.",weekend:null},
+  "2026-03-27":{name:"International Scribble Day ✏️",desc:"A day that celebrates drawing, doodling, and scribbling. No artistic talent required.",weekend:"National Spinach Day (Mar 26) + Something on a Stick Day (Mar 28)"},
+  "2026-03-30":{name:"I Am in Control Day 💪",desc:"A day to remind yourself that you — not your circumstances — are in control of your choices. Very on-brand for this class.",weekend:"Smoke and Mirrors Day (Mar 29)"},
+  "2026-03-31":{name:"National Crayon Day 🖍️",desc:"Crayola has made over 100 billion crayons since 1903. The average child wears down 730 crayons by age 10.",weekend:null},
+  "2026-04-01":{name:"April Fools' Day 🃏",desc:"One of the oldest recorded holidays — dates back to the 1500s. No one actually knows how it started.",weekend:null},
+  "2026-04-02":{name:"National Peanut Butter and Jelly Day 🥜",desc:"The average American kid eats 1,500 PB&J sandwiches before graduating high school.",weekend:null},
+  "2026-04-06":{name:"National Burrito Day 🌯",desc:"The word 'burrito' means 'little donkey' in Spanish. Nobody knows exactly why.",weekend:"Easter Sunday (Apr 5) — chocolate for breakfast is socially acceptable exactly once a year"},
+  "2026-04-07":{name:"National Beer Day 🍺",desc:"Marks the day in 1933 when Americans could legally buy beer again after Prohibition. Also: No Housework Day.",weekend:null},
+  "2026-04-08":{name:"Draw a Picture of a Bird Day 🐦",desc:"Started in 1943 by a 7-year-old girl in memory of her uncle. The tradition spread worldwide from a single kid's idea.",weekend:null},
+  "2026-04-09":{name:"Name Yourself Day 🏷️",desc:"A day where you get to go by any name you want. Pick your alter ego. Also: National Unicorn Day.",weekend:null},
+  "2026-04-10":{name:"National Siblings Day 👫",desc:"A day to appreciate your siblings. Or argue with them. Statistically, probably both.",weekend:"Name Yourself Day (Apr 9) + National Unicorn Day (Apr 9)"},
+  "2026-04-13":{name:"Scrabble Day 🔡",desc:"Birthday of Alfred Mosher Butts, who invented Scrabble in 1938. He was rejected by every game company before self-publishing it.",weekend:null},
+  "2026-04-14":{name:"National Gardening Day 🌱",desc:"Plants actually communicate with each other through underground fungal networks. Trees warn neighboring trees about pests.",weekend:null},
+  "2026-04-15":{name:"Tax Day 💸",desc:"The day your future self will definitely care about. Understanding taxes = actual adulting. Also: World Art Day.",weekend:null},
+  "2026-04-16":{name:"National Stress Awareness Day 😤",desc:"Officially recognized since 1992. Stress literally shrinks your prefrontal cortex over time. Your Boss hates chronic stress.",weekend:null},
+  "2026-04-17":{name:"National Haiku Poetry Day 📜",desc:"Five syllables. Then seven. Then five again. Also: Blah Blah Blah Day — dedicated to actually following through.",weekend:null},
+  "2026-04-20":{name:"Look-Alike Day 👯",desc:"A day celebrating people who look like someone famous. Doppelgänger science is real — statistically everyone has one.",weekend:"Haiku Day (Apr 17) and Blah Blah Blah Day vibes"},
+  "2026-04-21":{name:"National Kindergarten Day 🎒",desc:"Celebrates the birthday of Friedrich Fröbel, who invented kindergarten in 1837. You've come a long way.",weekend:null},
+  "2026-04-22":{name:"Earth Day 🌍",desc:"Over 1 billion people in 193 countries participate. Started in 1970 after the devastation of a 1969 oil spill.",weekend:null},
+  "2026-04-23":{name:"World Book Day 📚",desc:"Shakespeare was born AND died on April 23 (different years). Also: Talk Like Shakespeare Day.",weekend:null},
+  "2026-04-24":{name:"National Pigs-in-a-Blanket Day 🌭",desc:"Tiny hot dogs wrapped in dough. A food so specific it has its own national holiday.",weekend:"Earth Day weekend cleanup events"},
+  "2026-04-27":{name:"Tell a Story Day 📖",desc:"One of the oldest human activities — storytelling predates writing by tens of thousands of years.",weekend:null},
+  "2026-04-28":{name:"National Superhero Day 🦸",desc:"Created by Marvel employees in 1995. The debate over best superhero is constitutionally protected.",weekend:null},
+  "2026-04-29":{name:"International Dance Day 💃",desc:"Established by UNESCO. Also: Zipper Day — the modern zipper was patented in 1913.",weekend:null},
+  "2026-04-30":{name:"National Honesty Day 🤥",desc:"Created to balance out April Fools' Day. The creator said truth deserved its own holiday too.",weekend:null},
+  "2026-05-01":{name:"May Day / International Workers' Day 🔨",desc:"Celebrated worldwide honoring workers' rights. Also: Save the Rhino Day and Batman Day.",weekend:null},
+  "2026-05-04":{name:"Star Wars Day 🚀",desc:"'May the Fourth be with you.' Also: Bird Day — birds are the closest living relatives to dinosaurs.",weekend:"May Day (May 1) + Batman Day (May 1)"},
+  "2026-05-05":{name:"Cinco de Mayo 🌮",desc:"Commemorates Mexico's victory over France in 1862. More widely celebrated in the U.S. than in Mexico itself.",weekend:null},
+  "2026-05-06":{name:"National Nurses Day 🏥",desc:"Honors Florence Nightingale's birthday. Also: No Diet Day.",weekend:null},
+  "2026-05-07":{name:"National Space Day 🌌",desc:"The first Friday in May. Celebrates space exploration. The nearest star (besides the sun) is 4.2 light years away.",weekend:null},
+  "2026-05-08":{name:"National Have a Coke Day 🥤",desc:"Coca-Cola was invented in 1886 by a pharmacist. It originally contained trace amounts of cocaine. History is wild.",weekend:"National Space Day (May 7)"},
+  "2026-05-11":{name:"Eat What You Want Day 🍔",desc:"Officially one day a year to eat whatever you want guilt-free.",weekend:"Mother's Day (May 10)"},
+  "2026-05-12":{name:"National Limerick Day 🎭",desc:"Celebrates the birthday of Edward Lear. There once was a student in class...",weekend:null},
+  "2026-05-13":{name:"Frog Jumping Day 🐸",desc:"Inspired by Mark Twain's 'The Celebrated Jumping Frog of Calaveras County.' Frog racing is a real sport.",weekend:null},
+  "2026-05-14":{name:"National Underground America Day 🕳️",desc:"Celebrating underground structures — caves, tunnels, bunkers. Humans have been building underground for 12,000 years.",weekend:null},
+  "2026-05-15":{name:"National Nylon Stockings Day 🧦",desc:"Nylon was first sold May 15, 1940 — 72,000 pairs sold in hours. Also: International Day of Families.",weekend:null},
+  "2026-05-18":{name:"No Dirty Dishes Day 🍽️",desc:"A day to either wash everything or use paper plates. No middle ground. Also: International Museum Day.",weekend:"Armed Forces Day (May 16)"},
+  "2026-05-19":{name:"May Ray Day ☀️",desc:"A day created to celebrate sunshine and the coming of summer. You're almost there.",weekend:null},
+  "2026-05-20":{name:"🎉 LAST DAY OF SCHOOL 🎉",desc:"You made it. That's it. That's the holiday.",weekend:null},
 };
 
-// ============================================================
-// GAME DECKS — 5 categories
-// ============================================================
-const gameDecks = {
-  puzzle: [
-    {q:'svg1',a:"27 total — 16 small triangles + 7 medium + 3 large + 1 whole = 27"},
-    {q:'svg2',a:"9 circles have a black dot inside them."},
-    {q:'svg3',a:"91 squares — 36 (1×1) + 25 (2×2) + 16 (3×3) + 9 (4×4) + 4 (5×5) + 1 (6×6) = 91"},
-    {q:'svg4',a:"Cup D fills first — trace the path from the bottle. All routes to A, B, C, and E are blocked. Only D is clear all the way through."},
-    {q:'svg5',a:"40 squares total — count every size: small squares inside, medium overlapping sets, and the large outer ones."},
-  ],
-  teaser: [
-    {q:"Which month has 28 days?",a:"All of them. Every month has at least 28 days."},
-    {q:"If you speak, you will break me. What am I?",a:"Silence."},
-    {q:"What actually gets wetter as it dries?",a:"A towel."},
-    {q:"A farmer had 10 sheep. All but six died. How many sheep did he have left?",a:"Six."},
-    {q:"This starts with 'P' and ends with 'E' but has thousands of letters. What is it?",a:"Post office."},
-    {q:"Everyone has this and cannot lose it. What is it?",a:"A shadow."},
-    {q:"What weighs more: a pound of feathers or a pound of bricks?",a:"Neither — they both weigh exactly one pound."},
-    {q:"A man rode into town on Thursday, stayed two days, and left on Wednesday. How is that possible?",a:"His horse's name is Thursday."},
-    {q:"What must you break before you use it?",a:"An egg."},
-    {q:"What has many keys but cannot open a single door?",a:"A piano."},
-    {q:"What travels around the whole world but stays in one spot?",a:"A stamp."},
-    {q:"What occurs once in a minute, twice in a moment, and not once in a thousand years?",a:"The letter M."},
-    {q:"What has one eye but cannot see?",a:"A needle."},
-    {q:"What has lots of words but never speaks?",a:"A book."},
-    {q:"I have cities but no houses, mountains but no trees, and water but no fish. What am I?",a:"A map."},
-    {q:"The more you take, the more you leave behind. What am I?",a:"Footsteps."},
-    {q:"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",a:"An echo."},
-    {q:"What has hands but can't clap?",a:"A clock."},
-    {q:"What goes up but never comes back down?",a:"Your age."},
-    {q:"I have a head and a tail, but no body. What am I?",a:"A coin."},
-    {q:"What can you catch but not throw?",a:"A cold."},
-    {q:"The more you have of it, the less you see. What is it?",a:"Darkness."},
-    {q:"What gets bigger the more you take away from it?",a:"A hole."},
-  ],
-  kickout: [
-    {q:"Which one doesn't belong?\n\nhead / ear / wrist / neck / foot / elbow / thigh / hip / nose / belt / finger / shoulder",a:"Belt — everything else is a body part. A belt is an accessory."},
-    {q:"Which one doesn't belong?\n\ndog / cat / cactus / frog / elephant / rhinoceros / bird / pig / horse / bear / deer / alligator",a:"Cactus — everything else is an animal. A cactus is a plant."},
-    {q:"Which one doesn't belong?\n\nbutter / milk / cheese / sour cream / ice cream / yogurt / buttermilk / water / condensed milk / custard / goat milk",a:"Water — everything else is a dairy product."},
-    {q:"Which one doesn't belong?\n\nworried / angry / sad / upset / surprised / walking / annoyed / excited / confused / happy / nervous / scared",a:"Walking — everything else is an emotion or feeling. Walking is an action."},
-    {q:"Which one doesn't belong?\n\norange / apple / mango / papaya / pear / pineapple / walnut / blueberry / grape / coconut / raspberry / banana",a:"Walnut — everything else is a fruit. A walnut is a nut."},
-    {q:"Which one doesn't belong?\n\nflea / fly / butterfly / mosquito / moth / beetle / cricket / ant / bee / aphid / earwig / spider",a:"Spider — everything else is an insect. A spider is an arachnid (8 legs, not 6)."},
-    {q:"Which one doesn't belong? (Kitchen or not?)\n\nPot / beaker / spatula / mixer / measuring spoons / popsicle stick / hand mixer",a:"Beaker — everything else is kitchen equipment. A beaker is a science lab tool."},
-    {q:"Which one doesn't belong? (All start with C?)\n\nCrown / cupcake / comb / crab / backpack",a:"Backpack — everything else starts with the letter C."},
-    {q:"Which one doesn't belong? (Things with wheels?)\n\nRoller skates / basketball / skateboard / bus / bicycle",a:"Basketball — everything else has wheels. A basketball does not."},
-    {q:"Which one doesn't belong? (Fictional creatures?)\n\nMonster / dog / unicorn / dragon",a:"Dog — everything else is a fictional/mythical creature. A dog is real."},
-    {q:"Which one doesn't belong? (Team sports?)\n\nBasketball hoop / soccer ball / tennis racket / baseball glove / football",a:"Tennis racket — everything else is equipment for a team sport. Tennis is typically an individual or doubles sport."},
-    {q:"Which one doesn't belong? (Prehistoric creatures?)\n\nPterodactyl / mammoth / lion / triceratops / T-rex",a:"Lion — everything else is extinct/prehistoric. Lions are alive today."},
-    {q:"Which one doesn't belong? (Camping gear?)\n\nTelephone / tent / lantern / campfire / compass",a:"Telephone — everything else is camping gear."},
-    {q:"Which one doesn't belong? (Beverages?)\n\nHot chocolate / coffee mug / tea / beaker / soda can",a:"Beaker — everything else is a beverage or a cup for drinking. A beaker is a lab container."},
-    {q:"Which one doesn't belong? (Beach items?)\n\nSandcastle / beach ball / kite / bunny / beach umbrella",a:"Bunny — everything else is something you'd see at the beach."},
-  ],
-  mystery: [
-    {q:"I'm a two-digit number. My ones digit is smaller than my tens digit and the product of my digits is 9. What number am I?",a:"91 — 9 × 1 = 9, and 9 > 1."},
-    {q:"I have two digits and my second digit is 3 more than my first digit. The sum of my digits is 7. What number am I?",a:"25 — 2 + 5 = 7, and 5 is 3 more than 2."},
-    {q:"I'm a three-digit number. The sum of my digits is 4, my last digit is 0, and my first digit is 1. What number am I?",a:"130 — 1 + 3 + 0 = 4."},
-    {q:"The sum of my two digits is 9 and the product of them is 20. My first digit is less than the second. What number am I?",a:"45 — 4 + 5 = 9, and 4 × 5 = 20."},
-    {q:"The sum of my three digits is 13. My first digit is 2 and my last digit is a multiple of 5. What number am I?",a:"265 — 2 + 6 + 5 = 13, and 5 is a multiple of 5."},
-    {q:"I have two digits both with the same number. If you add us together, you will get 16. What number am I?",a:"88 — 8 + 8 = 16."},
-    {q:"The product of my two digits is 9. My first digit is 8 more than my second digit. What number am I?",a:"91 — 9 × 1 = 9, and 9 is 8 more than 1."},
-    {q:"All three of my digits are the same. If you multiply us, you will get 27. What number am I?",a:"333 — 3 × 3 × 3 = 27."},
-    {q:"I am a two-digit number that is less than 16. I'm an even number and I'm more than 12. What number am I?",a:"14 — even, more than 12, less than 16."},
-    {q:"I only have two digits. If you add them, you'll get 3. The highest number is in the ones place. What number am I?",a:"12 — 1 + 2 = 3, and 2 > 1."},
-    {q:"I am a two-digit number and my tens digit is 2 more than my ones digit. I am between 25 and 80 and I'm a multiple of 5. What number am I?",a:"75 — 7 is 2 more than 5, and 75 is a multiple of 5."},
-    {q:"I am a number between 30 and 50. The sum of my digits is 10. I'm not 37. What number am I?",a:"46 — 4 + 6 = 10, between 30 and 50, not 37."},
-    {q:"I'm a three-digit number with all digits in counting order. If you add them together you get 12 and if you multiply them you get 60. What number am I?",a:"345 — 3 + 4 + 5 = 12, and 3 × 4 × 5 = 60."},
-    {q:"I am an odd number between 100 and 130. If you add my digits you will get 12 but if you multiply them you will get 18. What number am I?",a:"129 — 1 + 2 + 9 = 12, and 1 × 2 × 9 = 18."},
-    {q:"The product of my three digits is 8. All of my digits are exactly the same. What number am I?",a:"222 — 2 × 2 × 2 = 8."},
-  ],
-  fillin: [
-    {q:"Theresa really wanted to hang out with her friends, but her mom told her to ______ her homework first.",a:"finish"},
-    {q:"Anthony was just about to shoot the winning basket when he lost his footing and ______ down to the ground.",a:"fell"},
-    {q:"Tina lost her pencil so she turned to her friend and ______ to borrow one.",a:"asked"},
-    {q:"A full ______ is the phase of the moon when you can see the entire moon lit up in the sky.",a:"moon"},
-    {q:"Omar was thirsty after practice so he picked up his water ______ and took a nice long drink.",a:"bottle"},
-    {q:"There was a really long line at the restaurant, but others say it is worth the ______.",a:"wait"},
-    {q:"A major key to success is staying organized so ______ can know where all your materials are.",a:"you"},
-    {q:"In art, we are learning about well-known and ______ painters, including Vincent van Gogh and Pablo Picasso.",a:"famous"},
-    {q:"Rain was pouring down, so Amelia opened up her ________ to keep her dry as she walked.",a:"umbrella"},
-    {q:"It's important to always wear a ______ on your head when riding a bike to keep you safe.",a:"helmet"},
-    {q:"Swimming at the beach, Jason ran out of the water as soon as he saw a giant fin from a ______.",a:"shark"},
-    {q:"Tyson always hoped the teacher would forget to collect homework, but she ______ remembered.",a:"always"},
-    {q:"Amy wanted to raise her hand to talk in class, but she shouted ______ by mistake instead.",a:"out"},
-    {q:"Benson got in trouble when he folded a ______ airplane and threw it straight across the room.",a:"paper"},
-    {q:"Greg had extra time so he could meander _______ the park and explore a bit.",a:"through"},
-    {q:"The town wanted to abolish the rule since no one ______ to follow it anyway.",a:"wanted"},
-    {q:"When you ______ an essay or letter, you should always have proper grammar and spelling.",a:"write"},
-    {q:"Mrs. Sims would have found her keys if they were visible, but they were hidden ______ the desk.",a:"under"},
-    {q:"Jack couldn't get in his door when he had left his ______ in his locker.",a:"keys"},
-    {q:"I thought it would be an ordinary day, but it ended up being the weirdest ______ in a long time.",a:"day"},
-  ],
-};
-
-let currentGameTab = 'puzzle';
-let currentGameIdx = 0;
-
-function setGameTab(tab) {
-  currentGameTab = tab;
-  currentGameIdx = 0;
-  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  renderDeck();
-}
-
-// ============================================================
-// SVG PUZZLES
-// ============================================================
-const puzzleSVGs = {
-svg1: `<div style="text-align:center;margin-bottom:8px;font-size:13px;color:var(--text2);font-weight:600;">How many triangles do you see?</div>
-<svg viewBox="0 0 260 220" style="width:100%;max-width:260px;display:block;margin:0 auto;">
-  <polygon points="130,10 10,210 250,210" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="70" y1="110" x2="190" y2="110" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="40" y1="160" x2="220" y2="160" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="70" y1="110" x2="130" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="190" y1="110" x2="130" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="40" y1="160" x2="70" y2="110" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="220" y1="160" x2="190" y2="110" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="100" y1="60" x2="160" y2="60" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="100" y1="60" x2="70" y2="110" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="160" y1="60" x2="190" y2="110" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="130" y1="10" x2="130" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="100" y1="60" x2="130" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="160" y1="60" x2="130" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="55" y1="135" x2="205" y2="135" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="55" y1="135" x2="70" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="100" y1="160" x2="100" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="160" y1="160" x2="160" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="70" y1="160" x2="100" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="190" y1="160" x2="160" y2="110" stroke="#e8eaf0" stroke-width="1"/>
-  <line x1="130" y1="110" x2="130" y2="210" stroke="#e8eaf0" stroke-width="1"/>
-</svg>`,
-
-svg2: `<div style="text-align:center;margin-bottom:8px;font-size:13px;color:var(--text2);font-weight:600;">How many circles have a black dot in them?</div>
-<svg viewBox="0 0 260 220" style="width:100%;max-width:260px;display:block;margin:0 auto;">
-  <circle cx="80" cy="70" r="45" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="140" cy="55" r="40" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="185" cy="85" r="42" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="60" cy="130" r="40" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="115" cy="115" r="38" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="170" cy="140" r="42" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="200" cy="170" r="35" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="90" cy="175" r="38" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="140" cy="190" r="30" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
-  <circle cx="55" cy="75" r="1" fill="none"/>
-  <circle cx="100" cy="120" r="5" fill="#e8eaf0"/>
-  <circle cx="165" cy="95" r="5" fill="#e8eaf0"/>
-  <circle cx="75" cy="145" r="5" fill="#e8eaf0"/>
-  <circle cx="140" cy="60" r="5" fill="#e8eaf0"/>
-  <circle cx="185" cy="160" r="5" fill="#e8eaf0"/>
-  <circle cx="110" cy="175" r="5" fill="#e8eaf0"/>
-  <circle cx="58" cy="128" r="5" fill="#e8eaf0"/>
-  <circle cx="200" cy="175" r="5" fill="#e8eaf0"/>
-  <circle cx="145" cy="185" r="5" fill="#e8eaf0"/>
-</svg>`,
-
-svg3: `<div style="text-align:center;margin-bottom:8px;font-size:13px;color:var(--text2);font-weight:600;">How many squares do you see?</div>
-<svg viewBox="0 0 220 220" style="width:100%;max-width:220px;display:block;margin:0 auto;">
-  <rect x="10" y="10" width="200" height="200" fill="none" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="50" y1="10" x2="50" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="90" y1="10" x2="90" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="130" y1="10" x2="130" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="170" y1="10" x2="170" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="10" y1="50" x2="210" y2="50" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="10" y1="90" x2="210" y2="90" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="10" y1="130" x2="210" y2="130" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="10" y1="170" x2="210" y2="170" stroke="#e8eaf0" stroke-width="1.5"/>
-</svg>`,
-
-svg4: `<div style="text-align:center;margin-bottom:8px;font-size:13px;color:var(--text2);font-weight:600;">Which cup will fill first?</div>
-<svg viewBox="0 0 300 220" style="width:100%;max-width:300px;display:block;margin:0 auto;">
-  <rect x="130" y="5" width="30" height="20" rx="4" fill="#5588cc" opacity="0.7"/>
-  <text x="145" y="18" text-anchor="middle" font-size="9" fill="#e8eaf0">water</text>
-  <line x1="145" y1="25" x2="145" y2="55" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="145" y1="55" x2="100" y2="55" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="145" y1="55" x2="200" y2="55" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="100" y1="55" x2="100" y2="85" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="200" y1="55" x2="200" y2="75" stroke="#e8eaf0" stroke-width="2"/>
-  <rect x="88" y="60" width="12" height="4" fill="#1a1f2e"/>
-  <line x1="100" y1="85" x2="60" y2="85" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="100" y1="85" x2="155" y2="85" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="200" y1="75" x2="245" y2="75" stroke="#e8eaf0" stroke-width="2"/>
-  <rect x="198" y="55" width="4" height="12" fill="#1a1f2e"/>
-  <line x1="60" y1="85" x2="60" y2="120" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="155" y1="85" x2="155" y2="115" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="245" y1="75" x2="245" y2="115" stroke="#e8eaf0" stroke-width="2"/>
-  <rect x="48" y="90" width="12" height="4" fill="#1a1f2e"/>
-  <line x1="60" y1="120" x2="35" y2="120" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="155" y1="115" x2="120" y2="115" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="155" y1="115" x2="185" y2="115" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="245" y1="115" x2="245" y2="115" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="35" y1="120" x2="35" y2="150" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="120" y1="115" x2="120" y2="150" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="185" y1="115" x2="185" y2="150" stroke="#e8eaf0" stroke-width="2"/>
-  <rect x="143" y="90" width="12" height="4" fill="#1a1f2e"/>
-  <polygon points="25,150 45,150 42,175 28,175" fill="none" stroke="#8a91a8" stroke-width="1.5"/>
-  <polygon points="110,150 130,150 127,175 113,175" fill="none" stroke="#8a91a8" stroke-width="1.5"/>
-  <polygon points="175,150 195,150 192,175 178,175" fill="none" stroke="#00e5a0" stroke-width="2"/>
-  <polygon points="235,150 255,150 252,175 238,175" fill="none" stroke="#8a91a8" stroke-width="1.5"/>
-  <text x="35" y="188" text-anchor="middle" font-size="10" fill="#8a91a8">A</text>
-  <text x="120" y="188" text-anchor="middle" font-size="10" fill="#8a91a8">B</text>
-  <text x="185" y="188" text-anchor="middle" font-size="10" fill="#00e5a0" font-weight="bold">C</text>
-  <text x="245" y="188" text-anchor="middle" font-size="10" fill="#8a91a8">D</text>
-</svg>`,
-
-svg5: `<div style="text-align:center;margin-bottom:8px;font-size:13px;color:var(--text2);font-weight:600;">How many squares do you see? (harder!)</div>
-<svg viewBox="0 0 220 220" style="width:100%;max-width:220px;display:block;margin:0 auto;">
-  <rect x="10" y="10" width="200" height="200" fill="none" stroke="#e8eaf0" stroke-width="2"/>
-  <line x1="77" y1="10" x2="77" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="143" y1="10" x2="143" y2="210" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="10" y1="77" x2="210" y2="77" stroke="#e8eaf0" stroke-width="1.5"/>
-  <line x1="10" y1="143" x2="210" y2="143" stroke="#e8eaf0" stroke-width="1.5"/>
-  <rect x="44" y="44" width="66" height="66" fill="none" stroke="#7b5cff" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <rect x="110" y="110" width="66" height="66" fill="none" stroke="#7b5cff" stroke-width="1.5" stroke-dasharray="4,3"/>
-</svg>`,
-};
-
-function renderDeck() {
-  const deck = gameDecks[currentGameTab];
-  const item = deck[currentGameIdx];
-  const qEl = document.getElementById('deck-q');
-  if(currentGameTab === 'puzzle' && item.q.startsWith('svg')) {
-    qEl.innerHTML = puzzleSVGs[item.q];
-  } else {
-    qEl.textContent = item.q;
-  }
-  const ans = document.getElementById('deck-answer');
-  ans.textContent = item.a;
-  ans.classList.remove('show');
-  document.getElementById('deck-counter').textContent = (currentGameIdx+1) + ' / ' + deck.length;
-}
-
-function revealDeckAnswer() {
-  document.getElementById('deck-answer').classList.add('show');
-}
-
-function nextDeck() {
-  const deck = gameDecks[currentGameTab];
-  currentGameIdx = (currentGameIdx + 1) % deck.length;
-  renderDeck();
-}
-
-function prevDeck() {
-  const deck = gameDecks[currentGameTab];
-  currentGameIdx = (currentGameIdx - 1 + deck.length) % deck.length;
-  renderDeck();
-}
-
-// ============================================================
-// STATE
-// ============================================================
-let quoteIdx = 0;
-let factIdx = 0;
-let teaserIdx = 0;
+// ── STATE ─────────────────────────────────────────────────────
+let quoteIdx = 0, factIdx = 0, wyrIdx = 0;
+let currentTab = 'teaser', currentIdx = 0;
 let discussionVisible = false;
-const skillColors = ['purple','cyan','orange','green','purple','cyan'];
+const skillColors = ['st-purple','st-cyan','st-orange','st-green'];
 
-// ============================================================
-// QUOTE
-// ============================================================
-function renderQuote(){
+const tabData = {
+  teaser: teaserData,
+  kickout: kickoutData,
+  mystery: mysteryData,
+  logic: logicData,
+  pattern: patternData,
+};
+
+// ── QUOTE ──────────────────────────────────────────────────────
+function renderQuote() {
   const q = quotes[quoteIdx];
   document.getElementById('quote-text').textContent = '"' + q.text + '"';
-  document.getElementById('quote-num').textContent = '#'+(quoteIdx+1)+' / '+quotes.length;
+  document.getElementById('quote-num').textContent = '#' + (quoteIdx+1) + ' / ' + quotes.length;
   const el = document.getElementById('quote-skills');
-  el.innerHTML='';
-  q.skills.forEach((s,i)=>{
-    const t=document.createElement('span');
-    t.className='skill-tag '+skillColors[i%skillColors.length];
-    t.textContent=s; el.appendChild(t);
+  el.innerHTML = '';
+  q.skills.forEach((s,i) => {
+    const t = document.createElement('span');
+    t.className = 'skill-tag ' + skillColors[i % skillColors.length];
+    t.textContent = s; el.appendChild(t);
   });
   document.getElementById('discussion-box').classList.remove('visible');
-  discussionVisible=false;
+  discussionVisible = false;
 }
-function nextQuote(){ quoteIdx=(quoteIdx+1)%quotes.length; renderQuote(); }
-function prevQuote(){ quoteIdx=(quoteIdx-1+quotes.length)%quotes.length; renderQuote(); }
-function toggleDiscussion(){
-  discussionVisible=!discussionVisible;
-  const box=document.getElementById('discussion-box');
-  if(discussionVisible){
-    box.innerHTML=quotes[quoteIdx].disc.map(d=>`<p>${d}</p>`).join('');
+function nextQuote() { quoteIdx = (quoteIdx+1) % quotes.length; renderQuote(); }
+function prevQuote() { quoteIdx = (quoteIdx-1+quotes.length) % quotes.length; renderQuote(); }
+function toggleDiscussion() {
+  discussionVisible = !discussionVisible;
+  const box = document.getElementById('discussion-box');
+  if (discussionVisible) {
+    box.innerHTML = quotes[quoteIdx].disc.map(d => `<p>${d}</p>`).join('');
     box.classList.add('visible');
   } else { box.classList.remove('visible'); }
 }
 
-// ============================================================
-// BRAIN FACTS
-// ============================================================
-function renderFact(){
-  const f=brainFacts[factIdx];
-  document.getElementById('brain-tag').textContent=f.tag;
-  document.getElementById('brain-text').textContent=f.text;
+// ── BRAIN FACTS ────────────────────────────────────────────────
+function renderFact() {
+  const f = brainFacts[factIdx];
+  document.getElementById('brain-tag').textContent = f.tag;
+  document.getElementById('brain-text').textContent = f.text;
 }
-function nextFact(){ factIdx=(factIdx+1)%brainFacts.length; renderFact(); }
-function prevFact(){ factIdx=(factIdx-1+brainFacts.length)%brainFacts.length; renderFact(); }
+function nextFact() { factIdx = (factIdx+1) % brainFacts.length; renderFact(); }
+function prevFact() { factIdx = (factIdx-1+brainFacts.length) % brainFacts.length; renderFact(); }
 
-// ============================================================
-// TEASER
-// ============================================================
-function renderTeaser(){
-  const t=teasers[teaserIdx];
-  document.getElementById('teaser-q').textContent=t.q;
-  const a=document.getElementById('teaser-a');
-  a.textContent='Think first...'; a.classList.remove('revealed');
+// ── WOULD YOU RATHER ────────────────────────────────────────────
+function renderWyr() {
+  const w = wyrData[wyrIdx];
+  document.getElementById('wyr-q').textContent = w.q;
+  document.getElementById('wyr-a').textContent = 'A: ' + w.a;
+  document.getElementById('wyr-b').textContent = 'B: ' + w.b;
+  document.getElementById('wyr-a').className = 'wyr-opt';
+  document.getElementById('wyr-b').className = 'wyr-opt';
 }
-function revealAnswer(){
-  const a=document.getElementById('teaser-a');
-  a.textContent=teasers[teaserIdx].a; a.classList.add('revealed');
+function selectWyr(side) {
+  document.getElementById('wyr-a').className = 'wyr-opt' + (side==='a' ? ' selected-a' : '');
+  document.getElementById('wyr-b').className = 'wyr-opt' + (side==='b' ? ' selected-b' : '');
 }
-function nextTeaser(){ teaserIdx=(teaserIdx+1)%teasers.length; renderTeaser(); }
+function nextWyr() { wyrIdx = (wyrIdx+1) % wyrData.length; renderWyr(); }
+function prevWyr() { wyrIdx = (wyrIdx-1+wyrData.length) % wyrData.length; renderWyr(); }
 
-// ============================================================
-// HOLIDAY
-// ============================================================
-function renderHoliday(){
-  const today=new Date();
-  const key=today.toISOString().split('T')[0];
-  const h=holidays[key];
-  if(h){
-    document.getElementById('holiday-name').textContent=h.name;
-    document.getElementById('holiday-desc').textContent=h.desc;
-    const wknd=document.getElementById('holiday-weekend');
-    if(h.weekend){
-      document.getElementById('holiday-weekend-name').textContent=h.weekend;
-      wknd.style.display='block';
-    } else { wknd.style.display='none'; }
+// ── HOLIDAY ────────────────────────────────────────────────────
+function renderHoliday() {
+  const key = new Date().toISOString().split('T')[0];
+  const h = holidays[key];
+  if (h) {
+    document.getElementById('holiday-name').textContent = h.name;
+    document.getElementById('holiday-desc').textContent = h.desc;
+    const wknd = document.getElementById('holiday-weekend');
+    if (h.weekend) {
+      document.getElementById('holiday-weekend-name').textContent = h.weekend;
+      wknd.style.display = 'block';
+    } else { wknd.style.display = 'none'; }
   } else {
-    document.getElementById('holiday-name').textContent='No weird holiday today!';
-    document.getElementById('holiday-desc').textContent='Even the holiday calendar takes a day off sometimes.';
+    document.getElementById('holiday-name').textContent = 'No weird holiday today!';
+    document.getElementById('holiday-desc').textContent = 'Even the holiday calendar takes a day off.';
   }
 }
 
-// ============================================================
-// COUNTDOWN
-// ============================================================
-function renderCountdown(){
-  const lastDay=new Date('2026-05-20');
-  const today=new Date();
-  today.setHours(0,0,0,0);
-  // Count school days (Mon-Fri, minus Apr 3)
-  let count=0;
-  const d=new Date(today);
-  const skip='2026-04-03';
-  while(d<=lastDay){
-    const dow=d.getDay();
-    const ds=d.toISOString().split('T')[0];
-    if(dow>=1&&dow<=5&&ds!==skip) count++;
+// ── COUNTDOWN ──────────────────────────────────────────────────
+function renderCountdown() {
+  const lastDay = new Date('2026-05-20');
+  const today = new Date(); today.setHours(0,0,0,0);
+  let count = 0;
+  const d = new Date(today);
+  while (d <= lastDay) {
+    const dow = d.getDay();
+    const ds = d.toISOString().split('T')[0];
+    if (dow >= 1 && dow <= 5 && ds !== '2026-04-03') count++;
     d.setDate(d.getDate()+1);
   }
-  document.getElementById('countdown-num').textContent=count>0?count:'🎉';
-  // Progress bar: total school days was approx 40
-  const totalDays=42;
-  const pct=Math.min(100,Math.round(((totalDays-count)/totalDays)*100));
-  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('countdown-num').textContent = count > 0 ? count : '🎉';
+  const pct = Math.min(100, Math.round(((42-count)/42)*100));
+  document.getElementById('progress-fill').style.width = pct + '%';
 }
 
-// ============================================================
-// CLOCK
-// ============================================================
-function updateClock(){
-  const now=new Date();
-  const h=String(now.getHours()).padStart(2,'0');
-  const m=String(now.getMinutes()).padStart(2,'0');
-  const s=String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('live-clock').textContent=h+':'+m+':'+s;
-  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('live-date').textContent=days[now.getDay()]+' '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+// ── CLOCK ──────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('live-clock').textContent = h+':'+m+':'+s;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('live-date').textContent = days[now.getDay()]+' '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
 }
 
+// ── GAME DECK ──────────────────────────────────────────────────
+function setTab(tab, el) {
+  currentTab = tab; currentIdx = 0;
+  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderDeck();
+}
 
+function renderDeck() {
+  const data = tabData[currentTab];
+  const item = data[currentIdx];
+  const qEl = document.getElementById('deck-q');
+  const aEl = document.getElementById('deck-answer');
+  aEl.classList.remove('show');
 
-// ============================================================
-// SET DAY-BASED DEFAULTS
-// ============================================================
-const today=new Date();
-const dayOfYear=Math.floor((today-new Date(today.getFullYear(),0,0))/86400000);
-quoteIdx=(dayOfYear-1)%quotes.length;
-factIdx=(dayOfYear-1)%brainFacts.length;
-teaserIdx=(dayOfYear-1)%teasers.length;
+  if (currentTab === 'logic') {
+    renderLogicGrid(item, qEl);
+    aEl.textContent = item.a;
+  } else {
+    qEl.textContent = item.q;
+    aEl.textContent = item.a;
+  }
+  document.getElementById('deck-counter').textContent = (currentIdx+1) + ' / ' + data.length;
+}
 
-// ============================================================
-// INIT
-// ============================================================
-renderQuote();
-renderFact();
-renderTeaser();
-renderHoliday();
-renderCountdown();
-renderDeck();
-updateClock();
-setInterval(updateClock,1000);
+function renderLogicGrid(item, container) {
+  let html = `<div style="font-size:13px;line-height:1.6;color:var(--text);margin-bottom:10px;white-space:pre-line;">${item.q}</div>`;
+  html += `<table class="logic-grid-table"><thead><tr><th></th>`;
+  item.things.forEach(t => { html += `<th>${t}</th>`; });
+  html += `</tr></thead><tbody>`;
+  item.people.forEach((p,pi) => {
+    html += `<tr><td style="font-weight:600;color:var(--text);text-align:left;padding-left:8px;">${p}</td>`;
+    item.things.forEach((_,ti) => {
+      html += `<td onclick="toggleCell(this,${pi},${ti})" data-pi="${pi}" data-ti="${ti}">—</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+function toggleCell(cell) {
+  if (cell.textContent === '—') { cell.textContent = '✓'; cell.className = 'yes'; }
+  else if (cell.textContent === '✓') { cell.textContent = '✗'; cell.className = 'no'; }
+  else { cell.textContent = '—'; cell.className = ''; }
+}
+
+function revealDeck() { document.getElementById('deck-answer').classList.add('show'); }
+function nextDeck() { const d = tabData[currentTab]; currentIdx = (currentIdx+1)%d.length; renderDeck(); }
+function prevDeck() { const d = tabData[currentTab]; currentIdx = (currentIdx-1+d.length)%d.length; renderDeck(); }
+
+// ── INIT ───────────────────────────────────────────────────────
+const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000);
+quoteIdx = (dayOfYear-1) % quotes.length;
+factIdx  = (dayOfYear-1) % brainFacts.length;
+wyrIdx   = (dayOfYear-1) % wyrData.length;
+
+renderQuote(); renderFact(); renderWyr();
+renderHoliday(); renderCountdown(); renderDeck();
+updateClock(); setInterval(updateClock, 1000);
 </script>
 </body>
 </html>

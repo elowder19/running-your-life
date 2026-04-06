@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stuff Nobody Told You About Congress — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #5a9fd4;
+    --accent-dark: #2d6fa0;
+    --accent-dim: #e8f2fb;
+    --accent-mid: #a8cff0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(26px, 5.5vw, 40px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(45,111,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(16px, 3vw, 20px); font-weight: 800; line-height: 1.5; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+
+  .claim-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 22px 20px; margin-bottom: 20px; }
+  .claim-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; }
+  .claim-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.45; }
+
+  .pick-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+  .vote-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .vote-btn { flex: 1; padding: 16px 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .vote-btn.true-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.false-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.show-true { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.show-false { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.faded { opacity: 0.3; }
+  .vote-btn:disabled { cursor: default; }
+
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  .verdict-banner { border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; }
+  .verdict-banner.true { background: var(--green-dim); border: 1.5px solid var(--green-mid); }
+  .verdict-banner.false { background: var(--red-dim); border: 1.5px solid var(--red-mid); }
+  .verdict-banner.partial { background: var(--amber-dim); border: 1.5px solid var(--amber-mid); }
+  .verdict-label { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+  .verdict-label.true { color: var(--green); }
+  .verdict-label.false { color: var(--red); }
+  .verdict-label.partial { color: var(--amber); }
+  .verdict-sub { font-size: 13px; font-weight: 600; color: var(--text2); }
+
+  .context-box { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .sources-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .source-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--accent-dark); text-decoration: none; background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 5px 12px; border-radius: 20px; transition: all 0.12s; }
+  .source-link:hover { background: var(--accent-mid); }
+
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; display: block; }
+  .btn-next:hover { opacity: 0.85; }
+
+  .score-wrap { display: none; text-align: center; padding: 32px 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 12px var(--shadow); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 15px; color: var(--text3); margin-top: 6px; margin-bottom: 16px; }
+  .score-comment { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.6; }
+  .btn-restart { padding: 10px 24px; border-radius: 10px; border: 2px solid var(--accent-dark); background: transparent; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🗳️ Informed Voter</div>
+  <h1 class="lesson-title">Stuff nobody told you <span>about Congress</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">The system is not broken. It is working exactly as it was designed — just not necessarily for you.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">Most people think they understand how Congress works because they watched School House Rock or took a civics class. But there is a whole layer of how it actually operates that nobody teaches in school — the money, the incentives, the rules, and the revolving door. None of this requires you to be angry at one party. It requires you to understand the machine you are living inside of.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-label">True or false — then see how it actually works</div>
+
+    <div class="round-counter">
+      <div class="round-num" id="round-label">Round 1 of 10</div>
+      <div class="round-dots" id="round-dots"></div>
+    </div>
+
+    <div id="game-area">
+      <div class="claim-card">
+        <div class="claim-tag">Claim</div>
+        <div class="claim-text" id="claim-text"></div>
+      </div>
+      <div class="pick-label">True or false?</div>
+      <div class="vote-btns">
+        <button class="vote-btn true-btn" onclick="vote('true', this)">✓ True</button>
+        <button class="vote-btn false-btn" onclick="vote('false', this)">✗ False</button>
+      </div>
+      <div class="reveal-box" id="reveal-box">
+        <div class="verdict-banner" id="verdict-banner">
+          <div class="verdict-label" id="verdict-label"></div>
+          <div class="verdict-sub" id="verdict-sub"></div>
+        </div>
+        <div class="context-box" id="context-box"></div>
+        <div class="sources-wrap" id="sources-wrap"></div>
+        <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+      </div>
+    </div>
+
+    <div class="score-wrap" id="score-wrap">
+      <div class="score-big" id="score-num"></div>
+      <div class="score-label">correct out of 10</div>
+      <div class="score-comment" id="score-comment"></div>
+      <button class="btn-restart" onclick="restartGame()">← Run it again</button>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">Pick the one item from this lesson that surprised you most. Now ask: does knowing this change anything about how you think about politics? Understanding the machine is the first step toward deciding what you want to do about it.</div>
+  </div>
+</div>
+
+<script>
+const rounds = [
+  {
+    claim: "Lobbyists are banned from giving money directly to members of Congress.",
+    correct: 'true',
+    verdictType: 'partial',
+    verdictLabel: 'True — but the workarounds are massive.',
+    verdictSub: '$4.4 billion was spent on federal lobbying in 2024 alone.',
+    context: "Lobbyists cannot hand cash directly to a member of Congress. But they can host fundraisers, bundle donations from their clients, and contribute to PACs that support members. In 2024, corporations, unions and interest groups spent a record $4.4 billion lobbying the federal government — all of it legal. The pharmaceutical industry alone has spent over $6.1 billion on federal lobbying since 1999. The money does not go directly to members, but it shapes access, relationships, and whose phone calls get returned.",
+    sources: [
+      { label: 'OpenSecrets — Federal Lobbying 2024', url: 'https://www.opensecrets.org/news/2025/02/federal-lobbying-set-new-record-in-2024/' },
+    ]
+  },
+  {
+    claim: "Members of Congress are expected to spend about 4 hours per day making fundraising phone calls — more time than they spend on legislation.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — confirmed by members of both parties on the record.',
+    verdictSub: 'The whole congressional schedule is organized around fundraising.',
+    context: "A leaked DCCC presentation showed members were expected to spend 4 hours per day on fundraising call time and only 2 hours combined on committee work and floor legislation. Both parties maintain call centers just blocks from the Capitol — members cannot legally make fundraising calls from their congressional offices, so they walk over. Rep. David Jolly (R-FL) and Rep. Steve Israel (D-NY) both confirmed this publicly on 60 Minutes. Israel said he spent over 4,000 hours on the phone soliciting donations during his time in Congress.",
+    sources: [
+      { label: 'CBS News 60 Minutes', url: 'https://www.cbsnews.com/news/60-minutes-are-members-of-congress-becoming-telemarketers/' },
+      { label: 'Issue One — Fundraising Treadmill', url: 'https://issueone.org/articles/the-118th-congress-fundraising-treadmill/' },
+    ]
+  },
+  {
+    claim: "The average winning House campaign in 2022 cost about $100,000.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — it cost about $2.8 million.',
+    verdictSub: 'The average winning Senate campaign cost over $27 million.',
+    context: "The average winning House campaign in 2022 cost approximately $2.8 million. The average winning Senate campaign cost over $27 million. In the 2022 Georgia Senate runoff alone, combined spending topped $400 million — making it one of the most expensive Senate races in history. Total spending on Congressional races in 2024 reached $10.3 billion. The financial barrier to entering politics has more than doubled since 2008, which changes who is able to run.",
+    sources: [
+      { label: 'OpenSecrets — Cost of Election', url: 'https://www.opensecrets.org/elections-overview/cost-of-election' },
+      { label: 'Congress.net', url: 'https://congress.net/how-much-does-it-cost-to-run-for-congress-and-why-it-matters/' },
+    ]
+  },
+  {
+    claim: "It is legal for a lobbyist to write a bill and give it to a member of Congress to introduce.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — and it happens regularly.',
+    verdictSub: 'There is no law requiring bills to be written by elected officials.',
+    context: "There is no law preventing lobbyists or outside groups from drafting legislation. Members of Congress can introduce any bill they want, written by anyone. Industry groups and lobbyists regularly write model legislation and hand it to friendly lawmakers. This is not secret — it is a standard part of how Washington operates. Organizations like ALEC (American Legislative Exchange Council) have drafted hundreds of model bills that were later introduced in state legislatures almost word for word.",
+    sources: [
+      { label: 'OpenSecrets — Lobbying', url: 'https://www.opensecrets.org/federal-lobbying' },
+    ]
+  },
+  {
+    claim: "There are more registered lobbyists in Washington DC than there are members of Congress.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — about 20 lobbyists for every single member of Congress.',
+    verdictSub: 'And that only counts officially registered lobbyists.',
+    context: "As of 2024 there were approximately 11,000 registered lobbyists in Washington DC — roughly 20 for every one of the 535 members of Congress. Many more people do lobbying work without registering. The pharmaceutical industry alone employs more lobbyists than there are members of Congress. These are professional advocates whose full-time job is influencing legislation — and they have access, relationships, and resources that most constituents do not.",
+    sources: [
+      { label: 'OpenSecrets — Lobbying Data', url: 'https://www.opensecrets.org/federal-lobbying' },
+    ]
+  },
+  {
+    claim: "Members of Congress get their healthcare through the same marketplace that regular Americans use.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — since 2014, the ACA specifically required this.',
+    verdictSub: 'This is one of the most misunderstood facts about congressional benefits.',
+    context: "Before 2014, members of Congress had access to the Federal Employees Health Benefits program — one of the best insurance plans in the country. The Affordable Care Act specifically required members and their staff to get coverage through the ACA marketplace instead. They do receive a government contribution toward their premiums, similar to what an employer contributes for regular employees. Many people believe members of Congress have gold-plated healthcare that no one else can access — that has not been true since 2014.",
+    sources: [
+      { label: 'Congressional Research Service', url: 'https://www.congress.gov/crs-product/R43194' },
+    ]
+  },
+  {
+    claim: "After leaving Congress, former members can immediately go to work as lobbyists.",
+    correct: 'false',
+    verdictType: 'partial',
+    verdictLabel: 'False — but only barely. The waiting period is 1-2 years.',
+    verdictSub: 'After that, about half of departing members end up in lobbying work.',
+    context: "Former senators must wait 2 years before lobbying the Senate. Former House members must wait 1 year. After that waiting period they can legally lobby their former colleagues — using the relationships, knowledge, and access they built as elected officials. About 50% of former members who enter the private sector after Congress go into lobbying or lobbying-adjacent work. This pattern is called the revolving door and it exists across both parties. It is one of the most bipartisan criticisms of Washington.",
+    sources: [
+      { label: 'OpenSecrets — Revolving Door', url: 'https://www.opensecrets.org/revolving-door' },
+    ]
+  },
+  {
+    claim: "The filibuster works by a senator standing and talking for hours to delay a vote.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — that is the old version. The modern filibuster requires almost nothing.',
+    verdictSub: 'Now senators just signal they will filibuster and the Senate moves on.',
+    context: "The talking filibuster — where a senator had to physically stand and speak continuously — was real but is almost never used today. Strom Thurmond once spoke for 24 hours and 18 minutes against the Civil Rights Act in 1957. The modern filibuster requires only that 41 senators signal they will block debate. No one has to speak. No one has to stand. The bill just does not move. This means any legislation effectively needs 60 votes to even be debated — not 51 to pass — which is why so many bills with majority support never get a vote.",
+    sources: [
+      { label: 'U.S. Senate — Filibuster History', url: 'https://www.senate.gov/about/powers-procedures/filibusters-cloture.htm' },
+    ]
+  },
+  {
+    claim: "Congressional committee assignments are partly based on how much money a member raises for their party.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — confirmed by internal party documents and multiple members on record.',
+    verdictSub: 'Better committees go to better fundraisers.',
+    context: "Both parties set fundraising quotas for members — amounts they are expected to raise not just for their own campaigns but to contribute to the party. How much a member raises directly affects which committees they get assigned to, whether they can become a committee chair, and how much support they get from leadership. The House Freedom Caucus confirmed in writing that every committee assignment comes with a specific fundraising quota attached. This creates a system where access to power within Congress is tied to how much money you bring in.",
+    sources: [
+      { label: 'Issue One — Fundraising Treadmill', url: 'https://issueone.org/articles/the-118th-congress-fundraising-treadmill/' },
+      { label: 'Yale — Congressional Fundraising Research', url: 'https://isps.yale.edu/sites/default/files/publication/2025/02/brandice_canes-wrone_working_paper_12.5.24.web_.pdf' },
+    ]
+  },
+  {
+    claim: "Congressional district lines stay exactly the same between every census.",
+    correct: 'false',
+    verdictType: 'partial',
+    verdictLabel: 'Mostly false — lines are meant to hold, but states have redrawn them mid-cycle.',
+    verdictSub: 'Redistricting is one of the most powerful tools in politics.',
+    context: "Congressional district lines are redrawn every 10 years after the census — in years ending in 0. They are typically supposed to stay until the next census. But several states have attempted mid-cycle redistricting to benefit whichever party is in power. Texas did it in 2003 under Tom DeLay. North Carolina and Georgia have attempted it more recently. Courts have sometimes struck these down, sometimes allowed them. The party that controls a state legislature controls the district lines — which affects which party has an advantage in every race in that state for the next decade.",
+    sources: [
+      { label: 'Brennan Center — Redistricting', url: 'https://www.brennancenter.org/issues/ensure-every-american-can-vote/redistricting' },
+    ]
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('claim-text').textContent = r.claim;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = false;
+    b.className = b.classList.contains('true-btn') ? 'vote-btn true-btn' : 'vote-btn false-btn';
+  });
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function vote(pick, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  const isCorrect = pick === r.correct;
+  if (isCorrect) score++;
+
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = true;
+    if (b.classList.contains('true-btn')) b.className = r.correct === 'true' ? 'vote-btn show-true' : 'vote-btn faded';
+    else b.className = r.correct === 'false' ? 'vote-btn show-false' : 'vote-btn faded';
+  });
+
+  const banner = document.getElementById('verdict-banner');
+  banner.className = 'verdict-banner ' + r.verdictType;
+  document.getElementById('verdict-label').className = 'verdict-label ' + r.verdictType;
+  document.getElementById('verdict-label').textContent = r.verdictLabel;
+  document.getElementById('verdict-sub').textContent = r.verdictSub;
+  document.getElementById('context-box').textContent = r.context;
+  document.getElementById('sources-wrap').innerHTML = r.sources.map(s =>
+    `<a class="source-link" href="${s.url}" target="_blank" rel="noopener">🔗 ${s.label}</a>`
+  ).join('');
+
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) { showScore(); return; }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showScore() {
+  document.getElementById('game-area').style.display = 'none';
+  const wrap = document.getElementById('score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/10';
+  let comment;
+  if (score >= 8) comment = "You already had a pretty accurate picture of how this works. Most people do not. That gap between what people know and what is actually happening is part of what keeps the system running the way it does.";
+  else if (score >= 5) comment = "You knew some of it. The parts that surprised you are usually the parts no one talks about — which is exactly how they stay in place.";
+  else comment = "Most of this was new. That is not a personal failing — this is information that is not taught in schools and not covered much in news that is designed to hold your attention for 30 seconds. Now you know.";
+  document.getElementById('score-comment').textContent = comment;
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function restartGame() {
+  current = 0; score = 0; voted = false;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('score-wrap').style.display = 'none';
+  buildDots();
+  renderRound();
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

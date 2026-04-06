@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Vote Actually Matters — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #5a9fd4;
+    --accent-dark: #2d6fa0;
+    --accent-dim: #e8f2fb;
+    --accent-mid: #a8cff0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(26px, 5.5vw, 40px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(45,111,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(16px, 3vw, 20px); font-weight: 800; line-height: 1.5; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .section-title { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+  .section-sub { font-size: 14px; color: var(--text2); margin-bottom: 20px; line-height: 1.65; }
+
+  /* PART TABS */
+  .part-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+  .part-tab { flex: 1; min-width: 80px; padding: 9px 6px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); text-align: center; cursor: pointer; transition: all 0.15s; line-height: 1.3; }
+  .part-tab.active { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .part-tab.done { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+  /* CLOSE ELECTIONS */
+  .election-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .election-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.15s; }
+  .election-card:hover { border-color: var(--accent); }
+  .election-card.revealed { border-color: var(--accent-dark); }
+  .election-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+  .election-year { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: var(--accent-dark); min-width: 50px; }
+  .election-title { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+  .election-arrow { font-size: 14px; color: var(--text3); transition: transform 0.2s; }
+  .election-card.revealed .election-arrow { transform: rotate(90deg); }
+  .election-body { display: none; padding: 0 16px 16px; }
+  .election-card.revealed .election-body { display: block; animation: fadeUp 0.2s ease both; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+  .election-margin { font-family: 'Nunito', sans-serif; font-size: 36px; font-weight: 900; color: var(--accent-dark); line-height: 1; margin-bottom: 6px; }
+  .election-detail { font-size: 14px; color: var(--text2); line-height: 1.7; }
+  .election-impact { font-size: 13px; font-weight: 600; color: var(--accent-dark); background: var(--accent-dim); border-radius: 8px; padding: 8px 12px; margin-top: 8px; border-left: 3px solid var(--accent); line-height: 1.6; }
+
+  /* LOCAL OFFICES */
+  .local-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .local-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; cursor: pointer; transition: all 0.15s; }
+  .local-card:hover { border-color: var(--accent); }
+  .local-card.revealed { border-color: var(--accent-dark); background: var(--accent-dim); }
+  .local-icon { font-size: 24px; margin-bottom: 6px; }
+  .local-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .local-teaser { font-size: 12px; color: var(--text3); }
+  .local-reveal { display: none; margin-top: 8px; font-size: 13px; color: var(--text2); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 8px; }
+  .local-card.revealed .local-reveal { display: block; }
+  .local-card.revealed .local-name { color: var(--accent-dark); }
+  .local-prompt { font-size: 14px; color: var(--text2); margin-bottom: 14px; line-height: 1.65; }
+
+  /* TURNOUT */
+  .turnout-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .turnout-box { border-radius: 12px; padding: 18px 16px; text-align: center; border: 1.5px solid; }
+  .turnout-box.presidential { background: var(--green-dim); border-color: var(--green-mid); }
+  .turnout-box.midterm { background: var(--red-dim); border-color: var(--red-mid); }
+  .turnout-pct { font-family: 'Nunito', sans-serif; font-size: 52px; font-weight: 900; line-height: 1; }
+  .turnout-pct.presidential { color: var(--green); }
+  .turnout-pct.midterm { color: var(--red); }
+  .turnout-label { font-size: 13px; font-weight: 700; margin-top: 6px; }
+  .turnout-label.presidential { color: var(--green); }
+  .turnout-label.midterm { color: var(--red); }
+  .turnout-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .turnout-explain { font-size: 14px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+  .turnout-fact { font-size: 13px; font-weight: 600; background: var(--amber-dim); border: 1px solid var(--amber-mid); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; color: var(--text2); border-left: 3px solid var(--amber); line-height: 1.6; }
+  .btn-next-part { display: block; width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 8px; }
+
+  /* KANSAS HOW-TO */
+  .steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .step-item { display: flex; gap: 14px; align-items: flex-start; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .step-num { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 900; color: var(--accent-dark); min-width: 36px; line-height: 1; }
+  .step-content { flex: 1; }
+  .step-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .step-detail { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .step-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--accent-dark); text-decoration: none; background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 10px; border-radius: 20px; margin-top: 6px; }
+  .ks-facts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .ks-fact { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text2); line-height: 1.6; background: var(--bg); border-radius: 10px; padding: 12px 14px; border: 1px solid var(--border); }
+  .ks-fact-icon { font-size: 18px; flex-shrink: 0; }
+  .action-box { background: var(--accent-dark); color: #fff; border-radius: 14px; padding: 22px 20px; text-align: center; }
+  .action-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+  .action-text { font-size: 14px; opacity: 0.9; line-height: 1.7; margin-bottom: 16px; }
+  .action-link { display: inline-block; background: #fff; color: var(--accent-dark); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; padding: 12px 24px; border-radius: 10px; text-decoration: none; transition: opacity 0.15s; }
+  .action-link:hover { opacity: 0.9; }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🗳️ Informed Voter</div>
+  <h1 class="lesson-title">Your vote actually <span>matters (no really)</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">If voting did not matter, powerful people would not spend billions of dollars trying to make it harder.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">"My vote does not matter" is one of the most common things people say — and one of the most convenient beliefs for people in power. This lesson has four parts: how close elections actually get, what local officials actually control in your daily life, why midterms matter as much as presidential elections, and exactly how to vote in Kansas.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="part-tabs">
+      <div class="part-tab active" id="tab-1" onclick="showPart(1)">Part 1<br>How Close</div>
+      <div class="part-tab" id="tab-2" onclick="showPart(2)">Part 2<br>Local Offices</div>
+      <div class="part-tab" id="tab-3" onclick="showPart(3)">Part 3<br>Midterms</div>
+      <div class="part-tab" id="tab-4" onclick="showPart(4)">Part 4<br>How to Vote KS</div>
+    </div>
+
+    <!-- PART 1 -->
+    <div id="part-1">
+      <div class="section-title">How close elections actually get</div>
+      <div class="section-sub">Tap each one to see the margin. These are all verified real elections.</div>
+      <div class="election-cards">
+        <div class="election-card" onclick="this.classList.toggle('revealed')">
+          <div class="election-header">
+            <div class="election-year">2020</div>
+            <div class="election-title">U.S. Presidential Election — decided by three states</div>
+            <div class="election-arrow">▶</div>
+          </div>
+          <div class="election-body">
+            <div class="election-margin">42,918 votes</div>
+            <div class="election-detail">Joe Biden received over 7 million more popular votes than Donald Trump. But the election was decided by the Electoral College — specifically by three states: Georgia (11,779 votes), Arizona (10,457 votes), and Wisconsin (20,682 votes). Biden won the presidency by a combined margin of 42,918 votes across those three states — slightly more than the average attendance at a Dodgers game.</div>
+            <div class="election-impact">The presidency. Four years of policy, cabinet appointments, Supreme Court nominations, executive orders, and the direction of every federal agency.</div>
+          </div>
+        </div>
+        <div class="election-card" onclick="this.classList.toggle('revealed')">
+          <div class="election-header">
+            <div class="election-year">2000</div>
+            <div class="election-title">U.S. Presidential Election — Florida recount</div>
+            <div class="election-arrow">▶</div>
+          </div>
+          <div class="election-body">
+            <div class="election-margin">537 votes</div>
+            <div class="election-detail">George W. Bush won the state of Florida — and the presidency — by 537 votes out of nearly 6 million cast. The margin was 0.009% of the Florida vote. The election dragged on for 36 days of recounts and legal battles before the Supreme Court ended it. That 537-vote margin determined who became president of the United States.</div>
+            <div class="election-impact">The presidency — including the decision to invade Iraq, the response to 9/11, and two Supreme Court appointments.</div>
+          </div>
+        </div>
+        <div class="election-card" onclick="this.classList.toggle('revealed')">
+          <div class="election-header">
+            <div class="election-year">2008</div>
+            <div class="election-title">Minnesota U.S. Senate Race — Al Franken</div>
+            <div class="election-arrow">▶</div>
+          </div>
+          <div class="election-body">
+            <div class="election-margin">312 votes</div>
+            <div class="election-detail">Democrat Al Franken defeated Republican Norm Coleman by 312 votes out of nearly 2.9 million cast in Minnesota's Senate race. The margin was 0.01% of all votes cast. The race required multiple recounts and a legal battle lasting nearly 8 months. Franken's eventual win gave Democrats a 60-vote supermajority in the Senate — the number needed to break a filibuster.</div>
+            <div class="election-impact">That 60th Senate seat allowed Democrats to pass the Affordable Care Act — which extended health coverage to tens of millions of Americans.</div>
+          </div>
+        </div>
+        <div class="election-card" onclick="this.classList.toggle('revealed')">
+          <div class="election-header">
+            <div class="election-year">2017</div>
+            <div class="election-title">Virginia House of Delegates — tied, decided by drawing</div>
+            <div class="election-arrow">▶</div>
+          </div>
+          <div class="election-body">
+            <div class="election-margin">0 votes (tie)</div>
+            <div class="election-detail">A Virginia state House race ended in a perfect tie out of more than 23,000 votes cast. The tie was broken by literally drawing a name out of a bowl — a film canister with the Republican candidate's name was pulled. That single seat gave Republicans control of the entire state House by one seat — changing which party controlled Virginia's legislature.</div>
+            <div class="election-impact">One state legislative seat — decided by chance — determined party control of an entire state legislature and shaped two years of state policy.</div>
+          </div>
+        </div>
+        <div class="election-card" onclick="this.classList.toggle('revealed')">
+          <div class="election-header">
+            <div class="election-year">2016</div>
+            <div class="election-title">Vermont State Senate primary — decided by 1 vote</div>
+            <div class="election-arrow">▶</div>
+          </div>
+          <div class="election-body">
+            <div class="election-margin">1 vote</div>
+            <div class="election-detail">A Vermont state Senate Democratic primary was determined by a single vote out of more than 7,400 cast. One person's decision to show up — or not — was literally the margin. Local and state primaries like this happen constantly and almost no one votes in them, which means the few who do have enormous influence.</div>
+            <div class="election-impact">State senators control education funding, criminal justice law, tax policy, and hundreds of other decisions that affect daily life in ways most people do not realize.</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-next-part" onclick="showPart(2)">On to Part 2 →</button>
+    </div>
+
+    <!-- PART 2 -->
+    <div id="part-2" style="display:none;">
+      <div class="section-title">What local offices actually control</div>
+      <div class="local-prompt">Most people vote for president and ignore everything else. But the officials closest to you control the most immediate parts of your daily life. Tap each one to see what they actually do.</div>
+      <div class="local-grid">
+        <div class="local-card" onclick="this.classList.toggle('revealed')">
+          <div class="local-icon">🏫</div>
+          <div class="local-name">School Board</div>
+          <div class="local-teaser">Tap to see what they control</div>
+          <div class="local-reveal">Controls curriculum, school budgets, teacher pay, school safety policies, library books, and whether schools in your area are well-funded or not. School board elections often have turnout in the single digits — a small number of people make decisions for every student in the district.</div>
+        </div>
+        <div class="local-card" onclick="this.classList.toggle('revealed')">
+          <div class="local-icon">⚖️</div>
+          <div class="local-name">County Sheriff</div>
+          <div class="local-teaser">Tap to see what they control</div>
+          <div class="local-reveal">The sheriff is the chief law enforcement officer of a county. They decide how police interact with the community, what gets prioritized, how arrests are made, and how the county jail is run. In rural Kansas, the sheriff is often the most powerful law enforcement officer most people ever interact with.</div>
+        </div>
+        <div class="local-card" onclick="this.classList.toggle('revealed')">
+          <div class="local-icon">🏛️</div>
+          <div class="local-name">County Commissioner</div>
+          <div class="local-teaser">Tap to see what they control</div>
+          <div class="local-reveal">Controls county roads, property taxes, public health, local zoning and land use, the county budget, and local social services. In many rural Kansas counties, the county commission makes decisions that directly affect thousands of people — with almost no one paying attention.</div>
+        </div>
+        <div class="local-card" onclick="this.classList.toggle('revealed')">
+          <div class="local-icon">🏙️</div>
+          <div class="local-name">Mayor / City Council</div>
+          <div class="local-teaser">Tap to see what they control</div>
+          <div class="local-reveal">Controls local police department, city budget, roads and infrastructure, zoning (where businesses and housing can go), local parks and services, and how the city responds to emergencies. The mayor and city council make decisions that affect your neighborhood directly and immediately.</div>
+        </div>
+        <div class="local-card" onclick="this.classList.toggle('revealed')">
+          <div class="local-icon">👨‍⚖️</div>
+          <div class="local-name">Local Judges</div>
+          <div class="local-teaser">Tap to see what they control</div>
+          <div class="local-reveal">In Kansas, some judges face retention votes — you vote yes or no on whether to keep them. Local judges handle criminal cases, family court, civil disputes, and juvenile matters. The judge who presides over cases in your community is often elected — and almost no one knows anything about them when they vote.</div>
+        </div>
+        <div class="local-card" onclick="this.classList.toggle('revealed')">
+          <div class="local-icon">🏦</div>
+          <div class="local-name">State Legislature</div>
+          <div class="local-teaser">Tap to see what they control</div>
+          <div class="local-reveal">State legislators control state income tax rates, Medicaid funding, education funding, minimum wage, abortion law, gun laws, criminal sentencing, and redistricting — which determines how Congressional and state districts are drawn. State elections directly shape the laws you live under every day.</div>
+        </div>
+      </div>
+      <button class="btn-next-part" onclick="showPart(3)">On to Part 3 →</button>
+    </div>
+
+    <!-- PART 3 -->
+    <div id="part-3" style="display:none;">
+      <div class="section-title">Midterms matter as much as presidential elections</div>
+      <div class="section-sub">Most people show up for presidential elections and disappear for everything else. Here is why that is a problem.</div>
+      <div class="turnout-compare">
+        <div class="turnout-box presidential">
+          <div class="turnout-pct presidential">47%</div>
+          <div class="turnout-label presidential">Youth turnout</div>
+          <div class="turnout-sub">2024 presidential election (ages 18-29)</div>
+        </div>
+        <div class="turnout-box midterm">
+          <div class="turnout-pct midterm">23%</div>
+          <div class="turnout-label midterm">Youth turnout</div>
+          <div class="turnout-sub">2022 midterm election (ages 18-29)</div>
+        </div>
+      </div>
+      <div class="turnout-explain">When young people do not vote in midterms, the electorate skews older — and older voters have very different priorities than younger ones. Midterms determine which party controls Congress, which controls the budget, which confirms judges, and which sets the agenda for the next two years. Presidential elections get the attention. Midterms get the power.</div>
+      <div class="turnout-fact">⚠️ In 2014 — the lowest youth turnout midterm in recent history — only 13% of eligible voters ages 18-29 cast a ballot. In some states it was under 10%. Meaning roughly 9 out of 10 young people sat out an election that determined control of the entire Congress.</div>
+      <div class="turnout-explain">The gap between presidential and midterm youth turnout is not random. It is partly that midterms get less attention, partly that there is less outreach to young voters in off years, and partly that people underestimate how much a midterm election controls. But the gap also means that young voters have less influence in the elections that happen more often — and that is a problem that compounds over time.</div>
+      <button class="btn-next-part" onclick="showPart(4)">On to Part 4 — How to Vote →</button>
+    </div>
+
+    <!-- PART 4 -->
+    <div id="part-4" style="display:none;">
+      <div class="section-title">How to actually vote in Kansas</div>
+      <div class="section-sub">Everything you need to know — specific to Kansas.</div>
+
+      <div class="ks-facts">
+        <div class="ks-fact"><div class="ks-fact-icon">📅</div><div>You must be registered <strong>21 days before Election Day</strong> to vote. Kansas does not have same-day registration — so plan ahead.</div></div>
+        <div class="ks-fact"><div class="ks-fact-icon">🪪</div><div>You must show a <strong>valid photo ID</strong> to vote in person. A driver's license, state ID, student ID from a Kansas school, military ID, or passport all work. If you do not have an ID, you can get a free non-driver ID from the Kansas DMV.</div></div>
+        <div class="ks-fact"><div class="ks-fact-icon">📬</div><div>Kansas has <strong>no-excuse absentee voting</strong> — any registered voter can request a mail-in ballot without giving a reason. Request must be received by the county election office by the Tuesday before Election Day.</div></div>
+        <div class="ks-fact"><div class="ks-fact-icon">⏰</div><div>Polls are open from <strong>7:00 AM to 7:00 PM</strong> on Election Day. If you are in line by 7:00 PM, you have the right to vote.</div></div>
+        <div class="ks-fact"><div class="ks-fact-icon">🗳️</div><div>Kansas has <strong>semi-closed primaries</strong>. In 2026, Republicans hold closed primaries (registered Republicans only). Democrats allow registered Democrats and unaffiliated voters to participate.</div></div>
+        <div class="ks-fact"><div class="ks-fact-icon">✅</div><div>Your right to vote is <strong>restored immediately</strong> after release from prison and completion of any probation or parole in Kansas. Pretrial detention and misdemeanor convictions do not restrict voting rights.</div></div>
+      </div>
+
+      <div class="section-title" style="margin-bottom:12px;">Four steps to vote</div>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Check if you are already registered</div>
+            <div class="step-detail">Some Kansans are automatically registered when they get a driver's license or state ID. Check your status before assuming you are not registered.</div>
+            <a class="step-link" href="https://myvoteinfo.voteks.org/voterview" target="_blank" rel="noopener">🔗 Check your registration — voteks.org</a>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Register (or update your registration)</div>
+            <div class="step-detail">You can register online, by mail, or in person at your county election office or the DMV. Remember: deadline is 21 days before Election Day.</div>
+            <a class="step-link" href="https://sos.ks.gov/elections/voter-registration.html" target="_blank" rel="noopener">🔗 Register — Kansas Secretary of State</a>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Find out what is on your ballot</div>
+            <div class="step-detail">Your ballot has more on it than just big races. Look up your specific ballot before Election Day so you are not deciding cold in the voting booth.</div>
+            <a class="step-link" href="https://www.vote411.org/kansas" target="_blank" rel="noopener">🔗 Sample ballot lookup — Vote411.org</a>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">Find your polling place and go</div>
+            <div class="step-detail">Look up your assigned polling location in advance. Bring your photo ID. Arrive with time to spare. If you are in line by 7:00 PM you have the right to vote — do not leave.</div>
+            <a class="step-link" href="https://myvoteinfo.voteks.org/voterview" target="_blank" rel="noopener">🔗 Find your polling place — voteks.org</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-box">
+        <div class="action-title">The next election in Kansas</div>
+        <div class="action-text">There is almost always an election coming up — school boards, city councils, primaries, special elections. Most have turnout so low that a handful of people determine the outcome. Check what is coming up and make a plan.</div>
+        <a class="action-link" href="https://sos.ks.gov/elections/important-election-dates.html" target="_blank" rel="noopener">Kansas Election Dates →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">You now know how elections actually work, how close they get, what local officials actually control, and exactly how to vote in Kansas. The only step left is doing it. Check your registration today — not the week before the election.</div>
+  </div>
+</div>
+
+<script>
+function showPart(n) {
+  [1, 2, 3, 4].forEach(i => {
+    document.getElementById('part-' + i).style.display = i === n ? 'block' : 'none';
+    const tab = document.getElementById('tab-' + i);
+    if (i < n) tab.className = 'part-tab done';
+    else if (i === n) tab.className = 'part-tab active';
+    else tab.className = 'part-tab';
+  });
+}
+</script>
+</body>
+</html>

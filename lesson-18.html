@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How the Government Actually Works — Running Your Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ee;
+    --card: #ffffff;
+    --accent: #5a9fd4;
+    --accent-dark: #2d6fa0;
+    --accent-dim: #e8f2fb;
+    --accent-mid: #a8cff0;
+    --text: #2a2a2a;
+    --text2: #666;
+    --text3: #999;
+    --border: #e0dbd4;
+    --shadow: rgba(0,0,0,0.07);
+    --radius: 16px;
+    --green: #4caf7d;
+    --green-dim: #e8f5ee;
+    --green-mid: #a8dfc5;
+    --red: #e07070;
+    --red-dim: #fdf0f0;
+    --red-mid: #f5c0c0;
+    --amber: #e0a050;
+    --amber-dim: #fdf5e8;
+    --amber-mid: #f0d0a0;
+    --purple: #9b7fe8;
+    --purple-dim: #f0ecfc;
+    --purple-mid: #c8b8f0;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+  .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text3); text-decoration: none; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); transition: all 0.15s; margin-bottom: 20px; }
+  .back-btn:hover { color: var(--accent-dark); border-color: var(--accent); }
+  .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-dark); background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .lesson-title { font-family: 'Nunito', sans-serif; font-size: clamp(26px, 5.5vw, 40px); font-weight: 900; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+  .lesson-title span { color: var(--accent-dark); }
+  .hook-card { background: var(--accent-dark); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(45,111,160,0.3); }
+  .hook-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
+  .hook-text { font-family: 'Nunito', sans-serif; font-size: clamp(16px, 3vw, 20px); font-weight: 800; line-height: 1.5; }
+  .content-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .content-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .content-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+  .tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+  .tool-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 16px; }
+  .section-title { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+  .section-sub { font-size: 14px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+
+  /* PART TABS */
+  .part-tabs { display: flex; gap: 6px; margin-bottom: 24px; }
+  .part-tab { flex: 1; padding: 10px 8px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: var(--text3); text-align: center; cursor: pointer; transition: all 0.15s; line-height: 1.3; }
+  .part-tab.active { border-color: var(--accent-dark); background: var(--accent-dim); color: var(--accent-dark); }
+  .part-tab.done { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+  /* TRUE/FALSE */
+  .round-counter { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text3); }
+  .round-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .round-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+  .round-dot.done { background: var(--accent-dark); }
+  .round-dot.current { background: var(--accent); }
+  .claim-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 22px 20px; margin-bottom: 20px; }
+  .claim-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; }
+  .claim-text { font-family: 'Nunito', sans-serif; font-size: clamp(17px, 3.5vw, 22px); font-weight: 800; color: var(--text); line-height: 1.45; }
+  .pick-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 12px; }
+  .vote-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .vote-btn { flex: 1; padding: 16px 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .vote-btn.true-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.false-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.show-true { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .vote-btn.show-false { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .vote-btn.faded { opacity: 0.3; }
+  .vote-btn:disabled { cursor: default; }
+  .reveal-box { display: none; animation: fadeUp 0.25s ease both; }
+  .reveal-box.visible { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .verdict-banner { border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; }
+  .verdict-banner.true { background: var(--green-dim); border: 1.5px solid var(--green-mid); }
+  .verdict-banner.false { background: var(--red-dim); border: 1.5px solid var(--red-mid); }
+  .verdict-banner.partial { background: var(--amber-dim); border: 1.5px solid var(--amber-mid); }
+  .verdict-label { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+  .verdict-label.true { color: var(--green); }
+  .verdict-label.false { color: var(--red); }
+  .verdict-label.partial { color: var(--amber); }
+  .verdict-sub { font-size: 13px; font-weight: 600; color: var(--text2); }
+  .context-box { font-size: 14px; line-height: 1.75; color: var(--text2); background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .sources-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .source-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--accent-dark); text-decoration: none; background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 5px 12px; border-radius: 20px; transition: all 0.12s; }
+  .source-link:hover { background: var(--accent-mid); }
+  .btn-next { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; display: block; }
+  .btn-next:hover { opacity: 0.85; }
+  .score-wrap { display: none; text-align: center; padding: 28px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+  .score-big { font-family: 'Nunito', sans-serif; font-size: 72px; font-weight: 900; line-height: 1; color: var(--accent-dark); }
+  .score-label { font-size: 14px; color: var(--text3); margin-top: 4px; margin-bottom: 12px; }
+  .score-comment { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; line-height: 1.6; }
+  .btn-part2 { padding: 12px 28px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; }
+
+  /* BILL STEPS */
+  .bill-intro { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; }
+  .bill-steps { display: flex; flex-direction: column; gap: 0; }
+  .bill-step { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; cursor: pointer; transition: all 0.15s; }
+  .bill-step:hover { border-color: var(--accent); }
+  .bill-step.revealed { border-color: var(--accent-dark); }
+  .bill-step-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+  .bill-step-num { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--accent-dark); min-width: 32px; }
+  .bill-step-title { font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
+  .bill-step-arrow { font-size: 14px; color: var(--text3); transition: transform 0.2s; }
+  .bill-step.revealed .bill-step-arrow { transform: rotate(90deg); }
+  .bill-step-body { display: none; padding: 0 16px 16px; animation: fadeUp 0.2s ease both; }
+  .bill-step.revealed .bill-step-body { display: block; }
+  .bill-step-what { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 10px; }
+  .bill-step-killer { font-size: 13px; font-weight: 600; color: var(--red); background: var(--red-dim); border-radius: 8px; padding: 8px 12px; border-left: 3px solid var(--red); line-height: 1.6; }
+  .bill-step-killer.green { color: var(--green); background: var(--green-dim); border-left-color: var(--green); }
+  .bill-odds { background: var(--accent-dark); color: #fff; border-radius: 12px; padding: 18px 20px; margin-top: 16px; text-align: center; }
+  .bill-odds-num { font-family: 'Nunito', sans-serif; font-size: 52px; font-weight: 900; line-height: 1; }
+  .bill-odds-label { font-size: 14px; opacity: 0.85; margin-top: 6px; line-height: 1.5; }
+  .btn-to-part3 { display: block; width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent-dark); color: #fff; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 16px; }
+
+  /* THREE BRANCHES */
+  .branches { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .branch-card { border: 2px solid var(--border); border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.15s; }
+  .branch-card.legislative { border-color: var(--accent); }
+  .branch-card.executive { border-color: var(--amber); }
+  .branch-card.judicial { border-color: var(--purple); }
+  .branch-header { display: flex; align-items: center; gap: 14px; padding: 16px 18px; }
+  .branch-icon { font-size: 28px; flex-shrink: 0; }
+  .branch-name-wrap { flex: 1; }
+  .branch-name { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; }
+  .branch-name.legislative { color: var(--accent-dark); }
+  .branch-name.executive { color: var(--amber); }
+  .branch-name.judicial { color: var(--purple); }
+  .branch-who { font-size: 13px; color: var(--text3); margin-top: 2px; }
+  .branch-arrow { font-size: 14px; color: var(--text3); transition: transform 0.2s; }
+  .branch-card.open .branch-arrow { transform: rotate(90deg); }
+  .branch-body { display: none; padding: 0 18px 18px; animation: fadeUp 0.2s ease both; }
+  .branch-card.open .branch-body { display: block; }
+  .branch-row { margin-bottom: 12px; }
+  .branch-row-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 5px; }
+  .branch-row-val { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .branch-check { font-size: 13px; font-weight: 600; background: var(--bg); border-radius: 8px; padding: 8px 12px; color: var(--text2); border-left: 3px solid var(--border); line-height: 1.6; }
+  .branch-check.legislative { border-left-color: var(--accent); }
+  .branch-check.executive { border-left-color: var(--amber); }
+  .branch-check.judicial { border-left-color: var(--purple); }
+
+  .apply-card { background: var(--accent-dim); border: 1.5px solid var(--accent-mid); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px; }
+  .apply-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 10px; }
+  .apply-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="https://elowder19.github.io/running-your-life" class="back-btn">← Back to Dashboard</a>
+  <div class="cat-badge">🗳️ Informed Voter</div>
+  <h1 class="lesson-title">How the government <span>actually works</span></h1>
+
+  <div class="hook-card">
+    <div class="hook-label">Think about this first</div>
+    <div class="hook-text">Most people have strong opinions about the government. Fewer people understand how it actually operates. Those two things are connected.</div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-label">The Point</div>
+    <div class="content-text">You cannot hold the government accountable for things you do not understand. This lesson covers three things: what most people get wrong about how government works, how a bill actually becomes law, and what the three branches are actually for. None of this is complicated — it just was not explained clearly the first time.</div>
+  </div>
+
+  <div class="tool-card">
+    <div class="part-tabs">
+      <div class="part-tab active" id="tab-1" onclick="showPart(1)">Part 1<br>Common Myths</div>
+      <div class="part-tab" id="tab-2" onclick="showPart(2)">Part 2<br>How a Bill Works</div>
+      <div class="part-tab" id="tab-3" onclick="showPart(3)">Part 3<br>Three Branches</div>
+    </div>
+
+    <!-- PART 1 -->
+    <div id="part-1">
+      <div class="section-title">What most people get wrong</div>
+      <div class="section-sub">Six common beliefs about how government works — some true, some false, and some more complicated than you were taught.</div>
+      <div class="round-counter">
+        <div class="round-num" id="round-label">Round 1 of 6</div>
+        <div class="round-dots" id="round-dots"></div>
+      </div>
+      <div id="game-area">
+        <div class="claim-card">
+          <div class="claim-tag">Claim</div>
+          <div class="claim-text" id="claim-text"></div>
+        </div>
+        <div class="pick-label">True or false?</div>
+        <div class="vote-btns">
+          <button class="vote-btn true-btn" onclick="vote('true', this)">✓ True</button>
+          <button class="vote-btn false-btn" onclick="vote('false', this)">✗ False</button>
+        </div>
+        <div class="reveal-box" id="reveal-box">
+          <div class="verdict-banner" id="verdict-banner">
+            <div class="verdict-label" id="verdict-label"></div>
+            <div class="verdict-sub" id="verdict-sub"></div>
+          </div>
+          <div class="context-box" id="context-box"></div>
+          <div class="sources-wrap" id="sources-wrap"></div>
+          <button class="btn-next" id="btn-next" onclick="nextRound()">Next →</button>
+        </div>
+      </div>
+      <div class="score-wrap" id="score-wrap">
+        <div class="score-big" id="score-num"></div>
+        <div class="score-label">correct out of 6</div>
+        <div class="score-comment" id="score-comment"></div>
+        <button class="btn-part2" onclick="showPart(2)">On to Part 2 →</button>
+      </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div id="part-2" style="display:none;">
+      <div class="section-title">How a bill actually becomes law</div>
+      <div class="bill-intro">School House Rock made this look simple. It is not. Tap each step to see what actually happens there — and what usually kills the bill at that stage.</div>
+      <div class="bill-steps" id="bill-steps"></div>
+      <div class="bill-odds">
+        <div class="bill-odds-num">&lt;5%</div>
+        <div class="bill-odds-label">of bills introduced in Congress ever become law. Most die in committee and never even get a vote.</div>
+      </div>
+      <button class="btn-to-part3" onclick="showPart(3)">On to Part 3 →</button>
+    </div>
+
+    <!-- PART 3 -->
+    <div id="part-3" style="display:none;">
+      <div class="section-title">The three branches</div>
+      <div class="section-sub">Each branch has a job. Each one can check the other two. Tap any branch to see what it actually does — and what limits it.</div>
+      <div class="branches" id="branches"></div>
+    </div>
+  </div>
+
+  <div class="apply-card">
+    <div class="apply-label">Apply It</div>
+    <div class="apply-text">The next time a politician says "I will fix X when I am elected" — ask yourself: which branch are they running for? Do they actually have the power to do that? Now you know how to check.</div>
+  </div>
+</div>
+
+<script>
+// PART 1 — TRUE/FALSE
+const rounds = [
+  {
+    claim: "The President can create new laws through executive orders.",
+    correct: 'false',
+    verdictType: 'partial',
+    verdictLabel: 'False — executive orders are real but limited.',
+    verdictSub: 'Only Congress can make law. Executive orders manage how existing laws are carried out.',
+    context: "Executive orders are real and powerful — they direct federal agencies on how to implement existing laws. But they cannot create new laws, raise or lower taxes, or override Congress. A president can issue an executive order today that the next president can cancel on day one. Many campaign promises that sound like presidential actions actually require Congress to pass legislation first — which means they may never happen at all.",
+    sources: [{ label: 'U.S. Federal Register — Executive Orders', url: 'https://www.federalregister.gov/presidential-documents/executive-orders' }]
+  },
+  {
+    claim: "The Supreme Court can strike down any law passed by Congress.",
+    correct: 'true',
+    verdictType: 'true',
+    verdictLabel: 'True — this is called judicial review.',
+    verdictSub: 'The Court can declare any law unconstitutional and void it entirely.',
+    context: "Judicial review — the power of the Supreme Court to strike down laws that violate the Constitution — is one of the most powerful forces in American government. It is not in the Constitution explicitly. It was established by the Supreme Court itself in Marbury v. Madison (1803). Since then the Court has struck down hundreds of federal and state laws. The nine justices are appointed for life, are never elected by voters, and their decisions cannot be overturned except by a constitutional amendment or a future Court decision.",
+    sources: [{ label: 'National Archives — Marbury v. Madison', url: 'https://www.archives.gov/milestone-documents/marbury-v-madison' }]
+  },
+  {
+    claim: "The President controls the federal budget and decides how much money each program gets.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — Congress controls the budget. The president proposes it.',
+    verdictSub: 'Not a single dollar of federal money can be spent without Congressional approval.',
+    context: "Every year the president submits a proposed budget to Congress. Congress then ignores most of it and writes its own. The Constitution gives Congress — not the president — the power of the purse. Not a single federal dollar can be spent without Congress appropriating it. This is why a president can promise to fund a program but Congress can defund it. And it is why a president can veto a spending bill but Congress can override that veto with a two-thirds majority.",
+    sources: [{ label: 'Congress.gov — The Budget Process', url: 'https://www.congress.gov/legislative-process/budget-process' }]
+  },
+  {
+    claim: "Supreme Court justices serve for a fixed term — similar to a senator's 6-year term.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — Supreme Court justices serve for life.',
+    verdictSub: 'They can only be removed through impeachment, which has never successfully happened.',
+    context: "Article III of the Constitution says federal judges — including Supreme Court justices — serve during 'good behavior,' which in practice means for life. They are nominated by the president and confirmed by the Senate. Once confirmed they cannot be removed by voters, by the president, or by Congress through normal legislation. The only removal mechanism is impeachment by the House and conviction by the Senate — which has been attempted but never successfully completed for a Supreme Court justice. The average tenure on the Court is about 16 years.",
+    sources: [{ label: 'U.S. Constitution — Article III', url: 'https://constitution.congress.gov/browse/article-3/' }]
+  },
+  {
+    claim: "A bill that passes the House and Senate with a simple majority becomes law automatically.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — it still goes to the President.',
+    verdictSub: 'The President can sign it, veto it, or do nothing — and each option has different consequences.',
+    context: "After a bill passes both the House and Senate it goes to the President. The President has four options: sign it (becomes law), veto it (sent back to Congress), do nothing within 10 days while Congress is in session (becomes law automatically), or do nothing within 10 days while Congress is NOT in session — called a pocket veto — and the bill dies. If the President vetoes a bill, Congress can override it with a two-thirds majority vote in both chambers.",
+    sources: [{ label: 'Congress.gov — How Laws Are Made', url: 'https://www.congress.gov/legislative-process' }]
+  },
+  {
+    claim: "Americans vote directly for President — whoever gets the most votes wins.",
+    correct: 'false',
+    verdictType: 'false',
+    verdictLabel: 'False — Americans vote for electors, not directly for President.',
+    verdictSub: 'The Electoral College means the popular vote winner can lose the presidency.',
+    context: "The Electoral College is a system where each state gets a number of electors equal to its total Congressional representation. When you vote for president you are actually voting for a slate of electors who pledge to vote for that candidate. Most states are winner-take-all — whoever wins the state gets all its electors. A candidate needs 270 electoral votes to win. This is why a candidate can win the national popular vote and still lose the election — it happened in 2000 (Bush vs. Gore) and 2016 (Trump vs. Clinton).",
+    sources: [{ label: 'National Archives — Electoral College', url: 'https://www.archives.gov/electoral-college/about' }]
+  },
+];
+
+let current = 0;
+let score = 0;
+let voted = false;
+
+function buildDots() {
+  document.getElementById('round-dots').innerHTML = rounds.map((_, i) =>
+    `<div class="round-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`).join('');
+}
+
+function renderRound() {
+  voted = false;
+  const r = rounds[current];
+  document.getElementById('round-label').textContent = `Round ${current + 1} of ${rounds.length}`;
+  document.getElementById('claim-text').textContent = r.claim;
+  document.getElementById('reveal-box').classList.remove('visible');
+  document.getElementById('btn-next').textContent = current < rounds.length - 1 ? 'Next →' : 'See results →';
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = false;
+    b.className = b.classList.contains('true-btn') ? 'vote-btn true-btn' : 'vote-btn false-btn';
+  });
+  rounds.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'round-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+  });
+}
+
+function vote(pick, btn) {
+  if (voted) return;
+  voted = true;
+  const r = rounds[current];
+  if (pick === r.correct) score++;
+  document.querySelectorAll('.vote-btn').forEach(b => {
+    b.disabled = true;
+    if (b.classList.contains('true-btn')) b.className = r.correct === 'true' ? 'vote-btn show-true' : 'vote-btn faded';
+    else b.className = r.correct === 'false' ? 'vote-btn show-false' : 'vote-btn faded';
+  });
+  const banner = document.getElementById('verdict-banner');
+  banner.className = 'verdict-banner ' + r.verdictType;
+  document.getElementById('verdict-label').className = 'verdict-label ' + r.verdictType;
+  document.getElementById('verdict-label').textContent = r.verdictLabel;
+  document.getElementById('verdict-sub').textContent = r.verdictSub;
+  document.getElementById('context-box').textContent = r.context;
+  document.getElementById('sources-wrap').innerHTML = r.sources.map(s =>
+    `<a class="source-link" href="${s.url}" target="_blank" rel="noopener">🔗 ${s.label}</a>`).join('');
+  document.getElementById('reveal-box').classList.add('visible');
+  document.getElementById('reveal-box').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function nextRound() {
+  current++;
+  if (current >= rounds.length) {
+    document.getElementById('game-area').style.display = 'none';
+    document.getElementById('score-wrap').style.display = 'block';
+    document.getElementById('score-num').textContent = score + '/6';
+    let comment;
+    if (score >= 5) comment = "You had a solid foundation already. The Electoral College and budget ones trip up most people.";
+    else if (score >= 3) comment = "About half right — which is about average. These are things that get taught once and then not revisited.";
+    else comment = "Most of these surprised you — which means the civics class version of government is pretty different from how it actually works.";
+    document.getElementById('score-comment').textContent = comment;
+    document.getElementById('tab-1').className = 'part-tab done';
+    document.getElementById('score-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    return;
+  }
+  renderRound();
+  document.getElementById('game-area').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// PART 2 — BILL STEPS
+const billSteps = [
+  {
+    num: '1', title: 'A member introduces the bill',
+    what: "Any member of Congress can introduce a bill. It gets a number (H.R. for House, S. for Senate) and is assigned to a committee. About 10,000-15,000 bills are introduced every two-year session.",
+    killer: "💀 Most bills die here: The committee chair decides whether to schedule a hearing. If they do not like the bill — or owe a favor to someone who does not — the bill never gets a hearing and quietly disappears."
+  },
+  {
+    num: '2', title: 'Committee review',
+    what: "The assigned committee holds hearings, invites experts and stakeholders to testify, and debates the bill. Committee members can amend it, strengthen it, weaken it, or gut it entirely and replace it with something different.",
+    killer: "💀 If the committee does not vote to advance it, the bill dies here. This is where lobbyists are most active — shaping the bill before it ever reaches the full chamber."
+  },
+  {
+    num: '3', title: 'Full chamber vote',
+    what: "If the committee approves it, the bill goes to the full House or Senate floor for debate and a vote. In the Senate, this is where the filibuster can block it — requiring 60 votes to even start debate instead of 51 to pass.",
+    killer: "💀 In the Senate specifically, the filibuster kills a lot of bills that have majority support. A bill can have 55 senators in favor and still never get a vote."
+  },
+  {
+    num: '4', title: 'The other chamber',
+    what: "If the bill passes the House, it goes to the Senate — and vice versa. The other chamber can pass the exact same bill, amend it, ignore it entirely, or pass a completely different version.",
+    killer: "💀 Bills that pass one chamber frequently die in the other. Priorities differ, majorities differ, and political incentives differ between the House and Senate."
+  },
+  {
+    num: '5', title: 'Conference committee',
+    what: "If both chambers pass different versions of the same bill, a conference committee of members from both chambers meets to reconcile the differences into one final version. Both chambers then vote on that final version — no more amendments.",
+    killer: "💀 If the chambers cannot agree on a final version, or if the final version loses support from members who liked the original, the bill dies here."
+  },
+  {
+    num: '6', title: 'The President',
+    what: "The final bill goes to the President, who has 10 days to sign it or veto it. If signed, it becomes law. If vetoed, it goes back to Congress. Congress can override the veto with a two-thirds majority vote in both chambers.",
+    killer: "✓ If the President signs it — or if Congress overrides a veto — the bill is now law. Then federal agencies figure out how to implement it, which is its own entire process."
+  },
+];
+
+function buildBillSteps() {
+  document.getElementById('bill-steps').innerHTML = billSteps.map((s, i) => `
+    <div class="bill-step" id="bstep-${i}" onclick="toggleBillStep(${i})">
+      <div class="bill-step-header">
+        <div class="bill-step-num">${s.num}</div>
+        <div class="bill-step-title">${s.title}</div>
+        <div class="bill-step-arrow">▶</div>
+      </div>
+      <div class="bill-step-body">
+        <div class="bill-step-what">${s.what}</div>
+        <div class="bill-step-killer ${i === 5 ? 'green' : ''}">${s.killer}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleBillStep(i) {
+  const el = document.getElementById('bstep-' + i);
+  el.classList.toggle('revealed');
+}
+
+// PART 3 — THREE BRANCHES
+const branches = [
+  {
+    cls: 'legislative',
+    icon: '🏛️',
+    name: 'Legislative Branch',
+    who: 'Congress — the House of Representatives and the Senate',
+    does: "Makes federal law. Controls the federal budget. Declares war. Confirms presidential appointments (judges, cabinet members). Overrides presidential vetoes with a two-thirds majority. Impeaches and removes the President, Vice President, and federal judges.",
+    check: "Can override the President's veto. Can impeach the President. Confirms or rejects Supreme Court nominees. Controls the budget — can defund executive agencies.",
+    limited: "Bills require both chambers to agree. The President can veto. The Supreme Court can strike down laws as unconstitutional."
+  },
+  {
+    cls: 'executive',
+    icon: '🦅',
+    name: 'Executive Branch',
+    who: 'The President, Vice President, and the Cabinet and federal agencies',
+    does: "Enforces and implements federal law. Commands the military. Nominates Supreme Court justices and federal judges. Negotiates treaties with other countries. Issues executive orders directing federal agencies. Vetoes legislation from Congress.",
+    check: "Can veto Congressional legislation. Nominates all federal judges including Supreme Court justices. Commands the military and directs foreign policy.",
+    limited: "Cannot make law — only sign or veto it. Budget must be approved by Congress. Appointments require Senate confirmation. Subject to impeachment."
+  },
+  {
+    cls: 'judicial',
+    icon: '⚖️',
+    name: 'Judicial Branch',
+    who: 'The Supreme Court and lower federal courts',
+    does: "Interprets the Constitution and federal law. Strikes down laws that violate the Constitution (judicial review). Resolves disputes between states and between the federal government and states. The Supreme Court has the final word on what the Constitution means.",
+    check: "Can declare any law — federal or state — unconstitutional and void it. Interprets executive orders. Decisions are binding on all lower courts.",
+    limited: "Cannot initiate cases — must wait for cases to come to it. Cannot enforce its own decisions. Justices are nominated by the President and confirmed by the Senate."
+  },
+];
+
+function buildBranches() {
+  document.getElementById('branches').innerHTML = branches.map((b, i) => `
+    <div class="branch-card ${b.cls}" id="branch-${i}" onclick="toggleBranch(${i})">
+      <div class="branch-header">
+        <div class="branch-icon">${b.icon}</div>
+        <div class="branch-name-wrap">
+          <div class="branch-name ${b.cls}">${b.name}</div>
+          <div class="branch-who">${b.who}</div>
+        </div>
+        <div class="branch-arrow">▶</div>
+      </div>
+      <div class="branch-body">
+        <div class="branch-row">
+          <div class="branch-row-label">What it does</div>
+          <div class="branch-row-val">${b.does}</div>
+        </div>
+        <div class="branch-row">
+          <div class="branch-row-label">How it checks the others</div>
+          <div class="branch-check ${b.cls}">${b.check}</div>
+        </div>
+        <div class="branch-row" style="margin-bottom:0;">
+          <div class="branch-row-label">What limits it</div>
+          <div class="branch-row-val">${b.limited}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleBranch(i) {
+  document.getElementById('branch-' + i).classList.toggle('open');
+}
+
+// PART NAV
+function showPart(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById('part-' + i).style.display = i === n ? 'block' : 'none';
+    const tab = document.getElementById('tab-' + i);
+    if (i < n) tab.className = 'part-tab done';
+    else if (i === n) tab.className = 'part-tab active';
+    else tab.className = 'part-tab';
+  });
+  if (n === 2) { document.getElementById('tab-1').className = 'part-tab done'; buildBillSteps(); }
+  if (n === 3) {
+    document.getElementById('tab-1').className = 'part-tab done';
+    document.getElementById('tab-2').className = 'part-tab done';
+    buildBranches();
+  }
+}
+
+buildDots();
+renderRound();
+</script>
+</body>
+</html>

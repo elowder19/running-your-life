@@ -22,6 +22,8 @@
     --clr-reality-bg:   #eaf5ee;
     --clr-builder:      #7b62b8;
     --clr-builder-bg:   #f1eefa;
+    --clr-voter:        #2d6fa0;
+    --clr-voter-bg:     #e8f2fb;
     --radius-card: 14px;
     --radius-badge: 6px;
   }
@@ -49,37 +51,11 @@
 
   .page { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 48px 24px 80px; }
 
-  /* ── HEADER ── */
   .header { margin-bottom: 52px; }
-
-  .eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--text3); margin-bottom: 10px;
-  }
-
-  h1 {
-    font-size: clamp(26px, 5vw, 42px);
-    font-weight: 800; line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-
-  .subtitle {
-    margin-top: 8px; font-size: 14px;
-    color: var(--text2); font-weight: 300;
-  }
-
-  .stats-row {
-    display: flex; gap: 20px; flex-wrap: wrap;
-    margin-top: 24px; padding: 16px 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-family: 'DM Mono', monospace;
-  }
-
+  .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: var(--text); }
+  .subtitle { margin-top: 8px; font-size: 14px; color: var(--text2); font-weight: 300; }
+  .stats-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 24px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Mono', monospace; }
   .stat { display: flex; flex-direction: column; gap: 3px; }
   .stat-val { font-size: 22px; font-weight: 500; color: var(--text); line-height: 1; }
   .stat-label { color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
@@ -87,116 +63,41 @@
   .stat-val.clr-scenario { color: var(--clr-scenario); }
   .stat-val.clr-reality  { color: var(--clr-reality); }
   .stat-val.clr-builder  { color: var(--clr-builder); }
+  .stat-val.clr-voter    { color: var(--clr-voter); }
 
-  /* ── CATEGORY ── */
   .category { margin-bottom: 44px; }
-
-  .cat-header {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 18px; padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .cat-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-
-  .cat-name {
-    font-size: 13px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-  }
-
+  .cat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .cat-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .cat-name { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .clr-slider   { color: var(--clr-slider); }
   .clr-scenario { color: var(--clr-scenario); }
   .clr-reality  { color: var(--clr-reality); }
   .clr-builder  { color: var(--clr-builder); }
+  .clr-voter    { color: var(--clr-voter); }
 
-  /* ── GRID ── */
-  .lesson-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 14px;
-  }
+  .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
 
-  /* ── CARD ── */
-  .card {
-    position: relative;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    padding: 20px 18px 18px;
-    text-decoration: none; color: inherit;
-    display: flex; flex-direction: column; gap: 10px;
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    overflow: hidden;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: var(--cat-clr);
-    opacity: 0; transition: opacity 0.18s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-    border-color: var(--cat-clr);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  }
+  .card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px 18px 18px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 10px; transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--cat-clr); opacity: 0; transition: opacity 0.18s ease; }
+  .card:hover { transform: translateY(-3px); border-color: var(--cat-clr); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
   .card:hover::before { opacity: 1; }
 
   .card[data-cat="slider"]   { --cat-clr: var(--clr-slider);   --cat-bg: var(--clr-slider-bg); }
   .card[data-cat="scenario"] { --cat-clr: var(--clr-scenario); --cat-bg: var(--clr-scenario-bg); }
   .card[data-cat="reality"]  { --cat-clr: var(--clr-reality);  --cat-bg: var(--clr-reality-bg); }
   .card[data-cat="builder"]  { --cat-clr: var(--clr-builder);  --cat-bg: var(--clr-builder-bg); }
+  .card[data-cat="voter"]    { --cat-clr: var(--clr-voter);    --cat-bg: var(--clr-voter-bg); }
 
-  .card-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px; color: var(--text3); letter-spacing: 0.12em;
-  }
-
-  .card-title {
-    font-size: 15px; font-weight: 600; line-height: 1.3; color: var(--text);
-  }
-
-  .card-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 4px 8px; border-radius: var(--radius-badge);
-    background: var(--cat-bg); color: var(--cat-clr);
-    border: 1px solid rgba(0,0,0,0.06);
-    align-self: flex-start; margin-top: auto;
-  }
-
-  .card-badge::before {
-    content: '';
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--cat-clr);
-  }
-
+  .card-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 0.12em; }
+  .card-title { font-size: 15px; font-weight: 600; line-height: 1.3; color: var(--text); }
+  .card-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 8px; border-radius: var(--radius-badge); background: var(--cat-bg); color: var(--cat-clr); border: 1px solid rgba(0,0,0,0.06); align-self: flex-start; margin-top: auto; }
+  .card-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--cat-clr); }
   .card.tba { opacity: 0.4; cursor: default; pointer-events: none; }
 
-  /* ── ADD HINT ── */
-  .add-hint {
-    margin-top: 48px; padding: 20px 24px;
-    border: 1px dashed var(--border-hi);
-    border-radius: 10px; background: var(--surface);
-    font-family: 'DM Mono', monospace; font-size: 12px;
-    color: var(--text3); line-height: 1.9;
-  }
+  .add-hint { margin-top: 48px; padding: 20px 24px; border: 1px dashed var(--border-hi); border-radius: 10px; background: var(--surface); font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text3); line-height: 1.9; }
   .add-hint strong { color: var(--text2); }
 
-  /* ── FOOTER ── */
-  .footer {
-    margin-top: 48px; padding-top: 20px;
-    border-top: 1px solid var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px; color: var(--text3);
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-  }
+  .footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
   @media (max-width: 600px) { .lesson-grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 400px) { .lesson-grid { grid-template-columns: 1fr; } }
@@ -205,20 +106,6 @@
 <body>
 <div class="page">
 
-<!-- ══════════════════════════════════════════════════
-     LESSON DATA — ADD NEW LESSONS HERE
-     ──────────────────────────────────────────────────
-     To add a lesson, copy a line and fill it in:
-     { title: "Lesson Title", file: "lesson-16.html", cat: "slider", done: true },
-
-     cat options:
-       "slider"   → Sliders & Calculators
-       "scenario" → Scenario Explorer
-       "reality"  → Reality Check
-       "builder"  → Builder / Planner
-
-     done: true = clickable | done: false = grayed out
-════════════════════════════════════════════════════ -->
 <script>
 const BASE = "https://elowder19.github.io/running-your-life/";
 
@@ -246,8 +133,14 @@ const LESSONS = [
   { title: "One Year From Now",    file: "lesson-5.html", cat: "builder", done: true },
   { title: "What Gets in the Way", file: "lesson-7.html", cat: "builder", done: true },
 
+  // ── INFORMED VOTER ─────────────────────────────────
+  { title: "Did They Actually Do That?",             file: "lesson-16.html", cat: "voter", done: true },
+  { title: "Stuff Nobody Told You About Congress",   file: "lesson-17.html", cat: "voter", done: true },
+  { title: "How the Government Actually Works",      file: "lesson-18.html", cat: "voter", done: true },
+  { title: "Your Vote Actually Matters (No Really)", file: "lesson-19.html", cat: "voter", done: true },
+
   // ── ADD NEW LESSONS BELOW THIS LINE ───────────────
-  // { title: "My New Lesson", file: "lesson-16.html", cat: "slider", done: true },
+  // { title: "My New Lesson", file: "lesson-20.html", cat: "slider", done: true },
 ];
 
 const CATS = {
@@ -255,10 +148,10 @@ const CATS = {
   scenario: { label: "Scenario Explorer",      icon: "🗺", cls: "clr-scenario", bg: "rgba(196,127,42,0.10)"  },
   reality:  { label: "Reality Check",          icon: "💡", cls: "clr-reality",  bg: "rgba(58,150,96,0.10)"   },
   builder:  { label: "Builder / Planner",      icon: "🧭", cls: "clr-builder",  bg: "rgba(123,98,184,0.10)"  },
+  voter:    { label: "Informed Voter",          icon: "🗳", cls: "clr-voter",    bg: "rgba(45,111,160,0.10)"  },
 };
 </script>
 
-<!-- ── HEADER ── -->
 <header class="header">
   <div class="eyebrow">Executive Functioning · Micro Lessons</div>
   <h1>Running Your Life</h1>
@@ -267,18 +160,15 @@ const CATS = {
   <div style="font-family:'Sora',sans-serif; font-size:16px; font-weight:600; color:var(--text2); font-style:italic; margin-top:14px; text-align:center;">don't say Ms. Elaine never taught you anything 😄</div>
 </header>
 
-<!-- ── LESSON SECTIONS ── -->
 <main id="main-content"></main>
 
-<!-- ── ADD HINT ── -->
 <div class="add-hint">
   <strong>// Adding a new lesson?</strong><br>
   Open this file → find the <strong>LESSONS</strong> array near the top → add one line:<br>
-  <code>{ title: "Lesson Title Here", file: "lesson-16.html", cat: "slider", done: true },</code><br>
-  cat options: <strong>"slider"</strong> · <strong>"scenario"</strong> · <strong>"reality"</strong> · <strong>"builder"</strong>
+  <code>{ title: "Lesson Title Here", file: "lesson-20.html", cat: "voter", done: true },</code><br>
+  cat options: <strong>"slider"</strong> · <strong>"scenario"</strong> · <strong>"reality"</strong> · <strong>"builder"</strong> · <strong>"voter"</strong>
 </div>
 
-<!-- ── FOOTER ── -->
 <footer class="footer">
   <span>elowder19.github.io/running-your-life</span>
   <span id="footer-count"></span>
@@ -298,11 +188,12 @@ const CATS = {
     <div class="stat"><span class="stat-val clr-scenario">${byCat.scenario||0}</span><span class="stat-label">Scenarios</span></div>
     <div class="stat"><span class="stat-val clr-reality">${byCat.reality||0}</span><span class="stat-label">Reality Check</span></div>
     <div class="stat"><span class="stat-val clr-builder">${byCat.builder||0}</span><span class="stat-label">Builder</span></div>
+    <div class="stat"><span class="stat-val clr-voter">${byCat.voter||0}</span><span class="stat-label">Voter</span></div>
   `;
 
   document.getElementById('footer-count').textContent = `${total} lessons`;
 
-  const catOrder = ['slider','scenario','reality','builder'];
+  const catOrder = ['slider','scenario','reality','builder','voter'];
   const main = document.getElementById('main-content');
 
   catOrder.forEach(catKey => {

@@ -113,11 +113,11 @@
   .quote-panel { border-top: 3px solid var(--accent2); }
   .quote-panel .panel-label { color: var(--accent2); }
   .quote-panel .dot { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
-  .quote-text { font-size: 19px; font-weight: 300; line-height: 1.55; font-style: italic; margin-bottom: 14px; }
+  .quote-text { font-size: 22px; font-weight: 300; line-height: 1.55; font-style: italic; margin-bottom: 14px; }
   .quote-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
   .quote-skills { display: flex; gap: 7px; flex-wrap: wrap; }
   .skill-tag {
-    font-size: 10px; padding: 3px 10px; border-radius: 20px; border: 1px solid;
+    font-size: 12px; padding: 4px 10px; border-radius: 20px; border: 1px solid;
     font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; text-transform: uppercase;
   }
   .st-purple { color: #b39dff; border-color: var(--accent2); background: rgba(123,92,255,0.1); }
@@ -162,16 +162,16 @@
     background: rgba(0,200,255,0.08); font-family: 'Share Tech Mono', monospace;
     letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 10px;
   }
-  .brain-fact-text { font-size: 15px; line-height: 1.65; color: var(--text); margin-bottom: 14px; min-height: 80px; }
+  .brain-fact-text { font-size: 17px; line-height: 1.65; color: var(--text); margin-bottom: 14px; min-height: 80px; }
 
   .wyr-panel { border-top: 3px solid var(--success); }
   .wyr-panel .panel-label { color: var(--success); }
   .wyr-panel .dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
-  .wyr-question { font-size: 15px; line-height: 1.55; color: var(--text); margin-bottom: 14px; min-height: 44px; font-weight: 400; }
+  .wyr-question { font-size: 17px; line-height: 1.55; color: var(--text); margin-bottom: 14px; min-height: 44px; font-weight: 400; }
   .wyr-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
   .wyr-opt {
-    padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
-    background: var(--bg3); font-size: 13px; color: var(--text2); line-height: 1.4;
+    padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg3); font-size: 15px; color: var(--text2); line-height: 1.4;
     cursor: pointer; transition: all 0.18s; text-align: center;
   }
   .wyr-opt:hover { border-color: var(--success); color: var(--success); background: rgba(0,229,160,0.07); }
@@ -181,14 +181,14 @@
   .holiday-panel { border-top: 3px solid var(--accent3); }
   .holiday-panel .panel-label { color: var(--accent3); }
   .holiday-panel .dot { background: var(--accent3); }
-  .holiday-name { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #ffaa70; line-height: 1.2; margin-bottom: 8px; }
-  .holiday-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+  .holiday-name { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; color: #ffaa70; line-height: 1.2; margin-bottom: 8px; }
+  .holiday-desc { font-size: 16px; color: var(--text2); line-height: 1.6; }
   .holiday-weekend { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
   .holiday-weekend-label { font-size: 10px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; margin-bottom: 4px; }
   .holiday-weekend-name { font-size: 13px; color: var(--text2); }
 
   /* ── ROW 3: BRAIN GAMES + LAUNCH STRIP ── */
-  .row3 { display: grid; grid-template-columns: 1fr 340px; gap: 16px; margin-bottom: 16px; align-items: start; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; align-items: stretch; }
 
   .games-panel { border-top: 3px solid var(--accent3); }
   .games-panel .panel-label { color: var(--accent3); }
@@ -208,9 +208,9 @@
     background: var(--bg3); border: 1px solid var(--border);
     border-radius: 10px; padding: 20px; min-height: 140px;
   }
-  .deck-q { font-size: 17px; line-height: 1.7; color: var(--text); margin-bottom: 12px; white-space: pre-line; }
+  .deck-q { font-size: 20px; line-height: 1.7; color: var(--text); margin-bottom: 12px; white-space: pre-line; }
   .deck-answer {
-    font-size: 15px; color: #ffaa70; font-weight: 600;
+    font-size: 17px; color: #ffaa70; font-weight: 600;
     background: rgba(255,107,53,0.08); border: 1px solid var(--accent3);
     border-radius: 7px; padding: 10px 14px; display: none; margin-bottom: 8px;
   }
@@ -234,15 +234,17 @@
     border-radius: 12px; padding: 18px 20px;
     border-top: 3px solid var(--accent2);
     display: flex; flex-direction: column; gap: 16px;
+    height: 100%;
   }
   .launch-panel .panel-label { color: var(--accent2); margin-bottom: 0; }
   .launch-panel .dot { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
   .launch-strip {
     display: flex; align-items: center; gap: 14px;
-    padding: 16px 18px;
+    padding: 20px 22px;
     background: var(--bg3); border: 1px solid var(--border);
     border-radius: 10px; text-decoration: none; color: inherit;
     transition: all 0.18s; border-left: 3px solid var(--accent2);
+    flex: 1;
   }
   .launch-strip:hover { border-color: var(--accent2); background: rgba(123,92,255,0.1); transform: translateY(-1px); }
   .launch-icon { font-size: 28px; flex-shrink: 0; }
